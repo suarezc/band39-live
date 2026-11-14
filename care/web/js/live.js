@@ -75,6 +75,32 @@
   const anchor = document.querySelector('.carer .scores') || document.querySelector('.carer .cg-head');
   if (anchor) anchor.after(wrap); else carer.append(wrap);
 
+  // ---- the one-line strip at the top of the page (visible on both tabs, at any width) ---------
+  const top = button('lt-top', ''); top.setAttribute('aria-label', 'Live transcript: show it');
+  const topState = el('span', 'lt-state'); const topDot = el('i', 'lt-dot'); const topStateText = el('span', '', 'Off'); topState.append(topDot, topStateText);
+  const topText = el('span', 'lt-top-text', 'Nothing heard yet');
+  top.append(el('span', 'lt-top-h', 'Live'), topState, topText);
+  {
+    const connBtn = document.getElementById('lvConnect');
+    const conn = connBtn && (connBtn.closest('.conn') || connBtn.closest('.card'));
+    const mainEl = document.querySelector('main');
+    if (conn) conn.after(top); else if (mainEl) mainEl.prepend(top); else document.body.prepend(top);
+  }
+  top.onclick = () => {
+    const tabs = document.querySelector('.tabs'); const lisaTab = tabs && tabs.querySelector('button[data-tab="lisa"]');
+    const tabbed = tabs && root.getComputedStyle && root.getComputedStyle(tabs).display !== 'none';
+    if (tabbed && lisaTab && lisaTab.getAttribute('aria-selected') !== 'true') lisaTab.click();   // app.js switches the tab
+    if (typeof wrap.scrollIntoView === 'function') wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  let lastFinal = null;            // the newest finished phrase, for the top strip
+  function renderTop() {
+    const live = interim.textContent;
+    topText.classList.toggle('interim', !!live);
+    if (live) topText.textContent = live;
+    else if (lastFinal) topText.textContent = `${chip(lastFinal).textContent}: ${lastFinal.text || ''}`;
+    else topText.textContent = 'Nothing heard yet';
+  }
+
   // ---- state ----------------------------------------------------------------------------------
   let unavailable = null;        // error text when the server has no live feature (503)
   let status = null;
@@ -109,6 +135,9 @@
       counts.textContent = `This session: ${mmss(ms / 1000)} listened · ${size(session.bytes)} of sound sent · ${n} phrase${n === 1 ? '' : 's'} stored`;
     }
     stateText.textContent = txt; state.dataset.level = level;
+    topState.dataset.level = level;
+    topStateText.textContent = unavailable ? 'Not available' : listening ? 'Listening' : (alwaysOn && !band) ? 'Waiting for the band…'
+      : (alwaysOn && autoFailed) ? 'Couldn’t start' : alwaysOn ? 'Starting…' : 'Off';
     err.textContent = sendError; err.hidden = !sendError;
     voiceText.textContent = status && status.main_voice ? `Mom’s voice: ${status.main_voice}` : 'No main voice learned yet: the first long phrase is used, or press This is Mom on a line';
     forget.disabled = !!unavailable || !(status && status.main_voice);
@@ -119,6 +148,11 @@
   const rows = new Map();
   // The chip names the person (text, never colour alone); a tint per person; "?" when only Deepgram's speaker number said who.
   function chip(p) {
+    if (p && p.person_id != null && isStray(p.person_id) && !expanded) {
+      const c = el('span', 'lt-chip', 'Another voice' + (p.inferred ? ' ?' : '')); c.dataset.voice = 'stray';
+      c.title = 'A voice heard only once or twice (often a shout or two people at once). Show all voices to see which.';
+      return c;
+    }
     if (p && p.person_id != null && p.person) {
       const c = el('span', 'lt-chip', p.person + (p.inferred ? ' ?' : ''));
       c.dataset.voice = p.voice === 'main' ? 'main' : 'person'; c.dataset.tint = String(p.person_id % 6);
@@ -128,7 +162,28 @@
     const v = p && VOICE[p.voice] ? p.voice : 'unknown'; const c = el('span', 'lt-chip', VOICE[v]); c.dataset.voice = v; return c;
   }
   let people = [], only = null;          // the people heard so far; only: a person id to show alone
+  let expanded = false;                  // the Voices strip shows the stray voices too
   const shown = (li) => only == null || li.dataset.person === String(only);
+  const personOf = (id) => people.find((x) => String(x.id) === String(id));
+  const isNamed = (x) => (x.named != null ? !!x.named : !/^Voice \d+$/.test(x.name || ''));
+  // a stray: an unnamed voice with only 1-2 lines (a shout, or two people at once filed as someone new)
+  const strayP = (x) => !!x && x.kind !== 'main' && !isNamed(x) && (x.phrases || 0) < 3;
+  const isStray = (id) => strayP(personOf(id));
+  const isMainRow = (p) => { const x = personOf(p.person_id); return x ? x.kind === 'main' : p.voice === 'main'; };
+  const heardPeople = () => people.filter((x) => x.phrases > 0 || x.kind === 'main');
+  // "Same as…": fold this line's person into another one (never offered for the main person)
+  function fillMerge(sel, pid) {
+    if (document.activeElement === sel) return;
+    sel.textContent = ''; const first = el('option', '', 'Same as…'); first.value = ''; sel.append(first);
+    for (const x of heardPeople()) if (String(x.id) !== String(pid)) { const o = el('option', '', x.name); o.value = String(x.id); sel.append(o); }
+    sel.value = ''; sel.hidden = sel.options.length < 2;
+  }
+  function freshen(li) {
+    const p = li._p; if (!p) return;
+    const c = li.querySelector('.lt-chip'); if (c) c.replaceWith(chip(p));
+    const sel = li.querySelector('.lt-merge');
+    if (sel) { if (isMainRow(p)) sel.hidden = true; else fillMerge(sel, p.person_id); }
+  }
   function meta(p) {
     const bits = [clock(p.at)];
     if (p.match != null) bits.push(`match ${Math.round(p.match * 100)}%`);
@@ -163,8 +218,19 @@
           catch (er) { rowErr.textContent = er.message; rowErr.hidden = false; save.disabled = false; }
         };
       };
+      const merge = el('select', 'lt-merge'); merge.setAttribute('aria-label', 'Same voice as another person: put this voice’s lines under them');
+      fillMerge(merge, p.person_id); if (isMainRow(p)) merge.hidden = true;
+      merge.onchange = async () => {
+        const into = merge.value; if (!into) return;
+        merge.disabled = true; rowErr.hidden = true;
+        try { await call('api/live/person', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: p.person_id, merge_into: Number(into) }) }); loadPeople(); loadTranscript(); }
+        catch (er) { rowErr.textContent = er.message; rowErr.hidden = false; merge.value = ''; }
+        finally { merge.disabled = false; }
+      };
+      side.append(merge);
     }
     side.append(rowErr);
+    li._p = p;
     li.append(chip(p), body, side);
     li.hidden = !shown(li);
     return li;
@@ -187,6 +253,7 @@
       if (!ps.length) list.append(empty);
       for (const p of ps) addPhrase(p, false);
       if (follow) list.scrollTop = list.scrollHeight;
+      lastFinal = ps.length ? ps[ps.length - 1] : null; renderTop();
     } catch (e) { if (!unavailable) { empty.textContent = `Could not load the transcript: ${e.message}`; list.append(empty); } }
   }
 
@@ -208,8 +275,8 @@
       let d; try { d = JSON.parse(m.data); } catch (_) { return; }
       if (!d || !d.type) return;
       if (d.type === 'status') { status = d; render(); }
-      else if (d.type === 'interim') { interim.textContent = d.text || ''; interim.hidden = !d.text; }
-      else if (d.type === 'final') { interim.textContent = ''; interim.hidden = true; addPhrase(d); peopleSoon(); }
+      else if (d.type === 'interim') { interim.textContent = d.text || ''; interim.hidden = !d.text; renderTop(); }
+      else if (d.type === 'final') { interim.textContent = ''; interim.hidden = true; addPhrase(d); if (d.id != null) lastFinal = d; renderTop(); peopleSoon(); }
       else if (d.type === 'relabel') { loadTranscript(); refreshStatus(); loadPeople(); }
       else if (d.type === 'people') loadPeople();
     };
@@ -283,7 +350,7 @@
     queue = [];
     try { const s = await call('api/live/stop', { method: 'POST' }); if (s && s.type === 'status') status = s; sendError = typeof reason === 'string' ? reason : ''; }
     catch (e) { sendError = typeof reason === 'string' ? reason : `Couldn’t tell the server to stop: ${e.message}`; }
-    interim.textContent = ''; interim.hidden = true;
+    interim.textContent = ''; interim.hidden = true; renderTop();
     render();
   }
 
@@ -319,19 +386,32 @@
   }
   function renderPeople() {
     strip.textContent = '';
-    const heard = people.filter((p) => p.phrases > 0 || p.kind === 'main');
+    const heard = heardPeople();
+    const kept = heard.filter((p) => !strayP(p)), strays = heard.filter(strayP);
+    if (!strays.length) expanded = false;
+    if (!expanded && only != null && isStray(only)) only = null;
     strip.hidden = !heard.length;
-    for (const p of heard) {
+    for (const p of expanded ? kept.concat(strays) : kept) {
       const b = button('lt-pill', ''); b.dataset.person = String(p.id); b.dataset.tint = String(p.id % 6); if (p.kind === 'main') b.dataset.voice = 'main';
       b.append(el('b', '', p.name), el('span', '', ` · ${p.phrases} line${p.phrases === 1 ? '' : 's'}`));
       b.setAttribute('aria-pressed', String(String(p.id) === String(only)));
       b.onclick = () => filter(String(p.id) === String(only) ? null : p.id);
       strip.append(b);
     }
-    if (only != null && !people.some((p) => String(p.id) === String(only))) filter(null);
-    // the search filter: anyone, or one person (falls back to Mom / someone else while no one is known)
+    if (strays.length) {
+      const more = button('lt-pill lt-more', expanded ? 'Show fewer' : `+${strays.length} other${strays.length === 1 ? '' : 's'}`);
+      more.setAttribute('aria-expanded', String(expanded));
+      if (!expanded) more.title = 'Voices heard only once or twice, often a shout or two people talking at once';
+      more.onclick = () => { expanded = !expanded; renderPeople(); const m = strip.querySelector('.lt-more'); if (m) m.focus(); };
+      strip.append(more);
+    }
+    if (only != null && !people.some((p) => String(p.id) === String(only))) only = null;
+    filter(only);
+    for (const li of rows.values()) freshen(li);
+    renderTop();
+    // the search filter: anyone, or one of the people in the tidy strip (falls back to Mom / someone else while no one is known)
     const keep = who.value; who.textContent = '';
-    const opts = heard.length ? [['', 'Anyone'], ...heard.map((p) => ['p:' + p.id, p.name])] : [['', 'Anyone'], ['main', 'Mom'], ['other', 'Someone else']];
+    const opts = kept.length ? [['', 'Anyone'], ...kept.map((p) => ['p:' + p.id, p.name])] : [['', 'Anyone'], ['main', 'Mom'], ['other', 'Someone else']];
     for (const [v, label] of opts) { const o = el('option', '', label); o.value = v; who.append(o); }
     who.value = opts.some(([v]) => v === keep) ? keep : '';
   }
