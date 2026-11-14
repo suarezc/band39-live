@@ -69,6 +69,15 @@ ok('night wandering: walking at 2 am ≥ 2 min → episode; daytime walk → non
   assert.ok(run(SIGNALS.walk(0), 150, { hh: 2, activity: a }).types.includes('wander'));
   assert.ok(!run(SIGNALS.walk(0), 150, { hh: 14, activity: a }).types.includes('wander'));
 });
+ok('walking and seizure exclude each other: band says walk + seizure shaking → seizure, steps discarded', () => {
+  const t0 = new Date(2026, 10, 14, 14).getTime(); const c = { now: 0 };
+  const lab = createMotionLab({ scene: () => t0 + c.now, real: () => t0 + c.now }); const ev = [];
+  lab.on((type) => ev.push(type));
+  const sig = SIGNALS.seizure(4); let steps = 2000;
+  for (let i = 0; i < 16 * 50; i++) { c.now = i * 20; lab.push(Object.assign({ t: t0 + c.now }, sig(i / 50))); if (i % 50 === 0) { steps += 3; lab.activity({ state: 'walk', cadence: 180, steps }); } }
+  assert.ok(ev.includes('seizure'), 'seizure despite the band saying walk');
+  assert.notEqual(lab.labels.steps.state, 'walk'); assert.ok(lab.labels.steps.discarded > 0, 'steps during the episode discarded');
+});
 ok('steps since the day began', () => {
   const t0 = Date.now(); const lab = createMotionLab({ scene: () => t0, real: () => t0 });
   lab.activity({ steps: 5000, cadence: 0, state: 'still' }); lab.activity({ steps: 5420, cadence: 105, state: 'walk' });

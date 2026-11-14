@@ -4,147 +4,282 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#DDEFFF" />
-<title>Band 39 · Margaret & Lisa</title>
+<title>Band 39 · Vexo Care</title>
+<link rel="stylesheet" href="fonts/fonts.css" />
 <link rel="stylesheet" href="css/app.css" />
 <link rel="stylesheet" href="css/money.css" />
+<link rel="stylesheet" href="css/trends.css" />
 </head>
 <body>
-<main class="app live" id="live" data-conn="none" data-tab="margaret">
-  <header class="top">
-    <div class="brand"><span class="sprout-dot">🌱</span><div><h1>Wear it for real: band 39</h1><p>Margaret’s screen and Lisa’s app, live from her Vexo band.</p></div></div>
-    <div class="conn card">
-      <div class="conn-row"><span class="lv-dot"></span><b id="lvBandLabel">Vexo-HACK-39</b><span id="lvConnState" class="lv-state">Not connected</span></div>
-      <div class="conn-row btns">
-        <button class="pill dark" id="lvConnect">Connect band 39</button>
-        <button class="pill" id="lvUseSim">Pretend band</button>
-        <button class="pill ghost" id="lvDisc">Disconnect</button>
-      </div>
-      <p class="hint">Double-tap the band (it blinks blue), then Connect. One connection at a time: close the kit dashboard first.</p>
+<div class="app" id="app" data-portal="home" data-mode="day" data-conn="none">
+
+  <!-- ================= LANDING: circle of care ================= -->
+  <section class="landing" id="landing">
+    <div class="land-head">
+      <span class="sprout-dot">🌱</span>
+      <div><h1>Wear it for real: band 39</h1><p>A Vexo band on Margaret’s wrist, and the people who look out for her.</p></div>
     </div>
-  </header>
+    <div class="circle" id="circle"></div>
+    <div class="portals">
+      <button class="portal-card grandma" data-go="grandma"><span class="pc-ic">👵</span><b>Margaret’s portal</b><small>Big, simple screen for the person wearing the band: today, talk to Pip, messages, help.</small><span class="pc-go">Open →</span></button>
+      <button class="portal-card carer" data-go="caregiver"><span class="pc-ic">👩</span><b>Caregiver portal</b><small>For Lisa: alerts, physical and memory signals, safety, care and the circle.</small><span class="pc-go">Open →</span></button>
+      <button class="portal-card simc" data-go="sim"><span class="pc-ic sim-ic" data-ico="play"></span><b>Event simulator</b><small>Fire every event the band and Pip can capture, by mental, financial and physical health, and watch both portals react.</small><span class="pc-go">Open →</span></button>
+    </div>
+    <div class="home-code card">
+      <div><b>Household code</b> <span class="code" id="homeCode">——</span></div>
+      <p class="fine">Open the caregiver portal on another phone with this code to follow along. Margaret’s device (the one connected to the band) shares its updates under the code; nobody without it can see them.</p>
+      <form id="joinForm" class="join"><input id="joinCode" maxlength="6" placeholder="Enter a code" autocomplete="off" /><button class="pill">Join</button></form>
+    </div>
+  </section>
 
-  <nav class="tabs" role="tablist">
-    <button role="tab" aria-selected="true" data-tab="margaret">👵 Margaret</button>
-    <button role="tab" aria-selected="false" data-tab="lisa">👩 Lisa <span id="tabBadge"></span></button>
-  </nav>
-
-  <div class="grid">
-    <!-- ============ MARGARET ============ -->
-    <section class="col margaret" aria-label="Margaret's screen">
-      <div class="m-card">
-        <div class="m-head">
-          <div><div class="m-greet" id="gmGreet">Hello, Margaret</div><div class="m-date" id="gmDate"></div></div>
-          <div class="m-time" id="gmTime">--:--</div>
+  <!-- ================= GRANDMA PORTAL ================= -->
+  <section class="portal grandma-portal" id="grandma" aria-label="Margaret's portal">
+    <header class="p-top">
+      <button class="back" data-go="home" aria-label="Back to the circle">‹</button>
+      <div class="p-title"><b>Margaret</b><small id="gConn">Band not connected</small></div>
+      <button class="mic-pill" data-act="mic-toggle" aria-pressed="true" data-mic><span data-mic-ico></span><span data-mic-label>Mic on</span></button>
+      <div class="mode-sw" role="group" aria-label="Day or night mode"><button data-mode="day">☀️</button><button data-mode="night">🌙</button></div>
+    </header>
+    <div class="p-body">
+      <!-- Today -->
+      <div class="tab-pane" data-pane="g-today">
+        <div class="m-card">
+          <div class="m-head"><div><div class="m-greet" id="gmGreet">Hello, Margaret</div><div class="m-date" id="gmDate"></div></div><div class="m-time" id="gmTime">--:--</div></div>
+          <div class="buddy">
+            <svg class="pip" data-pip viewBox="0 0 120 120" aria-hidden="true"><use href="#pipArt"/></svg>
+            <div class="bubble" id="pipSay">Hi Margaret! I’m Pip.</div>
+          </div>
+          <button class="pill violet hear-pip" data-act="hear-pip" data-hear hidden>🔈 Tap to hear Pip</button>
+          <div class="band-line"><div class="gm-ring" id="gmRing" data-pattern="off"><span></span></div><p id="gmBandSay">Your band is not connected</p></div>
+          <p class="listen-chip" data-listen aria-live="polite"></p>
+          <div class="gm-prompt kind-calm" id="gmPrompt" aria-live="polite"></div>
+          <div class="gm-prompt kind-calm gm-card-rest" id="gmCard" hidden aria-live="polite"></div>
+          <div class="conn-mini" id="gConnBox">
+            <button class="pill dark" data-act="connect-ble">Connect band 39</button>
+            <button class="pill" data-act="connect-sim">Pretend band</button>
+            <button class="pill ghost" data-act="disconnect">Disconnect</button>
+            <p class="fine">Double-tap the band (it blinks blue), then Connect. One connection at a time.</p>
+          </div>
         </div>
-        <div class="buddy">
-          <svg id="pip" class="pip" viewBox="0 0 120 120" aria-hidden="true">
-            <path class="leaf l1" d="M60 26 C50 6 30 8 30 8 C34 24 48 28 60 26Z"/>
-            <path class="leaf l2" d="M60 26 C70 4 92 6 92 6 C88 24 72 30 60 26Z"/>
-            <ellipse class="body" cx="60" cy="72" rx="42" ry="38"/>
-            <ellipse class="belly" cx="60" cy="82" rx="26" ry="20"/>
-            <g class="eyes"><ellipse cx="45" cy="66" rx="5" ry="6"/><ellipse cx="75" cy="66" rx="5" ry="6"/></g>
-            <g class="sleepy-eyes"><path d="M39 67 q6 5 12 0"/><path d="M69 67 q6 5 12 0"/></g>
-            <ellipse class="blush" cx="36" cy="78" rx="6" ry="3.5"/><ellipse class="blush" cx="84" cy="78" rx="6" ry="3.5"/>
-            <path class="mouth smile" d="M50 80 q10 9 20 0"/>
-            <path class="mouth flat" d="M52 83 h16"/>
-            <path class="sweat" d="M92 50 q5 8 0 11 q-5 -3 0 -11z"/>
-          </svg>
-          <div class="bubble" id="pipSay">Hi Margaret! I’m Pip. I’ll keep an eye on things with your band.</div>
-        </div>
-        <div class="band-line"><div class="gm-ring" id="gmRing" data-pattern="off"><span></span></div><p id="gmBandSay">Your band is not connected</p></div>
-        <div class="gm-prompt kind-calm" id="gmPrompt" aria-live="polite"></div>
-        <div class="gm-prompt kind-checkin gm-card-rest" id="gmCard" aria-live="polite" hidden></div>
-        <div class="m-actions">
-          <button class="big talk" id="mTalk"><span class="mic">🎙</span><span id="mTalkLabel">Talk to Lisa</span></button>
-          <button class="big read" id="mRead">🔈 Read to me</button>
-        </div>
-        <p class="m-note" id="mTalkNote">Hold your band near and speak. The light turns blue while it listens, and your words are written down by Deepgram.</p>
-        <div class="gm-replies">
-          <span>Send Lisa:</span>
-          <button data-reply="I’m fine ❤️">I’m fine ❤️</button>
-          <button data-reply="Please call me">Please call me</button>
-          <button data-reply="Come visit soon">Come visit soon</button>
-        </div>
-        <button class="gm-help" data-gm="help">I need help</button>
       </div>
-    </section>
-
-    <!-- ============ LISA ============ -->
-    <section class="col carer" aria-label="Lisa's app">
-      <div class="l-card">
-        <div class="cg-head">
-          <div class="cg-who"><span class="cg-av">👵</span><div><b>Mom</b><small id="cgSummary">Band not connected</small></div></div>
-          <span class="cg-status" id="cgStatus" data-level="good">All good</span>
+      <!-- Talk -->
+      <div class="tab-pane" data-pane="g-talk">
+        <div class="m-card talk-card">
+          <div class="buddy"><svg class="pip" data-pip viewBox="0 0 120 120" aria-hidden="true"><use href="#pipArt"/></svg><div class="bubble" id="pipTalkSay">Tell me anything. I’ll help, and Lisa will know what matters.</div></div>
+          <button class="pill violet hear-pip" data-act="hear-pip" data-hear hidden>🔈 Tap to hear Pip</button>
+          <ul class="chat" id="pipChat"></ul>
+          <div class="m-actions">
+            <button class="big talk" id="mTalk"><span>🎙</span><span id="mTalkLabel">Talk to Pip</span></button>
+            <button class="big read" data-act="recall">🧩 Pip, ask me something</button>
+          </div>
+          <form class="say-form" id="sayForm"><input id="sayText" maxlength="400" placeholder="Or type to Pip…" autocomplete="off" /><button class="pill violet">Send</button></form>
+          <p class="listen-chip" data-listen aria-live="polite"></p>
+          <label class="voice-sw"><input type="checkbox" id="listenOn" checked /> Always listening (say “Pip” and I’ll answer)</label>
+          <label class="voice-sw"><input type="checkbox" id="voiceOn" checked /> Pip speaks out loud (ElevenLabs)</label>
+          <p class="fine">The mic stays on so Pip can catch scam calls and remember things with you. Pip only answers when you say “Pip”, tap Talk, or right after Pip speaks; anything else is checked quietly and shown here as “Heard nearby”. On the band the light stays blue while it listens. Deepgram writes words down; OpenAI reads them; Lisa sees what matters. Turn it off anytime.</p>
         </div>
-
-        <div class="block"><div class="h">Motion signals <span class="muted">from band 39</span></div>
-          <div class="sig-grid" id="sigGrid"></div>
-          <p class="fine">Methods: Bourke 2007 & Kangas 2008 (falls), Salarian 2007 (tremor), Moe-Nilssen 2004 & Mancini 2012 (balance), Cole 1992 (sleep), Beniczky 2013 & Kramer 2011 (seizure-like). Signals to look at, not diagnoses.</p>
+      </div>
+      <!-- Messages -->
+      <div class="tab-pane" data-pane="g-msgs">
+        <div class="m-card">
+          <h3 class="m-h">Messages with Lisa</h3>
+          <ul class="chat big-chat" id="gThread"></ul>
+          <div class="gm-replies"><button data-reply="I’m fine ❤️">I’m fine ❤️</button><button data-reply="Please call me">Please call me</button><button data-reply="Come visit soon">Come visit soon</button></div>
+          <button class="big read" data-act="read-latest">🔈 Read Lisa’s message to me</button>
         </div>
-
-        <div class="block"><div class="h">Alerts</div><ul class="cg-alerts" id="cgAlerts"></ul></div>
-
-        <div class="block money"><div class="h">Mom’s safe card <span class="muted">· limits, and a freeze when a scam is suspected</span></div>
-          <div class="block" id="moneyBody"></div>
-          <p class="fine">Simulated in this page: no real card and no real money. Stripe Issuing offers the same controls on real cards.</p>
+      </div>
+      <!-- Help -->
+      <div class="tab-pane" data-pane="g-help">
+        <div class="m-card help-card">
+          <button class="sos-big" data-gm="help">I need help</button>
+          <p class="help-who">Pressing this tells <b>Lisa</b> right away. If she doesn’t answer, <b>Ruth next door</b> is next. You can also double-tap your band when it asks “Did you fall?”.</p>
+          <div class="help-list"><a class="pill" href="tel:+15550100">📞 Call Lisa</a><a class="pill" href="tel:+15550101">📞 Call Ruth</a><a class="pill sos" href="tel:911">🚑 Call 911</a></div>
+          <div class="gm-prompt kind-calm" id="gHelpState"></div>
         </div>
+      </div>
+    </div>
+    <nav class="tabbar g-tabs">
+      <button data-tab="g-today"><span>🏠</span>Today</button>
+      <button data-tab="g-talk"><span>🎙</span>Talk</button>
+      <button data-tab="g-msgs"><span>💌</span>Messages<i class="badge" id="gMsgBadge"></i></button>
+      <button data-tab="g-help" class="help-tab"><span>🆘</span>Help</button>
+    </nav>
+  </section>
 
-        <div class="block"><div class="h">From Mom’s voice notes <span class="muted" id="insSource"></span></div>
-          <div class="ins" id="insights"><p class="empty">When Mom talks to you through her band, Pip reads the transcript for scams, abuse, reminders, side effects, memory and language changes.</p></div>
+  <!-- ================= EVENT SIMULATOR ================= -->
+  <section class="portal sim-portal" id="simulator" aria-label="Event simulator">
+    <header class="sim-top">
+      <button class="sim-back" data-go="home" aria-label="Back to the circle"><svg class="ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5.5L8.5 12l6.5 6.5"/></svg></button>
+      <div class="sim-title"><h1>Margaret’s day, simulated</h1><p><span id="simCount">0</span> events · <span id="simState">…</span></p></div>
+      <div class="sim-top-actions">
+        <div class="sim-seg" role="group" aria-label="Day or night"><button data-sim-mode="day" data-ico="sun">Day</button><button data-sim-mode="night" data-ico="moon">Night</button></div>
+        <button class="sim-btn mic-btn" data-act="mic-toggle" aria-pressed="true" data-mic><span data-mic-ico></span><span data-mic-label>Mic on</span></button>
+        <label class="sim-btn sim-voice"><input type="checkbox" id="simVoice" /><span data-ico="speaker"></span>Pip’s voice</label>
+        <button class="sim-btn quiet" data-go="grandma" data-ico="user">Margaret</button>
+        <button class="sim-btn quiet" data-go="caregiver" data-ico="phone">Lisa</button>
+      </div>
+    </header>
+    <div class="sim-body">
+      <div class="sim-theater">
+        <div class="stage-wrap">
+          <div class="sim-stage" id="simStage"><p class="stage-fallback">Loading Margaret’s room…</p></div>
+          <div class="her-screen" aria-live="polite"><h4>On Margaret’s screen</h4><div id="simHer"></div></div>
         </div>
+        <div class="devices">
+          <div class="dev band-card">
+            <h4>Band 39 <small>on her left wrist</small></h4>
+            <div class="bracelet" id="simBracelet" data-pattern="off" aria-hidden="true"><i class="strap"></i><i class="pod"><i class="led"></i></i><i class="strap"></i></div>
+            <p class="band-say" id="simBandSay">Light off</p>
+            <dl class="band-stats" id="simBandStats"></dl>
+          </div>
+          <div class="dev phone" id="simPhone" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="sim-main">
+        <div class="sim-panel day-card" id="simDay"></div>
+        <div class="sim-panel"><h3 class="sim-h">Health snapshot</h3><div class="sim-health" id="simHealth"></div></div>
+        <div id="simCatalog"></div>
+        <div class="sim-panel"><h3 class="sim-h">Captured, newest first</h3><ul class="captured" id="simCaptured"></ul></div>
+        <p class="sim-note">Each event goes down the real path. <b>Voice</b> follows the always-on mic: Deepgram text, then Pip or OpenAI. <b>Motion</b> plays 50 Hz accelerometer and gyro on a pretend band 39 for the motion lab. <b>Band</b> events are the band’s own taps, battery, stillness and pills. Simulated signals, not diagnoses.
+          <button class="sim-btn quiet" data-sim-reset data-ico="reset">Start a fresh day</button></p>
+      </div>
+    </div>
+    <div class="sim-toast" id="simToast" hidden></div>
+  </section>
 
-        <div class="block shop"><div class="h">Suggested for Mom <span class="muted">· HSA/FSA</span></div>
-          <div id="shop"><p class="empty">Nothing needed right now. Suggestions appear when the band or Mom’s notes point to something equipment could help with.</p></div>
-          <div class="shop-foot" id="shopFoot" hidden><b id="shopTotal">$0</b><button class="pill dark" id="payBtn">Pay with Stripe</button></div>
+  <!-- ================= CAREGIVER PORTAL ================= -->
+  <section class="portal carer-portal" id="caregiver" aria-label="Caregiver portal">
+    <header class="p-top">
+      <button class="back" data-go="home" aria-label="Back to the circle">‹</button>
+      <div class="p-title"><b>Mom · Margaret</b><small id="cSummary">Waiting for Margaret’s device…</small></div>
+      <span class="cg-status" id="cgStatus" data-level="good">All good</span>
+      <div class="mode-sw" role="group" aria-label="Day or night mode"><button data-mode="day">☀️</button><button data-mode="night">🌙</button></div>
+    </header>
+    <div class="p-body">
+      <!-- Home -->
+      <div class="tab-pane" data-pane="c-home">
+        <div class="l-card">
+          <div class="night-banner" id="nightBanner" hidden>🌙 <b>Night mode</b>: sleep scoring, wandering watch and fall watch are on. Only urgent things notify you.</div>
+          <div class="digest" id="digest"><div class="dg-head"><b>Today with Mom</b><button class="pill small" data-act="digest">✨ Refresh</button></div><p class="empty">Pip writes a calm summary from the band and Mom’s conversations.</p></div>
+          <form class="ask" id="askForm"><input id="askText" maxlength="300" placeholder="Ask about Mom… e.g. “How did she sleep?”" autocomplete="off" /><button class="pill violet">Ask</button></form>
+          <div class="ask-out" id="askOut" hidden></div>
+          <div class="h">Alerts</div><ul class="cg-alerts" id="cgAlerts"></ul>
+          <div class="h">At a glance</div><div class="glance" id="glance"></div>
+        </div>
+      </div>
+      <!-- Trends: history, charts, AI summary + chat (js/trends.js) -->
+      <div class="tab-pane" data-pane="c-trends"><div id="trendsRoot" class="trends-root"><p class="fine">Loading Mom’s history…</p></div></div>
+      <!-- Physical -->
+      <div class="tab-pane" data-pane="c-physical">
+        <div class="l-card"><div class="h">Physical signals <span class="muted">· from band 39 motion</span></div><div class="sig-grid" id="physGrid"></div>
+          <p class="fine">Tap ? on any signal to see how it works and how to trigger it. Signals to look at, not diagnoses.</p></div>
+      </div>
+      <!-- Memory -->
+      <div class="tab-pane" data-pane="c-memory">
+        <div class="l-card"><div class="h">Memory signals <span class="muted">· voice notes, memory moments, nights</span></div><div class="sig-grid" id="memGrid"></div>
+          <div class="h">Memory moments</div><ul class="recall-list" id="recallList"></ul>
+          <div class="h">Latest voice note</div><div class="ins" id="memNote"><p class="empty">When Mom talks to Pip, the transcript shows here with what it suggests.</p></div></div>
+      </div>
+      <!-- Safety -->
+      <div class="tab-pane" data-pane="c-safety">
+        <div class="l-card"><div class="h">Safety</div><div class="sig-grid" id="safeGrid"></div>
+          <div class="h">Evidence from voice notes</div><ul class="evidence" id="evidence"></ul>
+          <div class="h">Band & location</div><div class="glance" id="bandGlance"></div></div>
+      </div>
+      <!-- Money: financial health (Mom's safe card, from suarezc/band39-live) -->
+      <div class="tab-pane" data-pane="c-money">
+        <div class="l-card money">
+          <div class="h">Mom’s safe card <span class="muted">· limits, and a freeze when a scam is suspected</span></div>
+          <div class="money-body" id="moneyBody"></div>
+          <p class="fine">Simulated in this page: no real card and no real money. Stripe Issuing offers the same controls on real cards. Scam alerts from Mom’s calls freeze the card; only you can unfreeze it.</p>
+          <div class="h">Scam and money signals</div><ul class="evidence" id="moneyEvidence"></ul>
+        </div>
+      </div>
+      <!-- Care -->
+      <div class="tab-pane" data-pane="c-care">
+        <div class="l-card">
+          <div class="h">Pills & reminders</div><div class="meds" id="meds"></div><ul class="rem-list" id="remList"></ul>
+          <div class="h">Possible side effects</div><ul class="evidence" id="sideList"></ul>
+          <div class="h">Note for Dr. Patel <button class="pill small" data-act="draft">✨ Draft with AI</button></div>
+          <textarea class="doc-edit" id="docEdit" rows="8" placeholder="Press “Draft with AI” to write a note from the band and Mom’s conversations. Edit before sending."></textarea>
+          <div><button class="pill dark" data-act="send-doctor">Send to Dr. Patel</button> <span class="fine" id="docNote"></span></div>
+          <div class="h">Suggested for Mom <span class="muted">· HSA/FSA</span></div>
+          <div id="shop"></div>
+          <div class="shop-foot" id="shopFoot" hidden><b id="shopTotal">$0</b><button class="pill dark" data-act="pay">Pay with Stripe</button></div>
           <p class="fine" id="payNote">Pay with an HSA/FSA card like any card. Eligibility depends on the plan; some items need a doctor’s letter (LMN).</p>
+          <div class="h">Messages</div><ul class="chat" id="cThread"></ul>
+          <form class="say-form" id="cSend"><input id="cMsg" maxlength="120" placeholder="Write to Mom…" autocomplete="off" /><button class="pill violet">Send</button></form>
+          <div class="cg-quick"><button data-quick="Visiting Saturday 🌷">Visiting Saturday 🌷</button><button data-quick="I’ll call you tonight">I’ll call you tonight</button><button data-quick="Love you, Mom!">Love you, Mom!</button></div>
         </div>
-
-        <div class="block doc"><div class="h">Tell Dr. Patel</div>
-          <pre class="doc-sum" id="docSum">No findings to share yet.</pre>
-          <button class="pill" id="docBtn">Send summary to Dr. Patel</button> <span class="fine" id="docNote"></span>
-        </div>
-
-        <div class="block"><div class="h">Messages</div>
-          <ul class="cg-thread" id="cgThread"></ul>
-          <form class="cg-send" id="cgSend"><input id="cgMsg" maxlength="120" placeholder="Write to Mom…" autocomplete="off" /><button class="pill violet">Send</button></form>
-          <div class="cg-quick"><button type="button" data-quick="Visiting Saturday 🌷">Visiting Saturday 🌷</button><button type="button" data-quick="I’ll call you tonight">I’ll call you tonight</button><button type="button" data-quick="Love you, Mom!">Love you, Mom!</button></div>
-        </div>
-
-        <div class="block"><div class="h">Today</div><ul class="cg-tl" id="cgTimeline"></ul></div>
-
-        <details class="block demo" id="demo">
-          <summary>🧪 Try it without a band</summary>
-          <p class="fine">Plays motion on the kit’s pretend band (through the real protocol), so the same algorithms run. Typed notes skip Deepgram and go straight to the transcript reader.</p>
-          <div class="demo-row"><span>Motion</span>
-            <button data-sig="tremor">Hand tremor</button><button data-sig="walk">Steady walk</button><button data-sig="shaky">Unsteady walk</button>
-            <button data-sig="fall">Fall</button><button data-sig="seizure">Seizure-like</button><button data-sig="restless">Restless sleep</button><button data-sig="nightwalk">Night walk</button><button data-sig="stop">Stop</button>
-          </div>
-          <div class="demo-row"><span>Clock</span><button id="nightBtn">Pretend it’s 2 am</button><button id="dayBtn">Back to now</button></div>
-          <div class="demo-row"><span>Voice</span>
-            <button data-note="A man called and said my grandson is in jail and needs bail. He wants me to buy gift cards today.">Scam call</button>
-            <button data-note="I feel sick to my stomach since the new pill, and dizzy when I stand up. Remind me to call the pharmacy tomorrow at 10.">Side effects</button>
-            <button data-note="Um, what day is it? I can't remember if I ate. Where are my glasses? I had toast for breakfast. I had toast for breakfast.">Memory</button>
-            <button data-note="My nephew yells at me and he took my bank card. I'm scared of him.">Worrying</button>
-            <button id="voiceDemo">Spoken sample (band mic)</button>
-          </div>
-          <div class="demo-row"><span>Card</span>
-            <button data-buy="1840|Corner Pharmacy|pharmacy">Pharmacy $18.40</button><button data-buy="3275|Fresh Market|grocery">Groceries $32.75</button>
-            <button data-buy="45000|Best Electronics (gift cards)|electronics">Gift cards $450</button><button data-buy="4500|Fresh Market (gift cards)|grocery">Gift cards $45</button>
-            <button data-buy="4000|QuickWire Money Transfer|wire">Wire transfer $40</button><button data-card="scam">Unknown voice asks for gift cards</button>
-          </div>
-          <form class="cg-send" id="noteForm"><input id="noteText" maxlength="400" placeholder="Type what Margaret says…" /><button class="pill">Analyze</button></form>
-        </details>
       </div>
-    </section>
+      <!-- Circle -->
+      <div class="tab-pane" data-pane="c-circle">
+        <div class="l-card">
+          <div class="h">Circle of care</div><div class="circle small" id="circle2"></div>
+          <div class="h">Today’s timeline</div><ul class="cg-tl" id="cgTimeline"></ul>
+          <div class="h">Alert settings</div>
+          <label class="voice-sw"><input type="checkbox" id="notifyOn" /> Phone notifications for urgent alerts</label>
+          <label class="voice-sw"><input type="checkbox" id="chimeOn" /> Play a chime for urgent alerts</label>
+          <details class="demo" id="demo" open>
+            <summary>🧪 Try it without a band</summary>
+            <p class="fine">Plays motion on the kit’s pretend band through the real protocol (on Margaret’s device), so the same algorithms run.</p>
+            <div class="demo-row"><span>Band</span><button data-act="connect-sim">Connect pretend band</button><label class="voice-sw"><input type="checkbox" id="fastDemo" checked /> Fast demo timing</label></div>
+            <div class="demo-row"><span>Motion</span><button data-sig="tremor">Hand tremor</button><button data-sig="walk">Steady walk</button><button data-sig="shaky">Unsteady walk</button><button data-sig="fall">Fall</button><button data-sig="seizure">Seizure-like</button><button data-sig="restless">Restless sleep</button><button data-sig="nightwalk">Night walk</button><button data-sig="stop">Stop</button></div>
+            <div class="demo-row"><span>Voice</span><button data-note="scam">Scam call</button><button data-note="side">Side effects</button><button data-note="memory">Memory</button><button data-note="language">Word-finding</button><button data-note="abuse">Worrying</button></div>
+            <div class="demo-row"><span>Card</span><button data-buy="1840|Corner Pharmacy|pharmacy">Pharmacy $18.40</button><button data-buy="3275|Fresh Market|grocery">Groceries $32.75</button><button data-buy="45000|Best Electronics (gift cards)|electronics">Gift cards $450</button><button data-buy="4000|QuickWire Money Transfer|wire">Wire transfer $40</button><button data-card="scam">Unknown voice asks for gift cards</button></div>
+          </details>
+        </div>
+      </div>
+    </div>
+    <nav class="tabbar c-tabs">
+      <button data-tab="c-home"><span>🏠</span>Home<i class="badge" id="cHomeBadge"></i></button>
+      <button data-tab="c-trends"><span>📈</span>Trends</button>
+      <button data-tab="c-physical"><span>🏃‍♀️</span>Physical</button>
+      <button data-tab="c-memory"><span>🧠</span>Memory</button>
+      <button data-tab="c-safety"><span>🛡️</span>Safety</button>
+      <button data-tab="c-money"><span>💳</span>Money</button>
+      <button data-tab="c-care"><span>💊</span>Care</button>
+      <button data-tab="c-circle"><span>👥</span>Circle</button>
+    </nav>
+  </section>
+
+  <!-- severe-event alert for the caregiver -->
+  <div class="sev" id="sev" hidden role="alertdialog" aria-live="assertive" aria-labelledby="sevTitle">
+    <div class="sev-card">
+      <div class="sev-tag">URGENT · <span id="sevTime"></span></div>
+      <h2 id="sevTitle"></h2>
+      <p id="sevBody"></p>
+      <div class="sev-ctx" id="sevCtx"></div>
+      <div class="sev-btns"><a class="pill sos" href="tel:+15550100" id="sevCall">📞 Call Mom</a><a class="pill" href="tel:+15550101">📞 Call Ruth</a><a class="pill" href="tel:911">🚑 911</a></div>
+      <button class="pill dark wide" data-act="sev-ack">I’m on it: tell Mom I’m calling</button>
+      <button class="sev-later" data-act="sev-hide">Show me the details first</button>
+    </div>
   </div>
-  <p class="fine foot">Not a medical device. Thresholds need tuning on real wearers. The band has no vibration motor; it answers with its colour light. Margaret, Lisa, Dr. Patel and pill times are fictional. Keys stay on the server.</p>
-</main>
+
+  <!-- "?" sheet -->
+  <div class="sheet" id="sheet" hidden><div class="sheet-card"><button class="sheet-x" data-act="sheet-x" aria-label="Close">✕</button><div id="sheetBody"></div></div></div>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <g id="pipArt">
+    <path class="leaf l1" d="M60 26 C50 6 30 8 30 8 C34 24 48 28 60 26Z"/><path class="leaf l2" d="M60 26 C70 4 92 6 92 6 C88 24 72 30 60 26Z"/>
+    <ellipse class="body" cx="60" cy="72" rx="42" ry="38"/><ellipse class="belly" cx="60" cy="82" rx="26" ry="20"/>
+    <g class="eyes"><ellipse cx="45" cy="66" rx="5" ry="6"/><ellipse cx="75" cy="66" rx="5" ry="6"/></g>
+    <g class="sleepy-eyes"><path d="M39 67 q6 5 12 0"/><path d="M69 67 q6 5 12 0"/></g>
+    <ellipse class="blush" cx="36" cy="78" rx="6" ry="3.5"/><ellipse class="blush" cx="84" cy="78" rx="6" ry="3.5"/>
+    <path class="mouth smile" d="M50 80 q10 9 20 0"/><path class="mouth flat" d="M52 83 h16"/><path class="sweat" d="M92 50 q5 8 0 11 q-5 -3 0 -11z"/>
+  </g>
+</defs></svg>
 <audio id="voice" hidden></audio>
 <script src="js/care-engine.js"></script>
 <script src="js/motion-lab.js"></script>
 <script src="js/catalog.js"></script>
+<script src="js/signals-info.js"></script>
+<script src="js/icons.js"></script>
 <script src="js/app.js"></script>
 <script src="js/card-rules.js"></script>
 <script src="js/money.js"></script>
+<script src="js/trends.js"></script>
+<script src="js/simulator.js"></script>
 </body>
 </html>

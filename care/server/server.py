@@ -3,28 +3,27 @@
 
   GET  /api/config      which integrations are live (never the keys)
   POST /api/transcribe  audio/wav from the band's microphone -> Deepgram -> {"text": ...}
-  POST /api/tts         {"text": ...} -> audio/mpeg  (ElevenLabs if ELEVENLABS_API_KEY is set, else Deepgram's Aura voice)
+  POST /api/tts         {"text": ...} -> audio/mpeg (ElevenLabs; Deepgram Aura as fallback)
   POST /api/checkout    {"items": [{id, name, price, qty}]} -> Stripe Checkout URL (or demo mode)
   POST /api/doctor      {"summary": ...} -> doctor inbox (in memory; GET lists it)
 
 Keys come from environment variables (on Superserve they are stand-in tokens that the platform
-swaps for the real key on the way out), or locally from KEYS_FILE (default ~/.config/vexo-band39/env),
-or from the project's own .env file (the folder above care/), which git ignores.
+swaps for the real key on the way out), or locally from KEYS_FILE (default ~/.config/vexo-band39/env).
 Run: python3 server/server.py [port]    No packages needed.
 """
 import json, os, ssl, sys, time, urllib.parse, urllib.request, uuid
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import insights
+import insights, agents, re, threading
+import history   # Trends tab: /api/trend-summary, /api/chat
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'web')
 VOICE = os.environ.get('ELEVENLABS_VOICE_ID', 'EXAVITQu4vr4xnSDxMaL')   # "Sarah - Mature, Reassuring"
-
-
-DG_VOICE = os.environ.get('DEEPGRAM_VOICE', 'aura-2-vesta-en')            # Deepgram Aura voice, used when there is no ElevenLabs key
+DG_VOICE = os.environ.get('DEEPGRAM_VOICE', 'aura-2-vesta-en')            # Deepgram Aura voice: fallback when ElevenLabs is unavailable
 
 
 def load_keys():
+    # ~/.config/vexo-band39/env, then the repo's own .env one folder up (git-ignored), as in suarezc/band39-live
     here = os.path.dirname(os.path.abspath(__file__))
     for path in (os.path.expanduser(os.environ.get('KEYS_FILE', '~/.config/vexo-band39/env')), os.path.join(here, '..', '..', '.env')):
         if not os.path.exists(path):
@@ -36,11 +35,19 @@ def load_keys():
                 if v.strip():
                     os.environ.setdefault(k.strip(), v.strip())
 
-
 load_keys()
 KEY = lambda name: os.environ.get(name, '').strip()
 CTX = ssl.create_default_context(cafile='/etc/ssl/cert.pem') if os.path.exists('/etc/ssl/cert.pem') and sys.platform == 'darwin' else ssl.create_default_context()
 DOCTOR_INBOX = []
+HOMES = {}                     # household code -> {'state': snapshot, 'actions': [...], 'seq': n, 'at': ms}
+HOMES_LOCK = threading.Lock()
+HOME_RE = re.compile(r'^[A-Z0-9]{6}$')
+
+
+def home_of(path):
+    q = urllib.parse.parse_qs(urllib.parse.urlparse(path).query)
+    code = (q.get('home') or [''])[0].upper()
+    return code if HOME_RE.match(code) else None, q
 
 
 def upstream_curl(url, data=None, headers=None, method=None, timeout=60):
@@ -99,10 +106,21 @@ class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/api/config':
             return self.send_json(200, {
-                'deepgram': bool(KEY('DEEPGRAM_API_KEY')), 'elevenlabs': bool(KEY('ELEVENLABS_API_KEY')), 'voice': 'elevenlabs' if KEY('ELEVENLABS_API_KEY') else 'deepgram' if KEY('DEEPGRAM_API_KEY') else None,
+                'deepgram': bool(KEY('DEEPGRAM_API_KEY')), 'elevenlabs': bool(KEY('ELEVENLABS_API_KEY')),
                 'stripe': bool(KEY('STRIPE_SECRET_KEY')), 'openai': bool(KEY('OPENAI_API_KEY')), 'host': 'superserve' if os.environ.get('SUPERSERVE') else 'local'})
         if self.path == '/api/doctor':
             return self.send_json(200, {'inbox': DOCTOR_INBOX[-20:]})
+        if self.path.startswith('/api/state'):
+            code, _ = home_of(self.path)
+            if not code: return self.send_json(400, {'error': 'household code needed'})
+            h = HOMES.get(code)
+            return self.send_json(200, {'state': h['state'] if h else None, 'at': h['at'] if h else 0})
+        if self.path.startswith('/api/actions'):
+            code, q = home_of(self.path)
+            if not code: return self.send_json(400, {'error': 'household code needed'})
+            after = int((q.get('after') or ['0'])[0] or 0)
+            h = HOMES.get(code) or {'actions': [], 'seq': 0}
+            return self.send_json(200, {'actions': [a for a in h['actions'] if a['id'] > after], 'seq': h['seq']})
         return super().do_GET()
 
     def do_POST(self):
@@ -118,6 +136,14 @@ class Handler(SimpleHTTPRequestHandler):
                 return self.doctor()
             if route == '/api/analyze':
                 return self.analyze()
+            if route in ('/api/trend-summary', '/api/chat'):   # Trends tab (server/history.py)
+                return self.send_json(200, history.handle(route, json.loads(self.body(200000) or b'{}'), key=KEY('OPENAI_API_KEY') or None, model=os.environ.get('OPENAI_MODEL', agents.MODEL_DEFAULT), post=self._post()))
+            if route in ('/api/pip', '/api/recall', '/api/ask', '/api/digest', '/api/doctor-draft'):
+                return self.agent(route)
+            if route == '/api/state':
+                return self.put_state()
+            if route == '/api/actions':
+                return self.put_action()
             self.send_json(404, {'error': 'not found'})
         except Exception as e:  # never echo upstream bodies or keys
             self.send_json(500, {'error': type(e).__name__})
@@ -135,32 +161,30 @@ class Handler(SimpleHTTPRequestHandler):
         alt = json.loads(raw)['results']['channels'][0]['alternatives'][0]
         self.send_json(200, {'text': alt.get('transcript', ''), 'confidence': alt.get('confidence')})
 
-    # Text to speech: ElevenLabs when its key is set, otherwise Deepgram's Aura voice (same key as transcription)
+    # Text to speech: ElevenLabs first; Deepgram's Aura voice (same key as transcription) when there is no
+    # ElevenLabs key or ElevenLabs fails (quota, outage). Fallback ported from suarezc/band39-live @ 39567e1.
     def tts(self):
         if not KEY('ELEVENLABS_API_KEY') and not KEY('DEEPGRAM_API_KEY'):
-            return self.send_json(503, {'error': 'Voice needs a Deepgram or ElevenLabs key on the server.'})
+            return self.send_json(503, {'error': 'Voice needs an ElevenLabs or Deepgram key on the server.'})
         text = str(json.loads(self.body(20000) or b'{}').get('text', ''))[:600]
         if not text.strip():
             return self.send_json(400, {'error': 'no text'})
-        if not KEY('ELEVENLABS_API_KEY'):
+        code, raw, used = 0, b'', ''
+        if KEY('ELEVENLABS_API_KEY'):
+            code, ctype, raw = upstream('https://api.elevenlabs.io/v1/text-to-speech/%s?output_format=mp3_44100_64' % VOICE,
+                                        json.dumps({'text': text, 'model_id': 'eleven_turbo_v2_5', 'voice_settings': {'stability': 0.6, 'similarity_boost': 0.75}}).encode(),
+                                        {'xi-api-key': KEY('ELEVENLABS_API_KEY'), 'Content-Type': 'application/json', 'Accept': 'audio/mpeg'})
+            used = 'elevenlabs'
+        if code != 200 and KEY('DEEPGRAM_API_KEY'):
             code, ctype, raw = upstream('https://api.deepgram.com/v1/speak?model=%s&encoding=mp3' % urllib.parse.quote(DG_VOICE),
                                         json.dumps({'text': text}).encode(),
                                         {'Authorization': 'Token ' + KEY('DEEPGRAM_API_KEY'), 'Content-Type': 'application/json'})
-            if code != 200:
-                return self.send_json(502, {'error': 'Deepgram voice status %d' % code})
-            self.send_response(200)
-            self.send_header('Content-Type', 'audio/mpeg')
-            self.send_header('Content-Length', str(len(raw)))
-            self.end_headers()
-            self.wfile.write(raw)
-            return
-        code, ctype, raw = upstream('https://api.elevenlabs.io/v1/text-to-speech/%s?output_format=mp3_44100_64' % VOICE,
-                                    json.dumps({'text': text, 'model_id': 'eleven_turbo_v2_5', 'voice_settings': {'stability': 0.6, 'similarity_boost': 0.75}}).encode(),
-                                    {'xi-api-key': KEY('ELEVENLABS_API_KEY'), 'Content-Type': 'application/json', 'Accept': 'audio/mpeg'})
+            used = 'deepgram'
         if code != 200:
-            return self.send_json(502, {'error': 'ElevenLabs status %d' % code})
+            return self.send_json(502, {'error': 'Voice service status %d' % code})
         self.send_response(200)
         self.send_header('Content-Type', 'audio/mpeg')
+        self.send_header('X-Voice', used)
         self.send_header('Content-Length', str(len(raw)))
         self.end_headers()
         self.wfile.write(raw)
@@ -196,6 +220,50 @@ class Handler(SimpleHTTPRequestHandler):
         out = insights.analyze(str(req.get('transcript', '')), req.get('history') or [],
                                key=KEY('OPENAI_API_KEY') or None, model=os.environ.get('OPENAI_MODEL', 'gpt-6-luna'), post=post)
         self.send_json(200, out)
+
+    def _post(self):
+        def post(url, data, headers):
+            code, _, raw = upstream(url, data, headers, timeout=60)
+            return code, raw
+        return post
+
+    def agent(self, route):
+        req = json.loads(self.body(200000) or b'{}')
+        kw = dict(key=KEY('OPENAI_API_KEY') or None, model=os.environ.get('OPENAI_MODEL', agents.MODEL_DEFAULT), post=self._post())
+        if route == '/api/pip':
+            out = agents.pip(str(req.get('said', '')), req.get('context') or {}, req.get('history') or [], **kw)
+        elif route == '/api/recall':
+            if req.get('answer') is not None:
+                out = agents.recall_score(str(req.get('question', '')), str(req.get('hint', '')), str(req.get('answer', '')), **kw)
+            else:
+                out = agents.recall_question([str(n) for n in (req.get('notes') or [])], **kw)
+        elif route == '/api/ask':
+            out = agents.ask(str(req.get('question', '')), req.get('facts') or {}, **kw)
+        elif route == '/api/digest':
+            out = agents.digest(req.get('facts') or {}, **kw)
+        else:
+            out = agents.doctor_draft(req.get('facts') or {}, **kw)
+        self.send_json(200, out)
+
+    def put_state(self):
+        code, _ = home_of(self.path)
+        if not code: return self.send_json(400, {'error': 'household code needed'})
+        snap = json.loads(self.body(400000) or b'{}')
+        with HOMES_LOCK:
+            h = HOMES.setdefault(code, {'state': None, 'actions': [], 'seq': 0, 'at': 0})
+            h['state'] = snap; h['at'] = int(time.time() * 1000)
+            if len(HOMES) > 200:   # keep memory bounded
+                for k in sorted(HOMES, key=lambda k: HOMES[k]['at'])[:20]: HOMES.pop(k, None)
+        self.send_json(200, {'ok': True})
+
+    def put_action(self):
+        code, _ = home_of(self.path)
+        if not code: return self.send_json(400, {'error': 'household code needed'})
+        a = json.loads(self.body(20000) or b'{}')
+        with HOMES_LOCK:
+            h = HOMES.setdefault(code, {'state': None, 'actions': [], 'seq': 0, 'at': 0})
+            h['seq'] += 1; a['id'] = h['seq']; h['actions'].append(a); h['actions'] = h['actions'][-100:]
+        self.send_json(200, {'ok': True, 'id': a['id']})
 
     def doctor(self):
         req = json.loads(self.body(50000) or b'{}')

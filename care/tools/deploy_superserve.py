@@ -4,7 +4,7 @@
 Keys never enter the sandbox: Deepgram, ElevenLabs and OpenAI are stored as Superserve secrets
 and bound to env vars; code in the sandbox only sees stand-in tokens, swapped for the real key on
 the way out to each API host. Reads keys from ~/.config/vexo-band39/env (or KEYS_FILE).
-Usage: python3 tools/deploy_superserve.py            (prints the public URL; never prints keys)
+Usage: python3 tools/deploy_superserve.py [--update]   (--update redeploys to the saved sandbox, same URL; never prints keys)
 """
 import json, os, ssl, sys, time, urllib.parse, urllib.request
 
@@ -53,13 +53,24 @@ for name, s in SECRETS.items():
     print('secret', name, '→', code if code < 300 else 'status %d %s' % (code, str(res)[:160]))
     if code < 300: bind[s['env']] = name
 
-# 2. sandbox with secrets bound
-code, sb = api('POST', '/sandboxes', {'name': 'band39-care-%d' % int(time.time()), 'secrets': bind,
-                                       'env_vars': {'SUPERSERVE': '1', 'HOST': '0.0.0.0', 'PORT': str(PORT), 'KEYS_FILE': '/nonexistent'},
-                                       'metadata': {'app': 'band39-care'}})
-if code >= 300:
-    sys.exit('sandbox create failed: %d %s' % (code, sb))
-sid, tok = sb['id'], sb['access_token']
+# 2. sandbox with secrets bound (or --update: reuse the saved sandbox so the URL stays the same)
+UPDATE = '--update' in sys.argv
+if UPDATE:
+    sid = json.load(open(os.path.join(HERE, '.superserve.json')))['sandbox']
+    code, sb = api('GET', '/sandboxes/%s' % sid)
+    if code >= 300 or not isinstance(sb, dict) or not sb.get('access_token'):
+        sys.exit('cannot reuse sandbox %s: %d %s' % (sid, code, str(sb)[:200]))
+    if sb.get('status') not in (None, 'active', 'running'):
+        rc, rr = api('POST', '/sandboxes/%s/resume' % sid)
+        if rc >= 300: sys.exit('sandbox %s is %s and cannot resume: %d %s' % (sid, sb.get('status'), rc, str(rr)[:300]))
+    tok = sb['access_token']
+else:
+    code, sb = api('POST', '/sandboxes', {'name': 'band39-care-%d' % int(time.time()), 'secrets': bind,
+                                           'env_vars': {'SUPERSERVE': '1', 'HOST': '0.0.0.0', 'PORT': str(PORT), 'KEYS_FILE': '/nonexistent'},
+                                           'metadata': {'app': 'band39-care'}})
+    if code >= 300:
+        sys.exit('sandbox create failed: %d %s' % (code, sb))
+    sid, tok = sb['id'], sb['access_token']
 print('sandbox', sid, sb.get('status'))
 boxh = {'X-Superserve-Sandbox-Id': sid, 'X-Access-Token': tok}
 
@@ -85,6 +96,7 @@ print('uploaded', n, 'files')
 
 # 4. start the server
 r = sh('command -v python3 && python3 --version'); print('python:', (r.get('stdout') or r.get('stderr') or '').strip().replace('\n', ' '))
+if UPDATE: sh("pkill -f '[s]erver/server.py'; sleep 1")
 r = sh('cd /home/user/app && setsid nohup python3 server/server.py %d > server.log 2>&1 < /dev/null & sleep 3; cat /home/user/app/server.log' % PORT, 30)
 print('server:', (r.get('stdout') or '').strip()[:200], (r.get('stderr') or '').strip()[:200])
 

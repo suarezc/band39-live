@@ -50,8 +50,9 @@
     const [h, m] = hhmm.split(':').map(Number); const d = new Date(ms);
     d.setHours(h, m, 0, 0); return d.getTime();
   }
-  const isNight = (ms, c) => { const h = hm(ms); return h >= c.nightStartH || h < c.nightEndH; };
-  const isDay = (ms, c) => { const h = hm(ms); return h >= c.dayStartH && h < c.dayEndH; };
+  // Day/Night mode: cfg.forceNight true/false overrides the clock (the app's mode switch)
+  const isNight = (ms, c) => { if (c.forceNight === true) return true; if (c.forceNight === false) return false; const h = hm(ms); return h >= c.nightStartH || h < c.nightEndH; };
+  const isDay = (ms, c) => { if (c.forceNight === true) return false; if (c.forceNight === false) return true; const h = hm(ms); return h >= c.dayStartH && h < c.dayEndH; };
   const medName = (t) => (Number(t.split(':')[0]) < 12 ? 'morning' : Number(t.split(':')[0]) < 17 ? 'afternoon' : 'evening');
 
   function createEngine(clock, opts) {

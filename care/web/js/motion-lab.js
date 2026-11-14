@@ -76,14 +76,14 @@
     const L = {
       fall: { score: 0, at: null, stages: null, count: 0 },
       tremor: { score: 0, hz: null, rms: 0, share: 0, minutesToday: 0, at: null },
-      steps: { today: 0, cadence: 0, state: 'unknown', goal: C.stepGoal, base: null },
+      steps: { today: 0, cadence: 0, state: 'unknown', goal: C.stepGoal, base: null, total: null, discarded: 0 },
       balance: { score: null, regularity: null, sway: null, at: null, walkWindows: 0 },
       sleep: { asleep: null, restless: 0, wakeEpochs: 0, epochs: 0, movement: 0, at: null },
       wander: { active: false, since: null, episodes: 0, minutes: 0, far: false },
       seizure: { active: false, seconds: 0, hz: null, at: null, count: 0 },
     };
     const fs = { ffStart: null, ffSeen: null, impact: null, gBefore: null, pendingCheck: null };
-    let seizureRun = 0;
+    let seizureRun = 0, seizureSteps = null;
     const epochCounts = []; let epochAcc = 0, epochStart = null;
     let rssi = null;
 
@@ -138,9 +138,12 @@
     }
 
     // ---- every second: tremor, seizure, balance ---------------------------------------------
+    // Walking and a seizure can't happen together. While seizure-like shaking runs, she is not walking
+    // (a step counter can mistake rhythmic jerking for steps): those steps are discarded below.
+    const bandWalking = () => L.steps.state === 'walk' || L.steps.state === 'run' || L.steps.cadence > 40;
+    const isWalking = () => bandWalking() && seizureRun === 0;
     function hop() {
       const now = clock.scene();
-      const walking = L.steps.state === 'walk' || L.steps.state === 'run' || L.steps.cadence > 40;
       // 7. seizure-like: rhythmic 2-7 Hz, large, sustained ≥ 10 s
       const S = C.seizure; const sw = buf.slice(-S.winS * C.rate);
       if (sw.length >= S.winS * C.rate * 0.9) {
@@ -149,13 +152,16 @@
         const ba = bandAnalysis([sw.map((b) => b.ax), sw.map((b) => b.ay), sw.map((b) => b.az)], C.rate, S.lo, S.hi, 0.5, 12);
         const big = amp > S.stdG || gyroRms > S.gyroRms;
         const rhythmic = ba.share > S.ratio && ba.peakInBand;
-        const gait = walking && ba.peakF < 2.5;
-        if (big && rhythmic && !gait) seizureRun++; else seizureRun = 0;
+        const gaitLike = ba.peakF >= 1.2 && ba.peakF <= 2.5 && amp < S.stdG;     // ordinary steps: ~1.5-2 Hz, moderate
+        const realWalk = bandWalking() && gaitLike;
+        if (big && rhythmic && !realWalk) { if (seizureRun === 0) seizureSteps = L.steps.total; seizureRun++; }
+        else seizureRun = 0;
         const wasActive = L.seizure.active;
         L.seizure.seconds = seizureRun; L.seizure.hz = rhythmic ? ba.peakF : null;
         if (seizureRun >= S.sustainS && !wasActive) { Object.assign(L.seizure, { active: true, at: now }); L.seizure.count++; emit('seizure', L.seizure); }
         if (seizureRun === 0 && wasActive) { L.seizure.active = false; emit('seizure-end', L.seizure); }
       }
+      const walking = isWalking();
       // 2. tremor: 3.5-7.5 Hz on the gyro axis with most band power (Salarian 2007)
       const T = C.tremor; const tw = buf.slice(-T.winS * C.rate);
       const gross = tw.length ? std(tw.map((b) => b.a)) : 0;        // rest tremor is small: big rhythmic motion is not tremor
@@ -197,7 +203,7 @@
     }
 
     // ---- 5. sleep movement: 30 s epochs, Cole-Kripke weights (Cole 1992) ---------------------
-    function isNight(ms) { const h = hour(ms); return h >= C.sleep.nightStartH || h < C.sleep.nightEndH; }
+    function isNight(ms) { if (C.forceNight === true) return true; if (C.forceNight === false) return false; const h = hour(ms); return h >= C.sleep.nightStartH || h < C.sleep.nightEndH; }
     function epochSample(a) {
       const now = clock.scene();
       if (epochStart === null) epochStart = now;
@@ -222,7 +228,7 @@
 
     // ---- 6. nighttime wandering: night + awake + walking ≥ 2 min (rule-based, design) --------
     function wanderCheck(now) {
-      const walking = L.steps.state === 'walk' || L.steps.state === 'run' || L.steps.cadence > 40;
+      const walking = isWalking();
       const W = C.wander; const far = rssi != null && rssi < W.farRssi;
       if (isNight(now) && walking) {
         if (!L.wander.since) L.wander.since = now;
@@ -237,8 +243,13 @@
 
     // ---- 3. steps: the band's own counter + cadence -----------------------------------------
     function activity(e) {
-      if (typeof e.steps === 'number') { if (L.steps.base == null || e.steps < L.steps.base) L.steps.base = e.steps; L.steps.today = e.steps - L.steps.base; }
-      L.steps.cadence = e.cadence || 0; L.steps.state = e.state || L.steps.state;
+      if (typeof e.steps === 'number') {
+        if (L.steps.base == null || e.steps < L.steps.base) L.steps.base = e.steps;
+        if (seizureRun > 0 && L.steps.total != null && e.steps > L.steps.total) { L.steps.base += e.steps - L.steps.total; L.steps.discarded += e.steps - L.steps.total; }
+        L.steps.total = e.steps; L.steps.today = e.steps - L.steps.base;
+      }
+      L.steps.cadence = seizureRun > 0 ? 0 : (e.cadence || 0);
+      L.steps.state = seizureRun > 0 ? 'still' : (e.state || L.steps.state);
       emit('steps', L.steps);
     }
     function event(kind) { if (kind === 'free-fall') bandFreeFall(); }

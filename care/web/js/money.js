@@ -3,6 +3,7 @@
  * the care shop. The card is SIMULATED in this page (js/card-rules.js): no Stripe call, no real money.
  * It listens to the care engine (alerts with key "scam") and adds nothing to app.js.
  * Plan and screens: mockups/financial-ui.html. Real cards: experiments/cards/card_demo.py (Stripe Issuing).
+ * Ported from github.com/suarezc/band39-live (care/web/js/money.js @ 39567e1); simulator hooks added below.
  */
 (function () {
   'use strict';
@@ -126,6 +127,16 @@
     else if (t.dataset.card === 'scam') setTimeout(() => engine.raise('urgent', 'Possible scam: unknown voice', 'The band heard a voice that isn’t Mom’s asking her to buy gift cards and read out the numbers. Call Mom before she pays anyone.', 'scam'), 0);
   });
 
-  window.VexoMoney = { get card() { return card; }, get once() { return once; }, render };
+  // the event simulator drives the same actions Lisa's buttons and the demo row use
+  function payOnceWith(items) {
+    if (!items || !items.length) return null;
+    const cents = items.reduce((t, p) => t + p.price, 0) * 100;
+    once = R.oneTimeCard(cents, 'medical', items.map((p) => p.name).join(' + '));
+    const r = R.buy(once, { amount: cents, shop: 'CareSupply Medical', category: 'medical' });
+    later(() => engine.note('💳', r.approved ? `Paid ${R.money(cents)} to CareSupply Medical with a one-time card. The card closed itself.` : `One-time card declined: ${r.reason}.`, 'money'));
+    return r;
+  }
+  window.VexoMoney = { get card() { return card; }, get once() { return once; }, render, buy, unfreeze, freezeByLisa, payOnceWith, chargeAgain,
+    get evidence() { return evidence; } };
   render();
 })();
