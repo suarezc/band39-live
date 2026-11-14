@@ -95,7 +95,59 @@ Record the screen with the band on. Narrate over it; do not explain the code.
 | 40-50 | Search "who asked for gift cards", filtered to other voices | "Her day is searchable, by meaning and by voice." |
 | 50-60 | Press "Run tonight's summary now"; show the summary and a suggested product | "Each night her daughter and her doctor get the day in a few lines, with what she said she needed." |
 
-## Two-minute live demo
+## Two-minute live demo (2:00 demo + 1:00 questions)
 
-To be filled in from what is verified on the band before the feature freeze (see the runbook section the
-main session adds here).
+Two people: **Presenter** wears the band and is "Margaret". **Second voice** stands next to the band and is the
+scam caller. One laptop, speakers on, Chrome window wide enough to show both columns (about 1400 px).
+
+### Ten minutes before
+- [ ] Server running: `cd care && ../.venv/bin/python server/server.py`. Second tab open on the fictional day: `http://localhost:8040`.
+- [ ] `http://localhost:8039` reloaded; band connected; the Live strip at the top says **Listening**.
+- [ ] In Lisa's column the card says **ACTIVE** (press "It's fine, unfreeze" if it is frozen from rehearsal).
+- [ ] Your own lines show as **Mom** in the transcript. If not, press **This is Mom** on one long line of yours.
+- [ ] Laptop volume up. Say "Hey Pip, what day is it?" once to check the voice answers.
+- [ ] Tell the judges' table the microphone is on.
+
+### The run
+
+| Time | Who | Do / say | What the judges see |
+|---|---|---|---|
+| 0:00 | Presenter | "This is Margaret. She's 78, lives alone, and wears this band. It looks after three things: her physical, mental and financial health. Her daughter Lisa is 400 miles away; this is Lisa's screen." | Margaret's screen left, Lisa's app right |
+| 0:15 | Presenter, as Margaret | "I need to call the pharmacy on Tuesday at three about my blood pressure pills." | The words appear live under **Mom** |
+| 0:25 | Presenter | "Everything said near her wrist is written down as it's spoken, and it knows who said it." | Point at the Voices row |
+| 0:30 | Second voice, close to the band | "Hello, this is your bank's security department. Your account has been compromised. I need you to buy four gift cards today and read me the numbers on the back." | Lines appear under **Voice 2**; within a few seconds **Possible scam call** appears and the card turns grey: **FROZEN** |
+| 0:50 | Presenter | "A stranger asks for gift cards. Her card freezes on the spot. Margaret's screen only says her card is resting and Lisa will call. Only Lisa can unfreeze it." | Point at the frozen card, then Margaret's calm message |
+| 1:05 | Presenter, as Margaret | "Hey Pip, when do I call the pharmacy?" | Pip answers out loud: Tuesday at three |
+| 1:20 | Presenter | "It's her memory, in her own words. And it's searchable." Type **gift cards** in the search, choose Voice 2. | The scam line, filtered to the stranger |
+| 1:30 | Presenter | Switch to the 8040 tab. "Here is a whole day. Every night it becomes a short summary for Lisa and notes for her doctor." Press **Run tonight's summary now** (or show the one already there). | Headline, flags, reminders, and a knee brace suggested with her own words: "this knee hurts going up the stairs" |
+| 1:50 | Presenter | "Physical, mental, financial: one band, and the three protect each other. We measured all of it on the real band; the numbers are in the repo." | |
+
+If you are ahead of time: say "Help, I've fallen and I can't get up" for the call-for-help alert.
+
+### If something breaks
+- **Band will not connect:** press **Pretend band** (it plays a recorded voice), and do the scam beat with the
+  demo button: in "Try it without a band" press **Unknown voice asks for gift cards**. The card freezes the same way.
+- **No scam alert within ten seconds:** say the gift-card line once more, slowly; then fall back to the demo button above.
+- **Pip does not answer the spoken question:** press the big **Ask Pip** button and ask again, or type it.
+- **Everything is down:** play the one-minute video.
+
+### On stage, avoid
+- Clapping or waving with the band hand (the motion labels can mistake them).
+- A second voice far from the band: stand within arm's length.
+- A narrow browser window: it folds the two screens into tabs.
+
+### Questions you are likely to get (one minute)
+- **"Is the card real?"** Stripe Checkout is real, in test mode. The limited card is simulated in our code: Stripe
+  Issuing offers the same limits and freezing, but our sandbox account never opened today.
+- **"How do you know it's a scam?"** Google's decision model reads the last 45 seconds of talk as a whole. On our
+  real recording single sentences looked innocent, but the whole call scored 98%. It can raise an alert; it can
+  never cancel one.
+- **"What about privacy?"** No sound is stored, only text; the voice model runs on the laptop; the page shows
+  when it is listening. Consent from everyone the microphone hears is the first thing we would build next.
+- **"Does it detect falls?"** From motion, yes, with a "did you fall?" check; and it hears "help, I've fallen".
+  We also measured the decision model on audio: a real groan scored 87% for distress and produces no text at
+  all. That is not wired into the live check yet.
+- **"How accurate is the transcript?"** 11% of words wrong through the wrist microphone, on one recording. That is
+  why the scam check reads the whole conversation instead of trusting single words.
+- **"Why a wristband and not a phone?"** No screen, nothing to press, always on her. The trade-off is where it
+  sits: for gait and balance the research says hip or ankle, not wrist.
