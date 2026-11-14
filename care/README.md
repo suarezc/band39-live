@@ -8,7 +8,8 @@ Live from the Vexo Open band **Vexo-HACK-39** (`BAND = 39` in `web/js/app.js`).
 - **Voice** (band mic → Deepgram) → **OpenAI** reads each transcript for risk (scam, abuse), medical (reminders,
   side effects, doctor notes), dementia signals (cognitive, memory, language), lifestyle tips and things to track
   (`server/insights.py`; offline rules if no key).
-- **ElevenLabs** reads prompts and Lisa's messages to Margaret ("Read to me").
+- **Read to me**: prompts and Lisa's messages are spoken by Deepgram's Aura voice (`DEEPGRAM_VOICE`, default `aura-2-vesta-en`), or by
+  ElevenLabs when `ELEVENLABS_API_KEY` is set.
 - **Care shop**: HSA/FSA-eligible equipment matched to what was detected (`web/js/catalog.js`), paid via **Stripe**
   Checkout (needs `STRIPE_SECRET_KEY`; demo mode until then). **Tell Dr. Patel** sends a summary to the clinic inbox.
 - **Mom's safe card** (`web/js/money.js`, rules in `web/js/card-rules.js`): a card with limits ($50 a purchase, $200 a week, no wires or
@@ -19,7 +20,7 @@ Live from the Vexo Open band **Vexo-HACK-39** (`BAND = 39` in `web/js/app.js`).
 - Look: soft self-care-app style (pastel sky, rounded type, chunky pills, original mascot "Pip").
 
 ## Run locally
-    python3 server/server.py            # http://localhost:8039  (keys from ~/.config/vexo-band39/env)
+    python3 server/server.py            # http://localhost:8039  (keys from ~/.config/vexo-band39/env or ../.env)
 Chrome/Edge → double-tap the band → **Connect band 39**. No band: **Pretend band**, then "Try it without a band".
 
 ## Deployed on Superserve

@@ -3,12 +3,13 @@
 
   GET  /api/config      which integrations are live (never the keys)
   POST /api/transcribe  audio/wav from the band's microphone -> Deepgram -> {"text": ...}
-  POST /api/tts         {"text": ...} -> ElevenLabs -> audio/mpeg
+  POST /api/tts         {"text": ...} -> audio/mpeg  (ElevenLabs if ELEVENLABS_API_KEY is set, else Deepgram's Aura voice)
   POST /api/checkout    {"items": [{id, name, price, qty}]} -> Stripe Checkout URL (or demo mode)
   POST /api/doctor      {"summary": ...} -> doctor inbox (in memory; GET lists it)
 
 Keys come from environment variables (on Superserve they are stand-in tokens that the platform
-swaps for the real key on the way out), or locally from KEYS_FILE (default ~/.config/vexo-band39/env).
+swaps for the real key on the way out), or locally from KEYS_FILE (default ~/.config/vexo-band39/env),
+or from the project's own .env file (the folder above care/), which git ignores.
 Run: python3 server/server.py [port]    No packages needed.
 """
 import json, os, ssl, sys, time, urllib.parse, urllib.request, uuid
@@ -20,14 +21,20 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'web')
 VOICE = os.environ.get('ELEVENLABS_VOICE_ID', 'EXAVITQu4vr4xnSDxMaL')   # "Sarah - Mature, Reassuring"
 
 
+DG_VOICE = os.environ.get('DEEPGRAM_VOICE', 'aura-2-vesta-en')            # Deepgram Aura voice, used when there is no ElevenLabs key
+
+
 def load_keys():
-    path = os.path.expanduser(os.environ.get('KEYS_FILE', '~/.config/vexo-band39/env'))
-    if os.path.exists(path):
+    here = os.path.dirname(os.path.abspath(__file__))
+    for path in (os.path.expanduser(os.environ.get('KEYS_FILE', '~/.config/vexo-band39/env')), os.path.join(here, '..', '..', '.env')):
+        if not os.path.exists(path):
+            continue
         for line in open(path):
             line = line.strip()
             if line and not line.startswith('#') and '=' in line:
                 k, v = line.split('=', 1)
-                os.environ.setdefault(k.strip(), v.strip())
+                if v.strip():
+                    os.environ.setdefault(k.strip(), v.strip())
 
 
 load_keys()
@@ -92,7 +99,7 @@ class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/api/config':
             return self.send_json(200, {
-                'deepgram': bool(KEY('DEEPGRAM_API_KEY')), 'elevenlabs': bool(KEY('ELEVENLABS_API_KEY')),
+                'deepgram': bool(KEY('DEEPGRAM_API_KEY')), 'elevenlabs': bool(KEY('ELEVENLABS_API_KEY')), 'voice': 'elevenlabs' if KEY('ELEVENLABS_API_KEY') else 'deepgram' if KEY('DEEPGRAM_API_KEY') else None,
                 'stripe': bool(KEY('STRIPE_SECRET_KEY')), 'openai': bool(KEY('OPENAI_API_KEY')), 'host': 'superserve' if os.environ.get('SUPERSERVE') else 'local'})
         if self.path == '/api/doctor':
             return self.send_json(200, {'inbox': DOCTOR_INBOX[-20:]})
@@ -128,13 +135,25 @@ class Handler(SimpleHTTPRequestHandler):
         alt = json.loads(raw)['results']['channels'][0]['alternatives'][0]
         self.send_json(200, {'text': alt.get('transcript', ''), 'confidence': alt.get('confidence')})
 
-    # ElevenLabs text to speech
+    # Text to speech: ElevenLabs when its key is set, otherwise Deepgram's Aura voice (same key as transcription)
     def tts(self):
-        if not KEY('ELEVENLABS_API_KEY'):
-            return self.send_json(503, {'error': 'Voice needs an ElevenLabs key on the server.'})
+        if not KEY('ELEVENLABS_API_KEY') and not KEY('DEEPGRAM_API_KEY'):
+            return self.send_json(503, {'error': 'Voice needs a Deepgram or ElevenLabs key on the server.'})
         text = str(json.loads(self.body(20000) or b'{}').get('text', ''))[:600]
         if not text.strip():
             return self.send_json(400, {'error': 'no text'})
+        if not KEY('ELEVENLABS_API_KEY'):
+            code, ctype, raw = upstream('https://api.deepgram.com/v1/speak?model=%s&encoding=mp3' % urllib.parse.quote(DG_VOICE),
+                                        json.dumps({'text': text}).encode(),
+                                        {'Authorization': 'Token ' + KEY('DEEPGRAM_API_KEY'), 'Content-Type': 'application/json'})
+            if code != 200:
+                return self.send_json(502, {'error': 'Deepgram voice status %d' % code})
+            self.send_response(200)
+            self.send_header('Content-Type', 'audio/mpeg')
+            self.send_header('Content-Length', str(len(raw)))
+            self.end_headers()
+            self.wfile.write(raw)
+            return
         code, ctype, raw = upstream('https://api.elevenlabs.io/v1/text-to-speech/%s?output_format=mp3_44100_64' % VOICE,
                                     json.dumps({'text': text, 'model_id': 'eleven_turbo_v2_5', 'voice_settings': {'stability': 0.6, 'similarity_boost': 0.75}}).encode(),
                                     {'xi-api-key': KEY('ELEVENLABS_API_KEY'), 'Content-Type': 'application/json', 'Accept': 'audio/mpeg'})
