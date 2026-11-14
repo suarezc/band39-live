@@ -10,3 +10,5 @@ stripe
 python-dotenv
 httpx
 numpy
+kaldi-native-fbank
+onnxruntime

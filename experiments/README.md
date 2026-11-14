@@ -15,6 +15,7 @@ plumbing, not the answer). Close the dashboard and other band pages first: one c
 | 3 | Can we measure standing balance above the noise? | yes | script ready, checked on made-up signals only |
 | 4 | How accurate is the transcript from the band's microphone? | yes | script ready, plumbing checked |
 | 5 | Does the decision model choose correctly, and does it know when it is unsure? | no | runs now: see results below |
+| 6 | Is a reply the wearer's own voice, and close to the band? | for tuning | works on test recordings; one-second replies are too short: see below |
 
 ## 1. Sensor noise floor
 
@@ -92,6 +93,32 @@ stayed open:
 
 So: the model must not be the thing that cancels a fall alert. Cancelling needs a tap on the
 band or an exact phrase match checked by a fixed rule; the model may only escalate or ask again.
+
+## 6. Is it the wearer's voice, and is it close? (voice match + loudness)
+
+    .venv/bin/python experiments/speech/voice_check.py selftest
+    .venv/bin/python experiments/speech/voice_check.py enroll margaret a.ogg b.ogg c.ogg
+    .venv/bin/python experiments/speech/voice_check.py check margaret reply.ogg
+
+A 29 MB open speaker model (WeSpeaker CAM++) run locally; the command that downloads it is at the
+top of `voice_check.py`. Deepgram, Gemini and MiniMax have no enrolled voice match.
+
+Results on 14 November (no band involved yet):
+
+- 9 real recordings of 3 people (the model project's test set): same person 0.68 to 0.95,
+  different people 0.57 and below. Clean.
+- Voices made by Deepgram text-to-speech, sentences of 3 to 6 seconds: same voice about 0.7,
+  different voices about 0.3. Clean.
+- **A one-second "I'm fine" is too short.** From the right voice it scored anywhere from 0.31 to
+  0.59 across runs: never a confident yes, sometimes a confident no. A different voice never
+  scored a confident yes (highest 0.52), so the mistakes are on the safe side.
+- The `sherpa-onnx` wrapper (2.0.1) gave embeddings that did not separate people at all, on the
+  same files. The script runs the model directly instead.
+
+So voice match can confirm a sentence, not a two-word reply. For the fall check: a tap cancels;
+a short spoken "I'm fine" counts only if it is also loud (close to the band); otherwise ask her
+to say a full sentence or tap. Still to do on the real band: tune YES, NO and NEAR, and record a
+TV across the room to see how far apart "near" and "far" loudness really are.
 
 ## Self-test of the analysis
 
