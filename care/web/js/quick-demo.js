@@ -92,7 +92,7 @@
     const got = lisaGets(ev);
     const [sk, does] = SENSE[i] || ['mic', '']; const sn = SENSOR[sk] || SENSOR.mic;
     $('qNow').innerHTML = `<div class="q-ev"><span class="q-tag tag-${cat}">${CAT[cat]}</span><b>${esc(name)}</b><small>${esc(t)}</small></div>
-      <div class="q-lanes big">
+      <div class="q-lanes qbig">
         <div class="ql"><h2>${ico('user')}Margaret</h2><b class="ql-main">${esc(DOES[actName] || name)}</b>${say ? `<q>${esc(say)}</q>` : ''}</div>
         <div class="ql"><h2>${ico('watch')}Bracelet</h2><span class="ql-chip">${ico(sn[0], 14)}${sn[1]}</span><b class="ql-main">${led ? `<i class="q-led" style="--led:${led[0]}"></i>` : ''}${esc(DEVICE[i] || '')}</b><small>${esc(does)}</small></div>
         <div class="ql lisa lv-${got.level}"><h2>${ico('phone')}Lisa’s portal</h2><div class="ql-note"><span class="ql-app">${ico('sprout', 12)}</span><b>${esc(got.title)}</b><p>${esc(got.body)}</p></div><span class="ql-tab">${got.level === 'urgent' ? 'Full-screen alert' : TAB[cat]}</span></div>
