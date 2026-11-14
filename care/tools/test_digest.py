@@ -131,7 +131,7 @@ for with_people in (False, True):
     def broken(*a):
         raise RuntimeError('Summary model x status 503')
     d = digest.run(DAY, products=cat_path, db=db, decide=fake_decide({'medication': 0.9}), write=broken)
-    check('[%s] summary failure: reported, needs and flags still there' % tag, 'status 503' in ' '.join(d['errors']) and d['needs'] and d['recommended'])
+    check('[%s] summary failure: reported, needs kept, no product without evidence' % tag, 'status 503' in ' '.join(d['errors']) and d['needs'] and d['recommended'] == [])
     check('[%s] summary failure: fallback flag evidence is real' % tag, d['flags'] and all(i in valid for f in d['flags'] for i in f['evidence']))
 
 d = digest.run(dt.date(2026, 3, 9), products=cat_path, db=tmp / 't_True.db', decide=fake_decide({}), write=fake_write)
