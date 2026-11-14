@@ -37,3 +37,14 @@ After editing `companion/index.html`, `css/` or `js/`, rebuild the single file w
 ## Architecture and backend setup
 
 See [ARCHITECTURE.md](ARCHITECTURE.md): the hub, voice (Pipecat + Deepgram + Gemini), Stripe checkout, and where to wear the band for gait and balance. Python setup: `uv venv --python 3.12 .venv && uv pip install -r requirements.txt`, then `.venv/bin/python tools/check_keys.py`.
+
+## Band 39 care: motion labels, voice insights, HSA care shop
+
+`care/` is Margaret's screen + Lisa's app with:
+- seven motion labels from the band (fall, tremor score, steps, balance, sleep movement, night wandering, seizure-like)
+- voice notes: band mic → Deepgram → OpenAI (scam/abuse, reminders, side effects, doctor notes, memory/language signals)
+- ElevenLabs read-aloud, an HSA/FSA care shop with Stripe Checkout, and a doctor summary
+
+Run it with `python3 care/server/server.py` (http://localhost:8039). It needs no packages. API keys go only in each
+person's own `~/.config/vexo-band39/env` (see `care/README.md`), never in the repo.
+Deploy: `python3 care/tools/deploy_superserve.py`. Tests: `node care/tools/test_motion.mjs`.

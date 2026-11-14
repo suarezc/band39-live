@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#DDEFFF" />
+<title>Band 39 · Margaret & Lisa</title>
+<link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+<main class="app live" id="live" data-conn="none" data-tab="margaret">
+  <header class="top">
+    <div class="brand"><span class="sprout-dot">🌱</span><div><h1>Wear it for real: band 39</h1><p>Margaret’s screen and Lisa’s app, live from her Vexo band.</p></div></div>
+    <div class="conn card">
+      <div class="conn-row"><span class="lv-dot"></span><b id="lvBandLabel">Vexo-HACK-39</b><span id="lvConnState" class="lv-state">Not connected</span></div>
+      <div class="conn-row btns">
+        <button class="pill dark" id="lvConnect">Connect band 39</button>
+        <button class="pill" id="lvUseSim">Pretend band</button>
+        <button class="pill ghost" id="lvDisc">Disconnect</button>
+      </div>
+      <p class="hint">Double-tap the band (it blinks blue), then Connect. One connection at a time: close the kit dashboard first.</p>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="margaret">👵 Margaret</button>
+    <button role="tab" aria-selected="false" data-tab="lisa">👩 Lisa <span id="tabBadge"></span></button>
+  </nav>
+
+  <div class="grid">
+    <!-- ============ MARGARET ============ -->
+    <section class="col margaret" aria-label="Margaret's screen">
+      <div class="m-card">
+        <div class="m-head">
+          <div><div class="m-greet" id="gmGreet">Hello, Margaret</div><div class="m-date" id="gmDate"></div></div>
+          <div class="m-time" id="gmTime">--:--</div>
+        </div>
+        <div class="buddy">
+          <svg id="pip" class="pip" viewBox="0 0 120 120" aria-hidden="true">
+            <path class="leaf l1" d="M60 26 C50 6 30 8 30 8 C34 24 48 28 60 26Z"/>
+            <path class="leaf l2" d="M60 26 C70 4 92 6 92 6 C88 24 72 30 60 26Z"/>
+            <ellipse class="body" cx="60" cy="72" rx="42" ry="38"/>
+            <ellipse class="belly" cx="60" cy="82" rx="26" ry="20"/>
+            <g class="eyes"><ellipse cx="45" cy="66" rx="5" ry="6"/><ellipse cx="75" cy="66" rx="5" ry="6"/></g>
+            <g class="sleepy-eyes"><path d="M39 67 q6 5 12 0"/><path d="M69 67 q6 5 12 0"/></g>
+            <ellipse class="blush" cx="36" cy="78" rx="6" ry="3.5"/><ellipse class="blush" cx="84" cy="78" rx="6" ry="3.5"/>
+            <path class="mouth smile" d="M50 80 q10 9 20 0"/>
+            <path class="mouth flat" d="M52 83 h16"/>
+            <path class="sweat" d="M92 50 q5 8 0 11 q-5 -3 0 -11z"/>
+          </svg>
+          <div class="bubble" id="pipSay">Hi Margaret! I’m Pip. I’ll keep an eye on things with your band.</div>
+        </div>
+        <div class="band-line"><div class="gm-ring" id="gmRing" data-pattern="off"><span></span></div><p id="gmBandSay">Your band is not connected</p></div>
+        <div class="gm-prompt kind-calm" id="gmPrompt" aria-live="polite"></div>
+        <div class="m-actions">
+          <button class="big talk" id="mTalk"><span class="mic">🎙</span><span id="mTalkLabel">Talk to Lisa</span></button>
+          <button class="big read" id="mRead">🔈 Read to me</button>
+        </div>
+        <p class="m-note" id="mTalkNote">Hold your band near and speak. The light turns blue while it listens, and your words are written down by Deepgram.</p>
+        <div class="gm-replies">
+          <span>Send Lisa:</span>
+          <button data-reply="I’m fine ❤️">I’m fine ❤️</button>
+          <button data-reply="Please call me">Please call me</button>
+          <button data-reply="Come visit soon">Come visit soon</button>
+        </div>
+        <button class="gm-help" data-gm="help">I need help</button>
+      </div>
+    </section>
+
+    <!-- ============ LISA ============ -->
+    <section class="col carer" aria-label="Lisa's app">
+      <div class="l-card">
+        <div class="cg-head">
+          <div class="cg-who"><span class="cg-av">👵</span><div><b>Mom</b><small id="cgSummary">Band not connected</small></div></div>
+          <span class="cg-status" id="cgStatus" data-level="good">All good</span>
+        </div>
+
+        <div class="block"><div class="h">Motion signals <span class="muted">from band 39</span></div>
+          <div class="sig-grid" id="sigGrid"></div>
+          <p class="fine">Methods: Bourke 2007 & Kangas 2008 (falls), Salarian 2007 (tremor), Moe-Nilssen 2004 & Mancini 2012 (balance), Cole 1992 (sleep), Beniczky 2013 & Kramer 2011 (seizure-like). Signals to look at, not diagnoses.</p>
+        </div>
+
+        <div class="block"><div class="h">Alerts</div><ul class="cg-alerts" id="cgAlerts"></ul></div>
+
+        <div class="block"><div class="h">From Mom’s voice notes <span class="muted" id="insSource"></span></div>
+          <div class="ins" id="insights"><p class="empty">When Mom talks to you through her band, Pip reads the transcript for scams, abuse, reminders, side effects, memory and language changes.</p></div>
+        </div>
+
+        <div class="block shop"><div class="h">Suggested for Mom <span class="muted">· HSA/FSA</span></div>
+          <div id="shop"><p class="empty">Nothing needed right now. Suggestions appear when the band or Mom’s notes point to something equipment could help with.</p></div>
+          <div class="shop-foot" id="shopFoot" hidden><b id="shopTotal">$0</b><button class="pill dark" id="payBtn">Pay with Stripe</button></div>
+          <p class="fine" id="payNote">Pay with an HSA/FSA card like any card. Eligibility depends on the plan; some items need a doctor’s letter (LMN).</p>
+        </div>
+
+        <div class="block doc"><div class="h">Tell Dr. Patel</div>
+          <pre class="doc-sum" id="docSum">No findings to share yet.</pre>
+          <button class="pill" id="docBtn">Send summary to Dr. Patel</button> <span class="fine" id="docNote"></span>
+        </div>
+
+        <div class="block"><div class="h">Messages</div>
+          <ul class="cg-thread" id="cgThread"></ul>
+          <form class="cg-send" id="cgSend"><input id="cgMsg" maxlength="120" placeholder="Write to Mom…" autocomplete="off" /><button class="pill violet">Send</button></form>
+          <div class="cg-quick"><button type="button" data-quick="Visiting Saturday 🌷">Visiting Saturday 🌷</button><button type="button" data-quick="I’ll call you tonight">I’ll call you tonight</button><button type="button" data-quick="Love you, Mom!">Love you, Mom!</button></div>
+        </div>
+
+        <div class="block"><div class="h">Today</div><ul class="cg-tl" id="cgTimeline"></ul></div>
+
+        <details class="block demo" id="demo">
+          <summary>🧪 Try it without a band</summary>
+          <p class="fine">Plays motion on the kit’s pretend band (through the real protocol), so the same algorithms run. Typed notes skip Deepgram and go straight to the transcript reader.</p>
+          <div class="demo-row"><span>Motion</span>
+            <button data-sig="tremor">Hand tremor</button><button data-sig="walk">Steady walk</button><button data-sig="shaky">Unsteady walk</button>
+            <button data-sig="fall">Fall</button><button data-sig="seizure">Seizure-like</button><button data-sig="restless">Restless sleep</button><button data-sig="nightwalk">Night walk</button><button data-sig="stop">Stop</button>
+          </div>
+          <div class="demo-row"><span>Clock</span><button id="nightBtn">Pretend it’s 2 am</button><button id="dayBtn">Back to now</button></div>
+          <div class="demo-row"><span>Voice</span>
+            <button data-note="A man called and said my grandson is in jail and needs bail. He wants me to buy gift cards today.">Scam call</button>
+            <button data-note="I feel sick to my stomach since the new pill, and dizzy when I stand up. Remind me to call the pharmacy tomorrow at 10.">Side effects</button>
+            <button data-note="Um, what day is it? I can't remember if I ate. Where are my glasses? I had toast for breakfast. I had toast for breakfast.">Memory</button>
+            <button data-note="My nephew yells at me and he took my bank card. I'm scared of him.">Worrying</button>
+            <button id="voiceDemo">Spoken sample (band mic)</button>
+          </div>
+          <form class="cg-send" id="noteForm"><input id="noteText" maxlength="400" placeholder="Type what Margaret says…" /><button class="pill">Analyze</button></form>
+        </details>
+      </div>
+    </section>
+  </div>
+  <p class="fine foot">Not a medical device. Thresholds need tuning on real wearers. The band has no vibration motor; it answers with its colour light. Margaret, Lisa, Dr. Patel and pill times are fictional. Keys stay on the server.</p>
+</main>
+<audio id="voice" hidden></audio>
+<script src="js/care-engine.js"></script>
+<script src="js/motion-lab.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
