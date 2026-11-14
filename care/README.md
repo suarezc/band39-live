@@ -12,6 +12,10 @@ Live from the Vexo Open band **Vexo-HACK-39** (`BAND = 39` in `web/js/app.js`).
   ElevenLabs when `ELEVENLABS_API_KEY` is set.
 - **Care shop**: HSA/FSA-eligible equipment matched to what was detected (`web/js/catalog.js`), paid via **Stripe**
   Checkout (needs `STRIPE_SECRET_KEY`; demo mode until then). **Tell Dr. Patel** sends a summary to the clinic inbox.
+- **Two health scores** at the top of Lisa's column (`web/js/scores.js`): Physical and Mental, 0-100, one line chart each (week or month,
+  hover or arrow keys for the parts, table view). Physical blends balance, activity, sleep, falls and safety; Mental blends word recall,
+  language, orientation, routine (pills) and connection (messages). Today's point is live; **earlier days are sample data** (the app keeps
+  no history yet) and the weights are product guesses. The detailed motion and voice-note blocks fold away under "What's behind this score".
 - **Mom's safe card** (`web/js/money.js`, rules in `web/js/card-rules.js`): a card with limits ($50 a purchase, $200 a week, no wires or
   crypto) in Lisa's column. A "Possible scam" alert from the care engine freezes it; only Lisa unfreezes it. The care shop can pay with a
   one-time card that closes after its one purchase. While it is frozen Margaret's screen says "Your card is taking a short rest" (no limits, no "scam"). **Simulated in the page: no real card, no real money.** Screens and plan:

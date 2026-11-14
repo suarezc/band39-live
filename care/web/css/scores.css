@@ -1,0 +1,33 @@
+/* Two health scores for Lisa (js/scores.js): one line chart each, in the care app's look. */
+.scores { display: grid; gap: 14px; }
+.scores-bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.scores-bar .fine { margin: 0; }
+.seg { display: inline-flex; background: #F1EEFA; border-radius: 999px; padding: 3px; }
+.seg button { border: 0; background: none; border-radius: 999px; padding: 5px 14px; font-weight: 800; font-size: 13px; color: var(--ink2); }
+.seg button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(43, 42, 61, .15); }
+.score { background: #FAF8FF; border-radius: 22px; padding: 14px 14px 10px; position: relative; }
+.score-name { display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--ink2); }
+.score-name i { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.score-top { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 2px 0 6px; }
+.score-num { font-size: 44px; font-weight: 800; line-height: 1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.score-num small { font-size: 16px; font-weight: 700; color: var(--muted); letter-spacing: 0; }
+.score-trend { font-size: 13.5px; color: var(--ink2); font-weight: 600; }
+.score-plot { position: relative; }
+.score-plot svg { display: block; width: 100%; height: auto; touch-action: pan-y; outline: none; }
+.score-plot svg:focus-visible { box-shadow: 0 0 0 2px var(--violet); border-radius: 10px; }
+.score-plot .grid { stroke: #E6E0F2; stroke-width: 1; }
+.score-plot .axis { fill: #6E6B87; font-size: 11px; font-weight: 600; }
+.score-plot .cross { stroke: #B9B3CC; stroke-width: 1; }
+.score-tip { position: absolute; top: 0; pointer-events: none; background: #fff; border-radius: 14px; box-shadow: 0 6px 20px rgba(70, 60, 140, .18); padding: 9px 12px; font-size: 12.5px; min-width: 168px; z-index: 2; }
+.score-tip b { font-size: 14px; }
+.score-tip .when { color: var(--muted); font-weight: 700; }
+.score-tip dl { display: grid; grid-template-columns: 1fr auto; gap: 1px 12px; margin: 5px 0 0; }
+.score-tip dt { color: var(--ink2); } .score-tip dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; }
+.score-tip .live { color: var(--muted); margin-top: 4px; }
+.score details { margin-top: 6px; }
+.score summary { cursor: pointer; font-size: 13px; font-weight: 700; color: var(--ink2); padding: 4px 0; }
+.score details > .block { margin-top: 8px; }
+.score table { border-collapse: collapse; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; margin-top: 6px; }
+.score th, .score td { text-align: right; padding: 3px 6px; border-bottom: 1px solid var(--line); } .score th:first-child, .score td:first-child { text-align: left; }
+.score th { color: var(--ink2); font-weight: 700; }
+.score-scroll { overflow-x: auto; }
