@@ -50,8 +50,6 @@
   // voice event: the line is spoken on stage, then goes down the mic path
   const say = (text, a = 'talk', o) => () => { act(a, o, text.replace(/^Pip,\s*/, '')); voice(text); };
 
-  // sample medication list (illustrative only, not medical advice)
-  const MEDS = [['8:00 am', 'Donepezil 5 mg', 'memory'], ['8:00 am', 'Lisinopril 10 mg', 'blood pressure'], ['8:00 pm', 'Metformin 500 mg', 'blood sugar'], ['8:00 pm', 'Sertraline 25 mg (new)', 'mood']];
   // ---- the catalog --------------------------------------------------------------------------------------
   const CATS = [
     { key: 'mental', ic: 'brain', name: 'Mental health', blurb: 'Memory, thinking, mood and sleep', items: [
@@ -103,12 +101,12 @@
         run: () => { act('confused'); card(4000, 'QuickWire Money Transfer', 'wire'); } },
       { ic: 'unlock', name: 'Lisa unfreezes the card', sensor: 'app', expect: 'After a scam freeze, only Lisa can turn the card back on.',
         run: () => { const m = M(); if (m && m.card.status === 'frozen') m.unfreeze(); else if (m) { m.freezeByLisa(); setTimeout(() => m.unfreeze(), 1500); } } },
-      { pin: 2, ic: 'card', name: 'Fraudulent transaction', sensor: 'card', expect: '$389 online charge from a shop she never uses: declined and flagged.',
-        run: () => { act('sit'); card(38900, 'QuickShop Intl (online)', 'online');
-          engine.raise('warn', 'Fraudulent transaction blocked', '$389.00 online charge from QuickShop Intl, a shop Mom has never used. Declined by the card limit. Check her card statement.', 'fraud'); } },
       { ic: 'card', name: 'Care items on a one-time card', sensor: 'card', expect: 'A card for this one order at a medical shop; it closes itself after paying.',
         run: () => { const m = M(), C = window.VexoCatalog; if (!m || !C) return; const conds = (V.view().conditions || []).map(([k]) => k);
           const items = (conds.length ? C.forConditions(conds) : C.PRODUCTS).slice(0, 2); m.payOnceWith(items); } },
+      { pin: 2, ic: 'card', name: 'Fraudulent transaction', sensor: 'card', expect: '$389 online charge from a shop she never uses: declined and flagged.',
+        run: () => { act('sit'); card(38900, 'QuickShop Intl (online)', 'online');
+          engine.raise('warn', 'Fraudulent transaction blocked', '$389.00 online charge from QuickShop Intl, a shop Mom has never used. Declined by the card limit. Check her card statement.', 'fraud'); } },
     ] },
     { key: 'physical', ic: 'body', name: 'Physical health', blurb: 'Movement, falls, pills, symptoms and the band', items: [
       { pin: 1, ic: 'fall', name: 'Fall', sensor: 'motion', expect: 'Free-fall, impact, stillness. “Did you fall?” for 20 s, then urgent.',
@@ -137,14 +135,11 @@
         run: async () => { await band(); act('tap'); engine.ingest({ type: 'double-tap' }); } },
       { ic: 'watch', name: 'Band off her wrist', sensor: 'band', expect: 'Perfectly still for 2 h: “Band may be off Mom’s wrist”.',
         run: async () => { await band(); act('bandoff'); engine.state.offWrist = false; engine.state.stillSince = V.sceneNow() - (engine.cfg.notWornMin * 60000 + 1000); engine.tick(); } },
-      { pin: 3, ic: 'clock', name: 'Medication list', sensor: 'app', expect: 'Today’s medicines on her screen and in Lisa’s app.',
-        run: () => { act('walk', { to: 'table' }); const list = MEDS.map((m) => `${m[0]} ${m[1]}`).join(' · ');
-          H.banner = { kind: 'calm', title: 'Today’s medicines', body: list }; engine.note('💊', 'Medication list: ' + list, 'care'); V.engine.tick(); } },
-      { pin: 4, ic: 'pill', name: 'Medicine taken (told the band)', sensor: 'band', expect: 'She tells the band she took them; reminder clears; Lisa sees it.',
-        run: async () => { await band(); act('tap', {}, 'I took my morning pills.'); if (!Object.values(engine.state.meds).includes('due')) { pill(1); await wait(700); }
-          engine.userAction('done', 'told the band'); engine.note('💊', 'Mom told the band she took her morning medicines.', 'care'); } },
       { ic: 'battery', name: 'Low band battery', sensor: 'band', expect: 'Margaret and Lisa are reminded to charge it.',
         run: async () => { await band(); act('idle'); engine.state.lowBatteryFlagged = false; engine.ingest({ type: 'battery', percent: 12, state: 'discharging' }); } },
+      { pin: 3, ic: 'pill', name: 'Medicine taken (told the band)', sensor: 'band', expect: 'She tells the band she took them; reminder clears; Lisa sees it.',
+        run: async () => { await band(); act('tap', {}, 'I took my morning pills.'); if (!Object.values(engine.state.meds).includes('due')) { pill(1); await wait(700); }
+          engine.userAction('done', 'told the band'); engine.note('💊', 'Mom told the band she took her morning medicines.', 'care'); } },
     ] },
   ];
   const ALL = CATS.flatMap((c) => c.items.map((it, i) => Object.assign(it, { cat: c.key, id: c.key + '-' + i })));

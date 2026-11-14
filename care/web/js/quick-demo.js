@@ -8,13 +8,12 @@
   const V = window.VexoCare; if (!V) return;
   const $ = (id) => document.getElementById(id);
   const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const STEP = 1030;                                   // 29 × 1.03 s ≈ 30 s
+  const STEP = 1070;                                   // 28 × 1.07 s ≈ 30 s
   const AMBER = ['#F2A93B', 'blink'], RED = ['#E5484D', 'pulse'], GREEN = ['#3FAE7A', 'solid'], BLUE = ['#3E8EF7', 'solid'], NIGHT = ['#8E6CF0', 'breathe'];
   const DOES = {"walk": "Walks", "pills": "Takes pills", "confused": "Confused", "phone": "On the phone", "tremor": "Hand shakes", "talk": "Talks", "shaky": "Unsteady", "fall": "Falls", "sad": "Sad", "bandoff": "Band off", "idle": "At home", "sit": "Sits still", "sleep": "Restless sleep", "nightwalk": "Walks at night", "seizure": "Shaking", "sos": "Presses SOS", "tap": "Tells the band"};
   const CAT = { mental: 'Mental', financial: 'Financial', physical: 'Physical' };
   // [time, category, event, stage act, act opts, what she says, band light, what Lisa gets: [level, title, body, key] or a note]
   const DAY = [
-    ['7:20 am', 'physical', 'Medication list', 'walk', { to: 'table' }, '', null, ['info', 'Medication list', '8 am: Donepezil 5 mg, Lisinopril 10 mg · 8 pm: Metformin 500 mg, Sertraline 25 mg (sample).']],
     ['7:30 am', 'physical', 'Pill reminder', 'walk', { to: 'table' }, '', AMBER, ['info', 'Morning pills due', 'The band is glowing and her screen asks “Pills taken?”.']],
     ['7:35 am', 'physical', 'Medicine taken', 'tap', {}, 'I took my morning pills.', GREEN, ['info', 'Medicine taken', 'Mom told the band she took her 8 am medicines.']],
     ['8:10 am', 'physical', 'Steady walk', 'walk', { to: 'window' }, '', null, '1,240 steps, steady cadence. Balance 82/100.'],
@@ -46,9 +45,9 @@
   ];
 
   // what band 39 senses or does for each event, in order
-  const DEVICE = ["Medicine schedule", "Pill time", "Hears “took my pills”", "Steps counted", "Same question twice", "Hears “gift cards”", "Card frozen", "Shaking 5 Hz", "Card: unknown shop, $389", "“Thingy”, fillers", "Hears “PIN”", "Sway, uneven steps", "Impact 3.1 g", "Hears “wire $500”", "Hears “cash today”", "Wrong day", "Hears “took my card”", "Hears “grabbed my arm”", "Unpaid bills", "No calls in 6 days", "Recall 2 of 5", "Hears “chest tight”", "Still 2 h: off wrist", "Battery 12%", "No movement 3 h", "38% restless", "Up at 2 am", "Shaking 12 s", "HELP pressed"];
+  const DEVICE = ["Pill time", "Hears “took my pills”", "Steps counted", "Same question twice", "Hears “gift cards”", "Card frozen", "Shaking 5 Hz", "Card: unknown shop, $389", "“Thingy”, fillers", "Hears “PIN”", "Sway, uneven steps", "Impact 3.1 g", "Hears “wire $500”", "Hears “cash today”", "Wrong day", "Hears “took my card”", "Hears “grabbed my arm”", "Unpaid bills", "No calls in 6 days", "Recall 2 of 5", "Hears “chest tight”", "Still 2 h: off wrist", "Battery 12%", "No movement 3 h", "38% restless", "Up at 2 am", "Shaking 12 s", "HELP pressed"];
   // per event: which band sensor caught it, and what the band then does
-  const SENSE = [["app", "Shows today’s list"], ["clock", "Blinks amber: “Pills taken?”"], ["mic", "Clears the reminder"], ["motion", "Counts steps"], ["mic", "Sends words to the AI"], ["mic", "Flags scam, freezes card"], ["card", "Declines: card frozen"], ["motion", "Scores shaking"], ["card", "Declines, flags fraud"], ["mic", "Scores language"], ["mic", "Flags scam"], ["motion", "Scores balance"], ["motion", "Glows red: “Did you fall?”"], ["mic", "Flags scam"], ["mic", "Flags pressure"], ["mic", "Pip tells her the day"], ["mic", "Flags exploitation"], ["mic", "Flags abuse, tells Lisa quietly"], ["mic", "Sets a bill reminder"], ["mic", "Pip comforts her"], ["mic", "Logs the recall trend"], ["mic", "Urgent: offers 911"], ["motion", "Notices it is off"], ["battery", "Blinks amber"], ["motion", "Check-in on her screen"], ["motion", "Scores sleep"], ["motion", "Soft purple: guides her back"], ["motion", "Urgent: calls Lisa"], ["tap", "Urgent: Lisa, Ruth, 911"]];
+  const SENSE = [["clock", "Blinks amber: “Pills taken?”"], ["mic", "Clears the reminder"], ["motion", "Counts steps"], ["mic", "Sends words to the AI"], ["mic", "Flags scam, freezes card"], ["card", "Declines: card frozen"], ["motion", "Scores shaking"], ["card", "Declines, flags fraud"], ["mic", "Scores language"], ["mic", "Flags scam"], ["motion", "Scores balance"], ["motion", "Glows red: “Did you fall?”"], ["mic", "Flags scam"], ["mic", "Flags pressure"], ["mic", "Pip tells her the day"], ["mic", "Flags exploitation"], ["mic", "Flags abuse, tells Lisa quietly"], ["mic", "Sets a bill reminder"], ["mic", "Pip comforts her"], ["mic", "Logs the recall trend"], ["mic", "Urgent: offers 911"], ["motion", "Notices it is off"], ["battery", "Blinks amber"], ["motion", "Check-in on her screen"], ["motion", "Scores sleep"], ["motion", "Soft purple: guides her back"], ["motion", "Urgent: calls Lisa"], ["tap", "Urgent: Lisa, Ruth, 911"]];
   const SENSOR = { motion: ['wave', 'Motion · 50 Hz'], mic: ['mic', 'Mic → AI'], tap: ['tap', 'Band tap'], card: ['card', 'Safe card'], app: ['clock', 'Schedule'], clock: ['clock', 'Reminder'], battery: ['battery', 'Battery'] };
   // how the information travels for each sensor: band → processing → Lisa
   const FLOW = {
@@ -126,7 +125,7 @@
     }
   }
   // one button per key event, grouped 1 Physical · 2 Financial · 3 Mental; a click plays just that event
-  const PICK = [['physical', ['Fall', 'Tremor', 'Medication list', 'Medicine taken']], ['financial', ['Scam attempt', 'Fraudulent transaction', 'Missed bill payment']],
+  const PICK = [['physical', ['Fall', 'Tremor', 'Medicine taken']], ['financial', ['Scam attempt', 'Fraudulent transaction', 'Missed bill payment']],
     ['mental', ['Memory decline', 'Speech deterioration', 'Social isolation', 'Abuse detection']]];
   const box = $('qEvents');
   if (box) {
