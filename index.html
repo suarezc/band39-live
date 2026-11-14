@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Band 39 Live</title>
+<style>
+  :root {
+    --bg: #0f1117; --panel: #181b24; --line: #2a2f3d; --text: #e8eaf0; --muted: #8a90a2;
+    --accent: #6ea8ff; --x: #ff8a4c; --y: #3fd0a0; --z: #a98bff; --bad: #ff6b6b;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; padding: 24px 16px; }
+  main { max-width: 1040px; margin: 0 auto; }
+  header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-bottom: 16px; }
+  h1 { font-size: 22px; margin: 0; }
+  h1 span { color: var(--muted); font-weight: 400; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 12px; }
+  .buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
+  button { background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 8px;
+           padding: 8px 14px; font: inherit; cursor: pointer; }
+  button:hover:not(:disabled) { border-color: var(--accent); }
+  button.primary { background: var(--accent); color: #0b1020; border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .4; cursor: default; }
+  #message { padding: 10px 14px; border-radius: 8px; background: var(--panel); border: 1px solid var(--line);
+             margin-bottom: 16px; min-height: 1.45em; }
+  #message.error { border-color: var(--bad); color: var(--bad); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  .wide { grid-column: 1 / -1; }
+  canvas { width: 100%; height: 220px; display: block; background: #12141c; border-radius: 8px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 8px; font-variant-numeric: tabular-nums; }
+  .legend b { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; }
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .stat .v { font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .stat .l { color: var(--muted); font-size: 13px; }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 12px; }
+  select, input[type=range] { font: inherit; }
+  select { background: #12141c; color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 6px; }
+  input[type=color] { width: 48px; height: 36px; border: none; background: none; padding: 0; cursor: pointer; }
+  #light { width: 36px; height: 36px; border-radius: 50%; background: #000; border: 2px solid var(--line);
+           transition: background-color .15s; }
+  #gesture { font-size: 34px; font-weight: 700; min-height: 48px; transition: color .3s; }
+  #gesture.flash { color: var(--accent); }
+  #log { list-style: none; margin: 0; padding: 0; max-height: 160px; overflow: auto; color: var(--muted);
+         font-variant-numeric: tabular-nums; }
+  #log li { padding: 2px 0; border-bottom: 1px solid var(--line); }
+  .muted { color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Band 39 <span id="band-name">Vexo-HACK-39 · not connected</span></h1>
+    <div class="buttons">
+      <button id="connect-ble" class="primary">Connect (Bluetooth)</button>
+      <button id="connect-usb">USB cable</button>
+      <button id="connect-sim">Pretend band</button>
+      <button id="disconnect" disabled>Disconnect</button>
+    </div>
+  </header>
+
+  <p id="message">Double-tap your band (it blinks blue), then press Connect and pick Vexo-HACK-39.</p>
+  <script>  // a double-clicked file cannot load the library: say so on the page instead of doing nothing
+    if (location.protocol === 'file:') document.getElementById('message').textContent = 'This page was opened by double-click, so it cannot load the library. In the vexohacks folder run:  python3 -m http.server 8000 --bind 127.0.0.1  Then open http://localhost:8000/index.html';
+  </script>
+
+  <div class="grid">
+    <section class="panel wide">
+      <h2>Star Catcher: tilt to roll</h2>
+      <div class="row">
+        <button id="game-start">Start round (or tap the band)</button>
+        <span class="stat"><span class="v" id="score">0</span> <span class="l">stars</span></span>
+        <span class="stat"><span class="v" id="clock">30</span> <span class="l">seconds</span></span>
+        <span class="muted">Best: <span id="best">0</span></span>
+        <label class="muted"><input type="checkbox" id="flip-x"> flip left/right</label>
+        <label class="muted"><input type="checkbox" id="flip-y"> flip up/down</label>
+      </div>
+      <canvas id="arena" width="1000" height="360" style="height:auto;aspect-ratio:1000/360;cursor:crosshair"></canvas>
+      <p class="muted" id="game-help">Connect your band and tilt your wrist to roll the ball onto the stars. No band? Press <b>Pretend band</b>, then move your mouse over the arena to tilt it.</p>
+    </section>
+
+    <section class="panel wide">
+      <h2>Motion (acceleration, g)</h2>
+      <div class="legend">
+        <span><b style="background:var(--x)"></b>x <span id="ax">–</span></span>
+        <span><b style="background:var(--y)"></b>y <span id="ay">–</span></span>
+        <span><b style="background:var(--z)"></b>z <span id="az">–</span></span>
+        <span class="muted">turning: <span id="gyro">–</span> °/s</span>
+      </div>
+      <canvas id="graph" width="1000" height="220"></canvas>
+    </section>
+
+    <section class="panel">
+      <h2>Gestures</h2>
+      <div id="gesture">–</div>
+      <ul id="log"></ul>
+    </section>
+
+    <section class="panel">
+      <h2>Light</h2>
+      <div class="row">
+        <input type="color" id="colour" value="#6ea8ff" aria-label="Colour">
+        <select id="pattern" aria-label="Pattern">
+          <option>solid</option><option>blink</option><option>breathe</option>
+          <option>flash</option><option>rainbow</option>
+        </select>
+        <div id="light" title="The pretend band's light"></div>
+      </div>
+      <div class="row">
+        <label class="muted" for="brightness">Brightness</label>
+        <input type="range" id="brightness" min="0.05" max="1" step="0.05" value="1">
+      </div>
+      <div class="row">
+        <button id="led-off">Off</button>
+        <button id="identify">Find my band</button>
+        <label class="muted"><input type="checkbox" id="tap-colours" checked> Tap changes colour</label>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Status</h2>
+      <div class="stats">
+        <div class="stat"><div class="v" id="steps">–</div><div class="l">steps since connected</div></div>
+        <div class="stat"><div class="v" id="state">–</div><div class="l">activity</div></div>
+        <div class="stat"><div class="v" id="battery">–</div><div class="l">battery</div></div>
+        <div class="stat"><div class="v" id="rssi">–</div><div class="l">signal (dBm)</div></div>
+        <div class="stat"><div class="v" id="temp">–</div><div class="l">chip temp (°C)</div></div>
+        <div class="stat"><div class="v" id="fw">–</div><div class="l">firmware</div></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script type="module">
+import { Band, SimTransport } from './vexo-open-kit/js/src/index.js';
+
+const BAND = 39;                      // the team's band number (on the bag). Keep it in this one place.
+
+const $ = (id) => document.getElementById(id);
+const PATTERNS = ['off', 'solid', 'blinking', 'breathing', 'flashing', 'rainbow'];
+const TAP_COLOURS = ['#ff5c8a', '#ffd166', '#3fd0a0', '#6ea8ff', '#a98bff', '#ff8a4c'];
+const KEEP = 300;                     // 6 seconds at 50 readings a second
+
+let band = null;
+let readings = [];
+let firstSteps = null;
+let tapColour = 0;
+let attempt = 0;
+
+function say(text, error = false) {
+  $('message').textContent = text;
+  $('message').classList.toggle('error', error);
+}
+
+function setButtons(connected, busy = false) {
+  for (const id of ['connect-ble', 'connect-usb', 'connect-sim']) $(id).disabled = connected || busy;
+  $('disconnect').disabled = !(connected || busy);
+  $('disconnect').textContent = busy ? 'Cancel' : 'Disconnect';
+}
+
+function resetReadouts() {
+  readings = []; firstSteps = null;
+  for (const id of ['ax', 'ay', 'az', 'gyro', 'steps', 'state', 'battery', 'rssi', 'temp', 'fw']) $(id).textContent = '–';
+  $('gesture').textContent = '–';
+  $('light').style.backgroundColor = '#000';
+}
+
+function showSimLight(led) {
+  const dim = led.brightness / 255;
+  const [r, g, b] = [led.r, led.g, led.b].map((p) => Math.round(p * dim));
+  $('light').style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+  $('light').title = `Pretend band's light: ${PATTERNS[led.pattern] ?? ''}`;
+}
+
+async function connect(kind) {
+  const mine = ++attempt;
+  setButtons(false, true);
+  resetReadouts();
+  let transport = 'ble';
+  if (kind === 'usb') transport = 'serial';
+  if (kind === 'sim') {
+    transport = new SimTransport(BAND, { autoTap: false });
+    transport.onLed = showSimLight;
+    // The mouse is the pretend wrist: the band reads whatever tilt the mouse sets, until disconnect.
+    transport.playMotion(() => ({ ...mouseTilt }));
+  }
+  say(kind === 'ble' ? 'Connecting... pick Vexo-HACK-39 in the list.'
+    : kind === 'usb' ? 'Connecting... pick "Vexo Open band" in the list of ports.'
+    : 'Starting the pretend band...');
+  try {
+    const found = await Band.connect(BAND, { transport, autoReconnect: kind !== 'sim' });
+    if (mine !== attempt) { await found.disconnect(); return; }   // Cancel was pressed meanwhile
+    band = found;
+    wire(band, kind);
+    await band.setMotion({ accelRange: 4 });
+    await band.configure({ motion: 50, events: true, activity: true, battery: true, temperature: true,
+                           ...(kind === 'usb' ? {} : { link: true }) });   // signal strength is Bluetooth only
+    await applyLed();
+    $('band-name').textContent = `${band.name} · ${kind === 'sim' ? 'pretend band' : kind === 'usb' ? 'USB cable' : 'Bluetooth'}`;
+    $('fw').textContent = band.info?.firmware ?? '–';
+    if (kind === 'usb') $('rssi').textContent = 'n/a';
+    setButtons(true);
+    say(`Connected to ${band.name}. Move it, tap it, pick a colour.`);
+  } catch (e) {
+    if (mine !== attempt) return;
+    band = null;
+    setButtons(false);
+    say(e.message, true);             // the library's messages say what to do next
+  }
+}
+
+function wire(b, kind) {
+  b.on('motion', (m) => { readings.push(m); if (readings.length > KEEP) readings.splice(0, readings.length - KEEP); });
+  b.on('event', (e) => {
+    const label = e.kind === 'orientation' && e.face ? `orientation ${e.face}` : e.kind;
+    $('gesture').textContent = label;
+    $('gesture').classList.add('flash');
+    setTimeout(() => $('gesture').classList.remove('flash'), 300);
+    const li = document.createElement('li');
+    li.textContent = `${new Date(e.time).toLocaleTimeString()}  ${label}`;
+    $('log').prepend(li);
+    while ($('log').children.length > 30) $('log').lastChild.remove();
+  });
+  const tapped = () => {
+    if (!$('tap-colours').checked) return;
+    tapColour = (tapColour + 1) % TAP_COLOURS.length;
+    $('colour').value = TAP_COLOURS[tapColour];
+    applyLed();
+  };
+  b.on('tap', () => { if (!game.running) startRound(); else tapped(); });
+  b.on('double-tap', tapped);
+  b.on('activity', (a) => {
+    if (firstSteps === null) firstSteps = a.steps;
+    $('steps').textContent = a.steps - firstSteps;
+    $('state').textContent = a.cadence ? `${a.state} · ${a.cadence}/min` : a.state;
+  });
+  b.on('battery', (x) => { $('battery').textContent = `${x.percent}%${x.charging ? ' ⚡' : ''}`; });
+  b.on('temperature', (x) => { $('temp').textContent = x.celsius.toFixed(1); });
+  b.on('link', (x) => { $('rssi').textContent = x.rssi ?? '–'; });
+  b.on('notice', (n) => { if (n.kind.includes('battery')) say(`Band notice: ${n.kind}`, n.kind === 'critical-battery'); });
+  b.on('stream-taken', (e) => say(e.message, true));
+  b.on('reconnecting', () => say('Lost the band. Trying to reconnect for 2 minutes... keep it close.', true));
+  b.on('reconnected', () => say(`Back with ${b.name}.`));
+  b.on('disconnect', (e) => {
+    if (band !== b) return;
+    band = null;
+    setButtons(false);
+    $('band-name').textContent = 'Vexo-HACK-39 · not connected';
+    say(e.reason === 'closed' ? 'Disconnected.' : e.message ?? `Disconnected (${e.reason}). Double-tap the band and connect again.`,
+        e.reason !== 'closed');
+  });
+}
+
+async function applyLed() {
+  if (!band) return;
+  try {
+    await band.setLed($('colour').value, { pattern: $('pattern').value, brightness: Number($('brightness').value) });
+  } catch (e) { say(e.message, true); }
+}
+
+$('connect-ble').onclick = () => connect('ble');
+$('connect-usb').onclick = () => connect('usb');
+$('connect-sim').onclick = () => connect('sim');
+$('disconnect').onclick = async () => {
+  if (band) { await band.disconnect(); return; }
+  attempt++;                          // Cancel while connecting
+  setButtons(false);
+  say('Cancelled. Press Connect to try again.');
+};
+$('colour').oninput = applyLed;
+$('pattern').onchange = applyLed;
+$('brightness').onchange = applyLed;
+$('led-off').onclick = async () => { try { await band?.ledOff(); } catch (e) { say(e.message, true); } };
+$('identify').onclick = async () => { try { await band?.identify(); } catch (e) { say(e.message, true); } };
+
+// ---- Star Catcher -------------------------------------------------------------------
+// The ball rolls the way the band is tilted: ax and ay are the share of gravity along the
+// band's sides (0 when flat, about ±1 g when on its edge).
+const arena = $('arena');
+const ctx = arena.getContext('2d');
+const ROUND_SECONDS = 30;
+const STAR_COLOURS = ['#ffd166', '#ff5c8a', '#3fd0a0', '#6ea8ff', '#a98bff'];
+const mouseTilt = { ax: 0, ay: 0, az: 1 };
+let best = 0;
+try { best = Number(localStorage.getItem('band39-best')) || 0; } catch {}
+$('best').textContent = best;
+const game = { running: false, ends: 0, score: 0, x: 500, y: 180, vx: 0, vy: 0, star: null, sparks: [] };
+
+arena.addEventListener('mousemove', (e) => {
+  const r = arena.getBoundingClientRect();
+  const nx = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width - 0.5) * 2));
+  const ny = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height - 0.5) * 2));
+  mouseTilt.ax = 0.6 * nx;            // tilt toward the mouse, up to about 37 degrees
+  mouseTilt.ay = -0.6 * ny;
+  mouseTilt.az = Math.sqrt(Math.max(0, 1 - mouseTilt.ax ** 2 - mouseTilt.ay ** 2));
+});
+arena.addEventListener('mouseleave', () => Object.assign(mouseTilt, { ax: 0, ay: 0, az: 1 }));
+
+function newStar() {
+  game.star = { x: 60 + Math.random() * (arena.width - 120), y: 50 + Math.random() * (arena.height - 100),
+                colour: STAR_COLOURS[Math.floor(Math.random() * STAR_COLOURS.length)], born: performance.now() };
+}
+
+function startRound() {
+  if (!band) { say('Connect your band (or press Pretend band) first, then start a round.', true); return; }
+  Object.assign(game, { running: true, ends: performance.now() + ROUND_SECONDS * 1000, score: 0,
+                        x: arena.width / 2, y: arena.height / 2, vx: 0, vy: 0, sparks: [] });
+  $('score').textContent = 0;
+  newStar();
+  band.setLed('#ffffff', { pattern: 'flash', period: 300 }).catch(() => {});
+  say('Go! Tilt to roll onto the stars.');
+}
+
+function endRound() {
+  game.running = false;
+  game.star = null;
+  if (game.score > best) {
+    best = game.score; $('best').textContent = best;
+    try { localStorage.setItem('band39-best', String(best)); } catch {}
+    band?.setLed('#ffd166', { pattern: 'rainbow' }).catch(() => {});
+    say(`Time! ${game.score} stars: a new best. Tap the band to go again.`);
+  } else {
+    band?.setLed('#6ea8ff', { pattern: 'breathe' }).catch(() => {});
+    say(`Time! ${game.score} stars (best ${best}). Tap the band to go again.`);
+  }
+}
+
+function catchStar() {
+  game.score++;
+  $('score').textContent = game.score;
+  const s = game.star;
+  for (let i = 0; i < 18; i++) {
+    const a = Math.random() * Math.PI * 2, v = 2 + Math.random() * 4;
+    game.sparks.push({ x: s.x, y: s.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1, colour: s.colour });
+  }
+  band?.setLed(s.colour, { pattern: 'solid' }).catch(() => {});
+  newStar();
+}
+
+function drawStar(x, y, r, colour, spin) {
+  ctx.beginPath();
+  for (let i = 0; i < 10; i++) {
+    const a = spin + i * Math.PI / 5, rr = i % 2 ? r * 0.45 : r;
+    ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr);
+  }
+  ctx.closePath(); ctx.fillStyle = colour; ctx.shadowColor = colour; ctx.shadowBlur = 18; ctx.fill(); ctx.shadowBlur = 0;
+}
+
+let lastFrame = performance.now();
+function gameLoop(now) {
+  const dt = Math.min(0.05, (now - lastFrame) / 1000);
+  lastFrame = now;
+  const m = readings.at(-1);
+  if (m && m.ax != null && band) {
+    const sx = $('flip-x').checked ? -1 : 1, sy = $('flip-y').checked ? -1 : 1;
+    game.vx += sx * m.ax * 2400 * dt;
+    game.vy += -sy * m.ay * 2400 * dt;
+  }
+  game.vx *= 0.985; game.vy *= 0.985;
+  game.x += game.vx * dt; game.y += game.vy * dt;
+  const R = 16;
+  if (game.x < R) { game.x = R; game.vx *= -0.5; }
+  if (game.x > arena.width - R) { game.x = arena.width - R; game.vx *= -0.5; }
+  if (game.y < R) { game.y = R; game.vy *= -0.5; }
+  if (game.y > arena.height - R) { game.y = arena.height - R; game.vy *= -0.5; }
+
+  if (game.running) {
+    const left = Math.max(0, (game.ends - now) / 1000);
+    $('clock').textContent = Math.ceil(left);
+    if (game.star && Math.hypot(game.x - game.star.x, game.y - game.star.y) < R + 20) catchStar();
+    if (left <= 0) endRound();
+  }
+
+  ctx.clearRect(0, 0, arena.width, arena.height);
+  ctx.fillStyle = '#12141c'; ctx.fillRect(0, 0, arena.width, arena.height);
+  ctx.strokeStyle = '#1d2130'; ctx.lineWidth = 1;
+  for (let x = 50; x < arena.width; x += 50) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, arena.height); ctx.stroke(); }
+  for (let y = 50; y < arena.height; y += 50) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(arena.width, y); ctx.stroke(); }
+  if (game.star) drawStar(game.star.x, game.star.y, 20 + 3 * Math.sin(now / 150), game.star.colour, now / 600);
+  game.sparks = game.sparks.filter((p) => (p.life -= dt * 1.6) > 0);
+  for (const p of game.sparks) {
+    p.x += p.vx; p.y += p.vy; p.vy += 0.15;
+    ctx.globalAlpha = p.life; ctx.fillStyle = p.colour; ctx.fillRect(p.x - 2, p.y - 2, 4, 4);
+  }
+  ctx.globalAlpha = 1;
+  const grad = ctx.createRadialGradient(game.x - 5, game.y - 5, 2, game.x, game.y, R);
+  grad.addColorStop(0, '#ffffff'); grad.addColorStop(1, '#6ea8ff');
+  ctx.beginPath(); ctx.arc(game.x, game.y, R, 0, Math.PI * 2); ctx.fillStyle = grad; ctx.fill();
+  if (!game.running) {
+    ctx.fillStyle = '#8a90a2'; ctx.font = '600 22px system-ui, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(band ? 'Tap the band or press Start to play' : 'Connect a band (or the pretend band) to play', arena.width / 2, 40);
+  }
+  requestAnimationFrame(gameLoop);
+}
+requestAnimationFrame(gameLoop);
+$('game-start').onclick = startRound;
+
+// The graph: 0 g in the middle, +2 g at the top, -2 g at the bottom.
+const canvas = $('graph');
+const pen = canvas.getContext('2d');
+const COLOURS = { ax: '#ff8a4c', ay: '#3fd0a0', az: '#a98bff' };
+function draw() {
+  const { width: w, height: h } = canvas;
+  pen.clearRect(0, 0, w, h);
+  pen.strokeStyle = '#2a2f3d'; pen.lineWidth = 1;
+  for (const g of [-1, 0, 1]) { pen.beginPath(); pen.moveTo(0, h * (0.5 - g / 4)); pen.lineTo(w, h * (0.5 - g / 4)); pen.stroke(); }
+  const newest = readings.at(-1);
+  pen.lineWidth = 2;
+  for (const [axis, colour] of Object.entries(COLOURS)) {
+    if (newest && newest[axis] != null) $(axis).textContent = newest[axis].toFixed(2);
+    pen.beginPath(); pen.strokeStyle = colour;
+    readings.forEach((m, i) => { if (m[axis] != null) pen.lineTo(i * w / KEEP, h * (0.5 - Math.max(-2, Math.min(2, m[axis])) / 4)); });
+    pen.stroke();
+  }
+  if (newest && newest.gx != null) $('gyro').textContent = Math.round(Math.hypot(newest.gx, newest.gy, newest.gz));
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>
