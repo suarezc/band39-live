@@ -48,3 +48,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md): the hub, voice (Pipecat + Deepgram + Gem
 Run it with `python3 care/server/server.py` (http://localhost:8039). It needs no packages. API keys go only in each
 person's own `~/.config/vexo-band39/env` (see `care/README.md`), never in the repo.
 Deploy: `python3 care/tools/deploy_superserve.py`. Tests: `node care/tools/test_motion.mjs`.
+
+## What we found
+
+[FINDINGS.md](FINDINGS.md): transcript accuracy on the real band, voice identity, the decision model on text and on audio, scam detection, and the rules we took from them.
