@@ -1,0 +1,6 @@
+{
+  "name": "vexo-companion-life-sim",
+  "private": true,
+  "type": "commonjs",
+  "description": "Standalone website + day simulator (browser-only, no build). Separate from the parent Node app."
+}

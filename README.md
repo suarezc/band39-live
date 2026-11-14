@@ -21,3 +21,15 @@ Cloned without `--recurse-submodules`? Run `git submodule update --init`.
 
 The band number lives in one place: `const BAND = 39` in `index.html`.
 `vexo-open-kit/` is the [Vexo Open kit](https://github.com/VexoAI-Org/vexo-open-kit) (MIT), included unchanged as a submodule.
+
+## Vexo Companion: grandma screen + caregiver app
+
+`companion/` is a second page for the same band 39: **Margaret's screen** (large type: fall check,
+pill reminders, night redirect, check-ins, messages, help), **Lisa's caregiver app** (status, steps,
+pills, alerts, two-way messages, timeline) and a **life event simulator** that plays fake days
+(falls, missed pills, night walking, quiet spells, band left off, low battery) on the kit's pretend band.
+
+With the server above running, open <http://localhost:8000/companion/vexo-companion.html#live>.
+Band taps answer the prompts, and the band's light follows them. It connects only to `Vexo-HACK-39`
+(`const BAND = 39` in `companion/js/live.js`). Tests: `node companion/tools/test_live.mjs`.
+After editing `companion/index.html`, `css/` or `js/`, rebuild the single file with `node companion/tools/bundle.cjs`.
