@@ -161,10 +161,15 @@ Margaret gets a virtual card with limits ($50 a purchase, $200 a week, no wires 
 alert from the band freezes it; Lisa unfreezes it; a care-shop item is paid with a one-time card.
 Pretend cards and pretend purchases only: the script refuses a live key.
 
-Status on 14 November: **not run end to end yet.** Issuing is switched on and the test cardholder exists,
-but Stripe's financial account that the cards draw on is still "pending", so no card could be created.
-The script says so and stops. Still unknown: how that account gets test funds, and whether purchases are
-approved without them.
+Status on 14 November: **the Stripe script has not run end to end.** Issuing is switched on in the sandbox and
+the test cardholder exists, but Stripe's financial account that the cards draw on stays "pending", so Stripe
+refuses to create a card. The script says so and stops.
+
+**Backup for the demo: the same rules simulated in our own code.** Open
+<http://localhost:8000/experiments/cards/> and press "Play the whole story", or use the buttons.
+`cards/card-rules.js` holds the rules (limit per purchase and per week, blocked kinds of shop, freeze and
+unfreeze, one-time cards); `node experiments/cards/test_card_rules.cjs` runs its 7 checks. The page says
+it is a simulation. The care app can load `card-rules.js` and call `freeze()` from its scam alert.
 
 ## Self-test of the analysis
 

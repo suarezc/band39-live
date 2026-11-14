@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Margaret's Safe Card</title>
+<style>
+  :root { --bg:#0f1117; --panel:#181b24; --line:#2a2f3d; --text:#e8eaf0; --muted:#8a90a2; --accent:#6ea8ff;
+          --good:#38c172; --bad:#ff6b6b; --warn:#ffb020; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif; padding:20px 16px; }
+  main { max-width:1080px; margin:0 auto; }
+  h1 { font-size:22px; margin:0 0 2px; } .sub { color:var(--muted); margin:0 0 16px; }
+  h2 { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 10px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(310px,1fr)); gap:16px; align-items:start; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  button { background:#12141c; color:var(--text); border:1px solid var(--line); border-radius:8px; padding:9px 12px; font:inherit; cursor:pointer; text-align:left; }
+  button:hover:not(:disabled) { border-color:var(--accent); } button:disabled { opacity:.4; cursor:default; }
+  button.primary { background:var(--accent); color:#0b1020; border-color:var(--accent); font-weight:600; text-align:center; }
+  button.alert { border-color:var(--bad); color:var(--bad); } button.ok { border-color:var(--good); color:var(--good); }
+  .stack { display:flex; flex-direction:column; gap:8px; }
+  .card { border-radius:14px; padding:18px; min-height:150px; background:linear-gradient(135deg,#2b4a8a,#6ea8ff); color:#fff; position:relative; transition:filter .3s, background .3s; }
+  .card.frozen { background:linear-gradient(135deg,#3a4050,#7b8296); }
+  .card.cancelled { background:linear-gradient(135deg,#3a2a2a,#6a4a4a); filter:saturate(.5); }
+  .card.once { background:linear-gradient(135deg,#1f6b4a,#38c172); }
+  .card .name { font-size:13px; opacity:.85; } .card .num { font-size:21px; letter-spacing:.12em; margin:22px 0 10px; font-variant-numeric:tabular-nums; }
+  .card .state { position:absolute; top:16px; right:16px; font-size:12px; font-weight:700; padding:3px 9px; border-radius:99px; background:rgba(0,0,0,.35); }
+  .rules { margin:10px 0 0; padding-left:18px; color:var(--muted); font-size:13px; }
+  .bar { height:8px; border-radius:99px; background:#12141c; overflow:hidden; margin:6px 0 2px; } .bar i { display:block; height:100%; background:var(--accent); width:0; transition:width .3s; }
+  #log { list-style:none; margin:0; padding:0; max-height:420px; overflow:auto; }
+  #log li { padding:8px 0; border-bottom:1px solid var(--line); display:grid; grid-template-columns:auto 1fr auto; gap:4px 10px; align-items:baseline; }
+  .v { font-weight:700; font-size:12px; padding:2px 8px; border-radius:99px; } .v.yes { background:#173a28; color:var(--good); } .v.no { background:#3d1f1f; color:var(--bad); } .v.note { background:#2a2f3d; color:var(--text); }
+  #log .why { grid-column:2 / 4; color:var(--muted); font-size:13px; }
+  .muted { color:var(--muted); font-size:13px; }
+  #story-line { min-height:1.5em; margin:10px 0 0; font-size:16px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Margaret's Safe Card</h1>
+  <p class="sub">A card that a scam can't drain. This page simulates the rules in our own code; Stripe Issuing provides the same controls on real cards.</p>
+
+  <div class="grid">
+    <section class="panel">
+      <h2>Her everyday card</h2>
+      <div class="card" id="card">
+        <span class="state" id="state">ACTIVE</span>
+        <div class="name">Margaret · everyday card</div>
+        <div class="num">•••• •••• •••• <span id="last4"></span></div>
+        <div class="name" id="frozen-why"></div>
+      </div>
+      <div class="bar"><i id="week-bar"></i></div>
+      <div class="muted"><span id="week-spent">$0.00</span> of $200.00 used this week</div>
+      <ul class="rules">
+        <li>$50 at most for one purchase</li>
+        <li>$200 at most in a week</li>
+        <li>No wire transfers, money orders, crypto or stored-value loads</li>
+        <li>Frozen the moment the band flags a likely scam, until Lisa approves</li>
+      </ul>
+      <div id="once-wrap" hidden style="margin-top:14px">
+        <h2>One-time card</h2>
+        <div class="card once" id="once">
+          <span class="state" id="once-state">ACTIVE</span>
+          <div class="name" id="once-name"></div>
+          <div class="num">•••• •••• •••• <span id="once-last4"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Play the story</h2>
+      <button class="primary" id="story" style="width:100%">▶ Play the whole story</button>
+      <p id="story-line" class="muted"></p>
+      <h2 style="margin-top:14px">Or try it yourself</h2>
+      <div class="stack">
+        <button data-buy="1840|Corner Pharmacy|pharmacy">Pharmacy · $18.40</button>
+        <button data-buy="3275|Fresh Market|grocery">Groceries · $32.75</button>
+        <button data-buy="45000|Best Electronics (gift cards)|electronics">Gift cards at an electronics shop · $450</button>
+        <button data-buy="4500|Fresh Market (gift cards)|grocery">Gift cards at the supermarket · $45</button>
+        <button data-buy="4000|QuickWire Money Transfer|wire">Wire transfer · $40</button>
+        <button class="alert" id="scam">⚠ Band: unknown voice asks for gift cards (scam alert)</button>
+        <button class="ok" id="approve">✓ Lisa calls Mom and approves</button>
+        <button id="cane">Care shop: buy the $39 cane with a one-time card</button>
+        <button id="again">…the shop tries to charge that card again</button>
+        <button id="reset">Start over</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>What happened</h2>
+      <ul id="log"></ul>
+    </section>
+  </div>
+</main>
+
+<script src="card-rules.js"></script>
+<script>
+const R = window.CardRules;
+const $ = (id) => document.getElementById(id);
+let card, once, playing = false;
+
+function add(kind, title, amount, why) {
+  const li = document.createElement('li');
+  const v = document.createElement('span'); v.className = 'v ' + kind; v.textContent = kind === 'yes' ? 'APPROVED' : kind === 'no' ? 'DECLINED' : 'NOTE';
+  const t = document.createElement('span'); t.textContent = title;
+  const a = document.createElement('span'); a.textContent = amount || '';
+  li.append(v, t, a);
+  if (why) { const w = document.createElement('span'); w.className = 'why'; w.textContent = why; li.append(w); }
+  $('log').prepend(li);
+}
+
+function render() {
+  $('last4').textContent = card.last4;
+  $('card').className = 'card' + (card.status === 'frozen' ? ' frozen' : '');
+  $('state').textContent = card.status === 'frozen' ? 'FROZEN' : 'ACTIVE';
+  $('frozen-why').textContent = card.status === 'frozen' ? 'Frozen: ' + card.frozenBecause : '';
+  const spent = R.weekSpent(card);
+  $('week-spent').textContent = R.money(spent);
+  $('week-bar').style.width = Math.min(100, spent / card.weekly * 100) + '%';
+  $('once-wrap').hidden = !once;
+  if (once) {
+    $('once').className = 'card once' + (once.status === 'cancelled' ? ' cancelled' : '');
+    $('once-state').textContent = once.status === 'cancelled' ? 'USED · CANCELLED' : 'ACTIVE';
+    $('once-name').textContent = `One-time card · ${once.for} · ${R.money(once.total)} · medical supply shops only`;
+    $('once-last4').textContent = once.last4;
+  }
+  $('approve').disabled = card.status !== 'frozen';
+  $('scam').disabled = card.status === 'frozen';
+  $('again').disabled = !once;
+}
+
+function buy(which, amount, shop, category) {
+  const r = R.buy(which, { amount, shop, category });
+  add(r.approved ? 'yes' : 'no', shop, R.money(amount), r.approved ? '' : 'Declined: ' + r.reason + '.');
+  render();
+  return r;
+}
+function scam() { R.freeze(card, 'scam alert from the band'); add('note', 'Scam alert', '', 'The band heard an unknown voice asking for gift cards. Lisa has been told; the card is frozen.'); render(); }
+function approve() { R.unfreeze(card, 'Lisa'); add('note', 'Lisa approved', '', 'Lisa spoke with her mother and unfroze the card.'); render(); }
+function cane() {
+  once = R.oneTimeCard(3900, 'medical', 'quad-base cane');
+  add('note', 'One-time card made', '', 'For the suggested quad-base cane: $39.00, medical supply shops only, one purchase.');
+  buy(once, 3900, 'CareSupply Medical · quad-base cane', 'medical');
+}
+function again() { buy(once, 3900, 'CareSupply Medical · second charge', 'medical'); }
+function reset() { card = R.everydayCard(); once = null; $('log').textContent = ''; $('story-line').textContent = ''; render(); }
+
+for (const b of document.querySelectorAll('[data-buy]')) b.onclick = () => { const [amount, shop, category] = b.dataset.buy.split('|'); buy(card, Number(amount), shop, category); };
+$('scam').onclick = scam; $('approve').onclick = approve; $('cane').onclick = cane; $('again').onclick = again; $('reset').onclick = reset;
+
+const STORY = [
+  ['An ordinary day: the pharmacy.', () => buy(card, 1840, 'Corner Pharmacy', 'pharmacy')],
+  ['Groceries.', () => buy(card, 3275, 'Fresh Market', 'grocery')],
+  ['A caller talks her into $450 of gift cards. The card says no.', () => buy(card, 45000, 'Best Electronics (gift cards)', 'electronics')],
+  ['Then a wire transfer. Blocked.', () => buy(card, 4000, 'QuickWire Money Transfer', 'wire')],
+  ['The band hears an unknown voice asking for gift cards. The card freezes.', scam],
+  ['The scammer tries a smaller amount at the supermarket. Frozen.', () => buy(card, 4500, 'Fresh Market (gift cards)', 'grocery')],
+  ['Lisa calls her mother, then approves in her app.', approve],
+  ['Life goes on.', () => buy(card, 1200, 'Corner Pharmacy', 'pharmacy')],
+  ['The band noticed unsteady walking. Lisa buys the suggested cane with a one-time card.', cane],
+  ['Next month the shop tries to charge that card again. It no longer exists.', again],
+];
+$('story').onclick = async () => {
+  if (playing) return;
+  playing = true; $('story').disabled = true; reset();
+  for (const [line, act] of STORY) {
+    $('story-line').textContent = line;
+    await new Promise((r) => setTimeout(r, 900));
+    act();
+    await new Promise((r) => setTimeout(r, 1900));
+  }
+  $('story-line').textContent = 'A scam cost her nothing, and nobody can keep charging her.';
+  playing = false; $('story').disabled = false;
+};
+
+reset();
+</script>
+</body>
+</html>
