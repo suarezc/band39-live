@@ -480,3 +480,20 @@ textarea { border-radius: 20px; width: 100%; resize: vertical; line-height: 1.5;
 @media (max-width: 720px) { .q-lanes.big { gap: 22px; } .q-lanes.big .ql:not(:last-child)::after { right: auto; left: 50%; top: auto; bottom: -19px; transform: translateX(-50%) rotate(90deg); } }
 @media (prefers-reduced-motion: reduce) { .q-flow li { animation: none; } }
 .app.in-product .q-now .q-lanes, .app.in-product .q-now .q-flow { display: none; }   /* product.html shows them large under the phones */
+/* home: the event, large, right below the animation (same look as product.html) */
+.q-now { padding: 18px 20px 18px; }
+.q-ev b { font-size: 22px; }
+.q-lanes.big { gap: 30px; margin-top: 14px; }
+.q-lanes.big .ql { padding: 16px; border-radius: 18px; min-height: 190px; gap: 8px; }
+.q-lanes.big .ql h2 { font-size: 12px; letter-spacing: .08em; }
+.q-lanes.big .ql-main { font: 600 20px/1.2 Fraunces, Georgia, serif; }
+.q-lanes.big q { font-size: 14.5px; } .q-lanes.big small { font-size: 14px; }
+.ql-chip { height: 28px; font-size: 13px; padding: 0 11px; }
+.ql-note { padding: 10px 12px; border-radius: 14px; } .ql-note b { font-size: 14.5px; } .ql-note p { font-size: 13.5px; -webkit-line-clamp: 3; }
+.ql-tab { font-size: 13px; }
+.q-lanes.big .ql:not(:last-child)::after { right: -24px; width: 18px; height: 18px; }
+.q-led { width: 12px; height: 12px; margin-top: 0; }
+.q-flow { margin-top: 16px; padding: 12px 14px; border-radius: 16px; gap: 8px 6px; }
+.q-flow li { height: 32px; font-size: 13.5px; padding: 0 12px; }
+@media (max-width: 720px) { .q-lanes.big { gap: 26px; } .q-lanes.big .ql { min-height: 0; } .q-lanes.big .ql:not(:last-child)::after { right: auto; left: 50%; bottom: -22px; } }
+.q-lanes.big { padding: 0 !important; }
