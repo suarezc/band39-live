@@ -1,0 +1,17 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>sim-stage demo</title>
+<style>
+  html, body { margin: 0; height: 100%; font-family: -apple-system, system-ui, sans-serif; }
+  #st { position: relative; width: 100vw; height: 100vh; background: linear-gradient(180deg, #FCEFE3 0%, #F3E2D2 100%); overflow: hidden; }
+  body.night #st { background: linear-gradient(180deg, #1F1B2B 0%, #171320 100%); }
+  #st canvas { display: block; width: 100% !important; height: 100% !important; }
+</style></head>
+<body>
+<div id="st"></div>
+<script type="module">
+  const m = await import('./js/sim-stage.js?v=' + Date.now());
+  window.stage = m.createStage(document.getElementById('st'), {});
+  window.stageReady = true;
+</script>
+</body></html>

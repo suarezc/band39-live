@@ -141,3 +141,36 @@ def doctor_draft(facts, key=None, model=None, post=None):
            "(wrist-band measurements with numbers/times; methods are research algorithms, not validated devices), assessment "
            "(possibilities worth review), plan (suggested follow-ups). Concise. No diagnoses.")
     return _run(post, key, model, ins, {'facts': facts}, DOCTOR_SCHEMA, 'doctor', fb)
+
+
+# ---- report(facts): a written report about Margaret for Lisa (and to share with Dr. Patel) ---------------------------
+REPORT_SCHEMA = _obj({
+    'headline': S('One calm sentence: how Margaret is overall.'),
+    'mental': {'type': 'array', 'items': S('One short finding: memory, speech, mood, isolation, abuse, sleep, wandering.')},
+    'financial': {'type': 'array', 'items': S('One short finding: scams, fraud, bills, card.')},
+    'physical': {'type': 'array', 'items': S('One short finding: falls, tremor, medicine, movement, band.')},
+    'concerns': {'type': 'array', 'items': S('The most important things to act on, most urgent first.')},
+    'next_steps': {'type': 'array', 'items': S('A concrete step for Lisa, short.')},
+    'for_doctor': S('2-3 sentences Lisa could send to Dr. Patel. Possibilities, not diagnoses.'),
+})
+
+
+def report(facts, key=None, model=None, post=None):
+    """facts = {events: [{time, area, event, alert, detail, level, sensor, band_reading, margaret_said}], card: {...}}"""
+    evs = facts.get('events') or []
+
+    def fb():
+        by = {'mental': [], 'financial': [], 'physical': []}
+        for e in evs:
+            by.get(e.get('cat'), []).append('%s %s: %s' % (e.get('time', ''), e.get('event', ''), e.get('alert', '')))
+        urgent = ['%s at %s' % (e.get('alert') or e.get('event'), e.get('time')) for e in evs if e.get('level') == 'urgent']
+        return {'headline': 'Margaret had %d notable events today; %d needed a fast response.' % (len(evs), len(urgent)),
+                'mental': by['mental'] or ['Nothing notable.'], 'financial': by['financial'] or ['Nothing notable.'], 'physical': by['physical'] or ['Nothing notable.'],
+                'concerns': urgent[:5] or ['None urgent.'],
+                'next_steps': ['Call Mom this evening.', 'Review the scam and card alerts together.', 'Book a check-in with Dr. Patel about memory and the fall.'],
+                'for_doctor': 'Band 39 logged %d events for Margaret today, including %s. Sharing for review; these are signals, not diagnoses.' % (len(evs), ', '.join(urgent[:3]) or 'no urgent events')}
+    ins = ("Write a short report about Margaret (78, lives alone, early memory changes) for her daughter Lisa, using ONLY the facts: the day's "
+           "events from her Band 39 wristband and companion Pip (each with time, area, what was sensed and the alert). Group findings into mental, "
+           "financial and physical health (1-4 short bullets each, with times), list the concerns that need action (most urgent first), 3-5 concrete "
+           "next steps for Lisa, and a 2-3 sentence note Lisa could send to Dr. Patel. Plain words, warm but direct, no diagnoses, no invented facts.")
+    return _run(post, key, model, ins, {'facts': facts}, REPORT_SCHEMA, 'report', fb)

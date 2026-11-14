@@ -16,7 +16,7 @@
   const DAY = [
     ['7:30 am', 'physical', 'Pill reminder', 'walk', { to: 'table' }, '', AMBER, ['info', 'Morning pills due', 'The band is glowing and her screen asks “Pills taken?”.']],
     ['7:35 am', 'physical', 'Medicine taken', 'tap', {}, 'I took my morning pills.', GREEN, ['info', 'Medicine taken', 'Mom told the band she took her 8 am medicines.']],
-    ['8:10 am', 'physical', 'Steady walk', 'walk', { to: 'window' }, '', null, '1,240 steps, steady cadence. Balance 82/100.'],
+    ['8:10 am', 'physical', 'Steady walk', 'walk', { to: 'outside' }, '', null, '1,240 steps, steady cadence. Balance 82/100.'],
     ['9:00 am', 'mental', 'Repeats herself', 'confused', {}, 'Did Lisa call today?', null, ['info', 'Repeated question', 'Mom asked “Did Lisa call today?” twice in five minutes.']],
     ['9:40 am', 'financial', 'Scam attempt', 'phone', {}, 'Gift cards for his bail? Okay…', RED, ['urgent', 'Possible scam call', 'A caller says her grandson is in jail and wants gift cards. Her card is frozen. Call Mom now.', 'scam']],
     ['9:55 am', 'financial', 'Gift cards for $450', 'walk', { to: 'door' }, '', null, 'card'],
@@ -39,7 +39,7 @@
     ['8:00 pm', 'physical', 'Low band battery', 'idle', {}, '', AMBER, ['info', 'Band battery 12%', 'Reminded Mom to charge it tonight.']],
     ['9:00 pm', 'mental', 'Withdrawn: no movement 3 h', 'sit', {}, '', null, ['warn', 'Quiet spell, no answer', 'No movement for 3 hours and no answer to the check-in.']],
     ['11:30 pm', 'mental', 'Restless sleep', 'sleep', { restless: true }, '', NIGHT, '38% restless epochs since 10:30 pm.', 'night'],
-    ['2:10 am', 'mental', 'Night wandering', 'nightwalk', {}, '', NIGHT, ['warn', 'Mom is up and walking', 'Walking for 20 minutes at 2 am, near the front door.']],
+    ['2:10 am', 'mental', 'Night wandering', 'nightwalk', { outside: true }, '', NIGHT, ['warn', 'Mom is up and walking', 'Out past the garden gate at 2 am, walking for 20 minutes.']],
     ['3:00 am', 'physical', 'Seizure-like movement', 'seizure', {}, '', RED, ['urgent', 'Seizure-like movement', 'Rhythmic 4 Hz shaking for 12 s. Call Mom now; if no answer, call 911.']],
     ['3:05 am', 'physical', 'SOS: asks for help', 'sos', {}, 'Help, please.', RED, ['urgent', 'Mom pressed HELP', 'Call Mom, then Ruth next door, then 911.']],
   ];
@@ -57,10 +57,20 @@
     card: [['card', 'Card charge'], ['shield', 'Card rules'], ['bell', 'Care engine'], ['phone', 'Lisa']],
     app: [['clock', 'Medicine schedule'], ['watch', 'Band light + her screen'], ['bell', 'Care engine'], ['phone', 'Lisa']],
     clock: [['clock', 'Schedule'], ['watch', 'Band light + her screen'], ['bell', 'Care engine'], ['phone', 'Lisa']],
+    talk: [['mic', 'Band mic'], ['chat', 'Deepgram'], ['sparkle', 'OpenAI: memory check'], ['speaker', 'ElevenLabs voice'], ['watch', 'Band talks back'], ['phone', 'Lisa']],
     battery: [['battery', 'Band battery'], ['wave', 'Bluetooth'], ['bell', 'Care engine'], ['phone', 'Lisa']],
   };
   const TAB = { mental: 'Mental tab', financial: 'Financial tab', physical: 'Physical tab' };
   const ico = (n, z = 16) => (window.VexoIcons ? window.VexoIcons.svg(n, z) : '');
+  // a second person when the event needs one (stage.guest), and what they say
+  const GUEST = { 'Doorstep repair pressure': ['repair', 'Your roof is falling in. $8,000 cash, today.'], 'Nephew takes her card': ['nephew', 'Give me the card, Aunt Maggie.', 'angry'],
+    'Abuse detection': ['nephew', 'Stop asking questions!', 'angry'], 'SOS: asks for help': ['ruth', 'Margaret? I’m here. Lisa called me.'], 'Fall': ['ruth', 'I’ve got you, Margaret.', null, 3200] };
+  // memory decline: the band asks, Margaret answers, Pip answers back out loud (ElevenLabs via /api/tts)
+  const MEMORY_TALK = [['pip', 'Margaret, who is coming to visit on Sunday?'], ['margaret', 'Sunday? I don’t remember anyone coming.'],
+    ['pip', 'That’s okay. Lisa and the twins are coming for lunch. I’ll remind you on Saturday.']];
+  const MUTE = !!new URL(location.href).searchParams.get('mute');
+  const LOG = [];                                     // events played, for the report
+  let talkSeq = 0;
   let stage = null, playing = false, played = 0, counts = { mental: 0, financial: 0, physical: 0 };
   const call = (fn, ...a) => { try { return stage && stage[fn] && stage[fn](...a); } catch (e) { console.warn(e); } };
   function loadStage() {
@@ -86,17 +96,20 @@
     call('setNight', ev[8] === 'night' || /am$/.test(ev[0]) && parseInt(ev[0], 10) < 6 || ev[3] === 'nightwalk');
     call('setLed', led ? led[0] : null, led ? led[1] : null);
     call('act', actName, opts); if (say) call('say', say, STEP * 1.6);
+    const gu = GUEST[name];
+    if (gu) { setTimeout(() => { call('guest', gu[0], { mood: gu[2] || null }); call('say', gu[1], 2600, 'guest'); }, gu[3] || 250); } else call('guest', null);
     call('caption', `${t} · ${name}`);
     counts[cat]++;
     const got = lisaGets(ev);
+    LOG.push({ time: t, area: CAT[cat] + ' health', cat, event: name, alert: got.title, detail: got.body, level: got.level, sensor: (SENSOR[(SENSE[i] || [])[0]] || [])[1] || '', band_reading: DEVICE[i] || '', margaret_said: say || '' });
     const [sk, does] = SENSE[i] || ['mic', '']; const sn = SENSOR[sk] || SENSOR.mic;
     $('qNow').innerHTML = `<div class="q-ev"><span class="q-tag tag-${cat}">${CAT[cat]}</span><b>${esc(name)}</b><small>${esc(t)}</small></div>
       <div class="q-lanes qbig">
         <div class="ql"><h2>${ico('user')}Margaret</h2><b class="ql-main">${esc(DOES[actName] || name)}</b>${say ? `<q>${esc(say)}</q>` : ''}</div>
-        <div class="ql"><h2>${ico('watch')}Bracelet</h2><span class="ql-chip">${ico(sn[0], 14)}${sn[1]}</span><b class="ql-main">${led ? `<i class="q-led" style="--led:${led[0]}"></i>` : ''}${esc(DEVICE[i] || '')}</b><small>${esc(does)}</small></div>
+        <div class="ql"><h2>${ico('watch')}Bracelet</h2><span class="ql-chip">${ico(sn[0], 14)}${sn[1]}</span><b class="ql-main">${led ? `<i class="q-led" style="--led:${led[0]}"></i>` : ''}${esc(DEVICE[i] || '')}</b><small>${esc(does)}</small>${name === 'Memory decline' ? `<ol class="ql-talk" id="qTalk">${MEMORY_TALK.map(([w, l]) => `<li class="${w === 'pip' ? 'bot' : 'her'}"><b>${w === 'pip' ? 'Band' : 'Margaret'}</b>${esc(l)}</li>`).join('')}</ol>` : ''}</div>
         <div class="ql lisa lv-${got.level}"><h2>${ico('phone')}Lisa’s portal</h2><div class="ql-note"><span class="ql-app">${ico('sprout', 12)}</span><b>${esc(got.title)}</b><p>${esc(got.body)}</p></div><span class="ql-tab">${got.level === 'urgent' ? 'Full-screen alert' : TAB[cat]}</span></div>
       </div>
-      <ol class="q-flow" aria-label="Information flow">${(FLOW[sk] || FLOW.mic).map(([ic, label], k) => `<li style="--k:${k}">${ico(ic, 14)}<span>${esc(label)}</span></li>`).join('')}</ol>`;
+      <ol class="q-flow" aria-label="Information flow">${(name === 'Memory decline' ? FLOW.talk : FLOW[sk] || FLOW.mic).map(([ic, label], k) => `<li style="--k:${k}">${ico(ic, 14)}<span>${esc(label)}</span></li>`).join('')}</ol>`;
     played++; $('qProg').style.width = playing ? ((i + 1) / DAY.length * 100) + '%' : '0%';
     const feed = $('qFeed'); const empty = feed.querySelector('.q-empty'); if (empty) empty.remove();
     if (window.parent !== window) {   // product.html shows the same event large, next to the phones
@@ -105,6 +118,28 @@
     }
     feed.insertAdjacentHTML('afterbegin', `<li class="qf lv-${got.level} tag-${cat}"><time>${esc(t)}</time><b>${esc(got.title)}</b></li>`);
     paintCounts(playing ? i + 1 : played);
+    if (name === 'Memory decline' && !playing) talk();
+  }
+  async function speakLine(text) {
+    if (MUTE) return new Promise((r) => setTimeout(r, 1400));
+    try {
+      const res = await fetch('api/tts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) });
+      if (!res.ok) throw new Error('tts ' + res.status);
+      const a = new Audio(URL.createObjectURL(await res.blob()));
+      await new Promise((r) => { a.onended = r; a.onerror = r; a.play().catch(r); });
+    } catch (_) { await new Promise((r) => setTimeout(r, 1400)); }
+  }
+  async function talk() {
+    const my = ++talkSeq;
+    const rows = () => document.querySelectorAll('#qTalk li');
+    for (let k = 0; k < MEMORY_TALK.length; k++) {
+      if (my !== talkSeq) return;
+      rows().forEach((li, n) => li.classList.toggle('now', n === k));
+      const [who, line] = MEMORY_TALK[k];
+      if (who === 'margaret') { call('act', 'confused'); call('say', line, 2600); await new Promise((r) => setTimeout(r, 2000)); }
+      else { call('setLed', '#3E8EF7', 'pulse'); call('caption', 'Band: ' + line); await speakLine(line); call('setLed', null); }
+    }
+    rows().forEach((li) => li.classList.remove('now'));
   }
   async function play() {
     if (playing) { playing = false; return; }
@@ -119,6 +154,7 @@
     }
     const done = playing; playing = false;
     $('qPlay').textContent = done ? 'Play again' : 'Play a day in 30 s';
+    if (done) setTimeout(makeReport, 600);
     if (done) {
       call('setLed', null); call('setNight', false); call('act', 'reset'); call('caption', `${DAY.length} events in ${Math.round((performance.now() - t0) / 1000)} s`);
       $('qNow').innerHTML = `<span class="q-tag">Done</span><b>${DAY.length} events · ${Math.round((performance.now() - t0) / 1000)} s</b><button class="q-open" data-go="caregiver">Open Lisa’s app</button>`;
@@ -138,10 +174,34 @@
       show(+b.dataset.qev);
     });
   }
+  // ---- report about Margaret, from the events played (AI via /api/report; offline rules on the server otherwise)
+  async function makeReport() {
+    const box = $('qReport'); if (!box) return;
+    if (!LOG.length) { box.hidden = false; box.innerHTML = '<p class="qr-empty">Play the day or tap a few events first.</p>'; return; }
+    box.hidden = false; box.innerHTML = '<p class="qr-empty">Writing Margaret’s report…</p>';
+    box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    const m = window.VexoMoney;
+    const facts = { events: LOG.slice(-40), card: m ? { status: m.card.status, declined: m.card.log.filter((p) => !p.approved).length } : null, date: new Date().toDateString() };
+    let r = null;
+    try { r = await (await fetch('api/report', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ facts }) })).json(); } catch (_) { r = null; }
+    if (!r || !r.headline) { box.innerHTML = '<p class="qr-empty">The report could not be written. Is the server running?</p>'; return; }
+    const list = (k) => (r[k] || []).map((x) => `<li>${esc(x)}</li>`).join('');
+    box.innerHTML = `<div class="qr-head"><div><span class="q-tag">Report</span><h2>Margaret · ${esc(new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }))}</h2></div>
+        <div class="qr-act"><button class="qr-btn" data-qr="print">Print / PDF</button><button class="qr-btn" data-qr="again">Rewrite</button></div></div>
+      <p class="qr-headline">${esc(r.headline)}</p>
+      <div class="qr-cols"><section class="qr-col tag-mental"><h3><span>1</span>Mental</h3><ul>${list('mental')}</ul></section>
+        <section class="qr-col tag-financial"><h3><span>2</span>Financial</h3><ul>${list('financial')}</ul></section>
+        <section class="qr-col tag-physical"><h3><span>3</span>Physical</h3><ul>${list('physical')}</ul></section></div>
+      <div class="qr-cols two"><section class="qr-col"><h3>Needs attention</h3><ol>${list('concerns')}</ol></section><section class="qr-col"><h3>Next steps for Lisa</h3><ol>${list('next_steps')}</ol></section></div>
+      <section class="qr-doc"><h3>Note for Dr. Patel</h3><p>${esc(r.for_doctor || '')}</p></section>
+      <p class="qr-src">${LOG.length} events · written by ${r.source === 'openai' ? 'OpenAI' : 'offline rules'} from the band’s signals · signals, not diagnoses</p>`;
+  }
+  document.addEventListener('click', (e) => { const b = e.target.closest('[data-qr]'); if (!b) return; if (b.dataset.qr === 'print') window.print(); else makeReport(); });
+  if ($('qReportBtn')) $('qReportBtn').addEventListener('click', makeReport);
   $('qPlay').addEventListener('click', play);
   paintCounts(0);
   const onRoute = () => { if (document.getElementById('app').dataset.portal === 'home') loadStage(); };
   if (new URL(location.href).searchParams.get('autoplay')) setTimeout(play, 1500);   // product.html?autoplay=1, demos
   addEventListener('hashchange', () => setTimeout(onRoute, 0)); setTimeout(onRoute, 0);
-  window.VexoQuick = { play, show, DAY, get stage() { return stage; } };
+  window.VexoQuick = { play, show, talk, makeReport, LOG, DAY, get stage() { return stage; } };
 })();

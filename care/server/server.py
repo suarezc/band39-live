@@ -148,7 +148,7 @@ class Handler(SimpleHTTPRequestHandler):
                 return self.analyze()
             if route in ('/api/trend-summary', '/api/chat'):   # Trends tab (server/history.py)
                 return self.send_json(200, history.handle(route, json.loads(self.body(200000) or b'{}'), key=KEY('OPENAI_API_KEY') or None, model=os.environ.get('OPENAI_MODEL', agents.MODEL_DEFAULT), post=self._post()))
-            if route in ('/api/pip', '/api/recall', '/api/ask', '/api/digest', '/api/doctor-draft'):
+            if route in ('/api/pip', '/api/recall', '/api/ask', '/api/digest', '/api/doctor-draft', '/api/report'):
                 return self.agent(route)
             if route == '/api/state':
                 return self.put_state()
@@ -251,6 +251,8 @@ class Handler(SimpleHTTPRequestHandler):
             out = agents.ask(str(req.get('question', '')), req.get('facts') or {}, **kw)
         elif route == '/api/digest':
             out = agents.digest(req.get('facts') or {}, **kw)
+        elif route == '/api/report':
+            out = agents.report(req.get('facts') or {}, **kw)
         else:
             out = agents.doctor_draft(req.get('facts') or {}, **kw)
         self.send_json(200, out)

@@ -66,7 +66,7 @@
       { pin: 3, ic: 'cloud', name: 'Social isolation', sensor: 'voice', expect: 'Pip comforts her and can tell Lisa; mood is logged.',
         run: say('Pip, I haven’t talked to anyone all week. Nobody needs me anymore. What’s the point of getting up.', 'sad') },
       { ic: 'moon', name: 'Night wandering', sensor: 'motion', expect: 'Walking at night opens “Up at night?” on her screen; Lisa is told.',
-        run: async () => { await band(); night(); act('nightwalk'); V.demoSignal('nightwalk'); } },
+        run: async () => { await band(); night(); act('nightwalk', { outside: true }); V.demoSignal('nightwalk'); } },
       { ic: 'bed', name: 'Restless sleep', sensor: 'motion', expect: 'Sleep movement scored per 30 s epoch; restless count rises.',
         run: async () => { await band(); night(); act('sleep', { restless: true }); V.demoSignal('restless'); } },
       { ic: 'chair', name: 'Withdrawn: no movement for 3 h', sensor: 'band', expect: 'Check-in on her screen; no answer in 25 s and Lisa hears.',
@@ -114,7 +114,7 @@
       { pin: 2, ic: 'hand', name: 'Tremor', sensor: 'motion', expect: 'Shaking score 0-4 from 3.5-7.5 Hz gyro power.',
         run: async () => { await band(); act('tremor'); V.demoSignal('tremor'); } },
       { ic: 'steps', name: 'Steady walk', sensor: 'motion', expect: 'Steps and cadence count up; balance measured on the walk.',
-        run: async () => { await band(); day(); act('walk', { to: 'window' }); V.demoSignal('walk'); } },
+        run: async () => { await band(); day(); act('walk', { to: 'outside' }); V.demoSignal('walk'); } },
       { ic: 'balance', name: 'Unsteady walk', sensor: 'motion', expect: 'Balance score drops: irregular steps, more sway.',
         run: async () => { await band(); day(); act('shaky'); V.demoSignal('shaky'); } },
       { ic: 'zap', name: 'Seizure-like movement', sensor: 'motion', expect: 'Rhythmic 2-7 Hz shaking for 10+ s: urgent, Lisa is called.',
@@ -280,10 +280,15 @@
   }
 
   // ---- running ----------------------------------------------------------------------------------------------
+  // a second person on stage when the event needs one (sim-stage.js guest API; ignored if the stage lacks it)
+  const GUESTS = { 'Doorstep repair pressure': ['repair', 'Your roof is falling in. Cash today.'], 'Family member takes her money': ['nephew', 'Give me the card.', 'angry'],
+    'Abuse detection': ['nephew', 'Stop asking questions!', 'angry'], 'SOS: asks for help': ['ruth', 'Margaret? I’m here.'], 'Fall': ['ruth', 'I’ve got you, Margaret.', null, 4000] };
   async function run(id, label) {
     const it = byId(id); if (!it) return;
     $$('.sim-ev').forEach((b) => b.classList.toggle('running', b.dataset.sim === id));
     stageCall('caption', label || it.name);
+    const gu = GUESTS[it.name];
+    if (gu) setTimeout(() => { stageCall('guest', gu[0], { mood: gu[2] || null }); stageCall('say', gu[1], 3000, 'guest'); }, gu[3] || 300); else stageCall('guest', null);
     const sn = $('simSensed'); if (sn) sn.innerHTML = `<span class="chip">${I(SENSOR[it.sensor][0], 14)}${SENSOR[it.sensor][1]}</span> ${esc(it.name)}`;
     try { await it.run(); } catch (e) { console.error(e); }
     ran.set(id, Date.now()); render();

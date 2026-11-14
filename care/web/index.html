@@ -27,8 +27,12 @@
         <div class="q-now" id="qNow" aria-live="polite"><div class="q-lanes idle"><div class="ql"><h2>Margaret</h2><p>At home</p></div><div class="ql"><h2>Band 39</h2><p>Watching</p></div><div class="ql"><h2>Lisa</h2><p>All good</p></div></div></div>
         <div class="q-bar" aria-hidden="true"><i id="qProg"></i></div>
       </div>
+      <section class="q-report" id="qReport" hidden aria-live="polite"></section>
       <aside class="q-side">
-        <button class="q-play" id="qPlay">Play 30 s</button>
+        <ol class="q-how" aria-label="How it works">
+          <li><span>1</span>Tap an event or Play</li><li><span>2</span>Margaret acts · bracelet senses</li><li><span>3</span>Lisa is told</li>
+        </ol>
+        <div class="q-cta"><button class="q-play" id="qPlay">Play 30 s</button><button class="q-rep" id="qReportBtn">Report</button></div>
         <div class="q-counts" id="qCounts"></div>
         <div class="q-events" id="qEvents" aria-label="Play one event"></div>
         <ol class="q-feed" id="qFeed"><li class="q-empty">Press play. Each event Margaret acts out lands here.</li></ol>
