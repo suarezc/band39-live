@@ -1,46 +1,215 @@
 {
  "questions": {
-  "gait_changed": {"type": "noul", "instructions": "Has this person's walking pattern changed meaningfully compared with their own baseline?"},
-  "real_fall": {"type": "noul", "instructions": "Did the wearer most likely have a real fall (as opposed to a bump, a dropped band, or nothing)?"},
-  "suggest": {"type": "choice", "instructions": "Which single product from the catalog is the most relevant suggestion to show the family?",
-   "criteria": {"night_lights": "Motion-activated night lights for hallway and bathroom.", "cane": "A walking cane for daytime walking support.",
-                "pill_organiser": "A weekly pill organiser with alarms.", "other": "Nothing; no product is warranted."}},
-  "wearer_ok": {"type": "choice", "instructions": "After the 'did you fall?' prompt, what should the system do? Words marked with a low confidence may have been misheard.",
-   "criteria": {"cancel": "The wearer clearly said or tapped that they are fine. Cancel the alert.",
-                "ask_again": "The answer is unclear, missing words, or low confidence. Ask again or wait for a tap.",
-                "escalate": "The wearer asked for help or clearly said they are not fine. Alert the family."}}
+  "gait_changed": {
+   "type": "noul",
+   "instructions": "Has this person's walking pattern changed meaningfully compared with their own baseline?"
+  },
+  "real_fall": {
+   "type": "noul",
+   "instructions": "Did the wearer most likely have a real fall (as opposed to a bump, a dropped band, or nothing)?"
+  },
+  "suggest": {
+   "type": "choice",
+   "instructions": "Which single product from the catalog is the most relevant suggestion to show the family?",
+   "criteria": {
+    "night_lights": "Motion-activated night lights for hallway and bathroom.",
+    "cane": "A walking cane for daytime walking support.",
+    "pill_organiser": "A weekly pill organiser with alarms.",
+    "other": "Nothing; no product is warranted."
+   }
+  },
+  "wearer_ok": {
+   "type": "choice",
+   "instructions": "After the 'did you fall?' prompt, what should the system do? Words marked with a low confidence may have been misheard.",
+   "criteria": {
+    "cancel": "The wearer clearly said or tapped that they are fine. Cancel the alert.",
+    "ask_again": "The answer is unclear, missing words, or low confidence. Ask again or wait for a tap.",
+    "escalate": "The wearer asked for help or clearly said they are not fine. Alert the family."
+   }
+  },
+  "wearer_ok_v2": {
+   "type": "choice",
+   "instructions": "After the 'did you fall?' prompt, what should the system do? Only the wearer's own voice, a tap on the band, or a tap in the app counts as an answer. Speech from another voice (TV, radio, visitor) is not an answer. Words with low confidence may have been misheard.",
+   "criteria": {
+    "cancel": "The wearer themself clearly said or tapped that they are fine. Cancel the alert.",
+    "ask_again": "No clear answer from the wearer yet. Ask again on the band and the app, and keep the timer running.",
+    "escalate": "The wearer asked for help, said they are not fine, or there are signs of distress such as groaning or no movement. Alert the family."
+   }
+  }
  },
  "cases": [
-  {"name": "stable, all normal", "want": {"gait_changed": false, "real_fall": false, "suggest": "other"},
-   "input": "14 days. Step-time ratio 1.03 to 1.05 every day, same as the month before. Cadence 108 to 110. No night-time walks. All pill reminders confirmed with a tap. No free-fall events."},
-  {"name": "daytime limp only", "want": {"gait_changed": true, "real_fall": false, "suggest": "cane"},
-   "input": "14 days. Step-time ratio rose from 1.04 to 1.32 and stayed there on 13 of 14 days. Cadence down from 108 to 90. All walking between 9 am and 6 pm. No night-time walks. All pills confirmed. No free-fall events."},
-  {"name": "night wandering only", "want": {"gait_changed": false, "suggest": "night_lights"},
-   "input": "14 days. Step-time ratio steady at 1.04, cadence steady at 107. Five walks between 2 and 4 am in a dark hallway, two brief stumbles answered 'I am fine' within 5 seconds. All pills confirmed."},
-  {"name": "missed pills only", "want": {"gait_changed": false, "real_fall": false, "suggest": "pill_organiser"},
-   "input": "14 days. Gait steady: step-time ratio 1.04, cadence 109. No night walks, no free-fall events. Evening pill reminder not confirmed on 9 of 14 days; morning pills confirmed every day."},
-  {"name": "real fall", "want": {"gait_changed": false, "real_fall": true},
-   "input": "Today 3:10 pm. Free-fall event of 0.4 s followed by a 6 g impact, then band orientation changed from upright to horizontal and stayed there. No movement for 4 minutes. No answer to the 'did you fall?' prompt. Gait this week steady: ratio 1.04, cadence 108."},
-  {"name": "band dropped on table", "want": {"gait_changed": false, "real_fall": false},
-   "input": "Today 9:02 am. Free-fall event of 0.2 s and a 3 g impact. Two seconds earlier the band was taken off (no motion consistent with wearing). Afterwards it lay perfectly still on a flat surface for 30 minutes, then was put back on and normal walking resumed. Gait steady: ratio 1.05."},
-  {"name": "bumped the door", "want": {"gait_changed": false, "real_fall": false},
-   "input": "Today 11:15 am. Single 2.5 g spike on the wrist while walking, no free-fall phase. Walking continued without pause at cadence 106. Tapped 'I am fine'. Gait this fortnight steady: ratio 1.04."},
-  {"name": "slow gradual decline", "want": {"gait_changed": true, "real_fall": false, "suggest": "cane"},
-   "input": "8 weeks. Step-time ratio week by week: 1.04, 1.05, 1.07, 1.09, 1.12, 1.14, 1.17, 1.19. Cadence fell from 110 to 97 over the same weeks. Daytime walking only. No night events, pills all confirmed, no free-fall."},
-
-  {"name": "transcript: clear 'I'm fine'", "want": {"wearer_ok": "cancel"},
-   "input": "Possible fall detected at 2:14 pm. Band asked 'did you fall?'. Transcript of the reply, with speech-to-text confidence per word: I'm (0.98) fine (0.97)."},
-  {"name": "transcript: clear 'not fine'", "want": {"wearer_ok": "escalate"},
-   "input": "Possible fall detected at 2:14 pm. Band asked 'did you fall?'. Transcript of the reply, with speech-to-text confidence per word: I'm (0.97) not (0.95) fine (0.96)."},
-  {"name": "transcript: 'not' is shaky", "want": {"wearer_ok": "ask_again"},
-   "input": "Possible fall detected at 2:14 pm. Band asked 'did you fall?'. Transcript of the reply, with speech-to-text confidence per word: I'm (0.91) not (0.38) fine (0.88)."},
-  {"name": "transcript: mumble", "want": {"wearer_ok": "ask_again"},
-   "input": "Possible fall detected at 2:14 pm. Band asked 'did you fall?'. Transcript of the reply, with speech-to-text confidence per word: mm (0.31) the (0.42) fine (0.35)."},
-  {"name": "transcript: TV in background", "want": {"wearer_ok": "ask_again"},
-   "input": "Possible fall detected at 2:14 pm. Band asked 'did you fall?'. Transcript of the reply, with speech-to-text confidence per word: and (0.88) now (0.90) the (0.93) weather (0.95) for (0.94) the (0.92) weekend (0.96). No tap on the band."},
-  {"name": "transcript: asks for help", "want": {"wearer_ok": "escalate"},
-   "input": "Possible fall detected at 2:14 pm. Band asked 'did you fall?'. Transcript of the reply, with speech-to-text confidence per word: please (0.93) call (0.95) Lisa (0.81) I (0.90) can't (0.89) get (0.94) up (0.96)."},
-  {"name": "transcript: no reply at all", "want": {"wearer_ok": "ask_again"},
-   "input": "Possible fall detected at 2:14 pm. Band asked 'did you fall?'. No speech heard in 10 seconds. No tap on the band. Band is moving normally (walking, cadence 104)."}
+  {
+   "name": "stable, all normal",
+   "want": {
+    "gait_changed": false,
+    "real_fall": false,
+    "suggest": "other"
+   },
+   "input": "14 days. Step-time ratio 1.03 to 1.05 every day, same as the month before. Cadence 108 to 110. No night-time walks. All pill reminders confirmed with a tap. No free-fall events."
+  },
+  {
+   "name": "daytime limp only",
+   "want": {
+    "gait_changed": true,
+    "real_fall": false,
+    "suggest": "cane"
+   },
+   "input": "14 days. Step-time ratio rose from 1.04 to 1.32 and stayed there on 13 of 14 days. Cadence down from 108 to 90. All walking between 9 am and 6 pm. No night-time walks. All pills confirmed. No free-fall events."
+  },
+  {
+   "name": "night wandering only",
+   "want": {
+    "gait_changed": false,
+    "suggest": "night_lights"
+   },
+   "input": "14 days. Step-time ratio steady at 1.04, cadence steady at 107. Five walks between 2 and 4 am in a dark hallway, two brief stumbles answered 'I am fine' within 5 seconds. All pills confirmed."
+  },
+  {
+   "name": "missed pills only",
+   "want": {
+    "gait_changed": false,
+    "real_fall": false,
+    "suggest": "pill_organiser"
+   },
+   "input": "14 days. Gait steady: step-time ratio 1.04, cadence 109. No night walks, no free-fall events. Evening pill reminder not confirmed on 9 of 14 days; morning pills confirmed every day."
+  },
+  {
+   "name": "real fall",
+   "want": {
+    "gait_changed": false,
+    "real_fall": true
+   },
+   "input": "Today 3:10 pm. Free-fall event of 0.4 s followed by a 6 g impact, then band orientation changed from upright to horizontal and stayed there. No movement for 4 minutes. No answer to the 'did you fall?' prompt. Gait this week steady: ratio 1.04, cadence 108."
+  },
+  {
+   "name": "band dropped on table",
+   "want": {
+    "gait_changed": false,
+    "real_fall": false
+   },
+   "input": "Today 9:02 am. Free-fall event of 0.2 s and a 3 g impact. Two seconds earlier the band was taken off (no motion consistent with wearing). Afterwards it lay perfectly still on a flat surface for 30 minutes, then was put back on and normal walking resumed. Gait steady: ratio 1.05."
+  },
+  {
+   "name": "bumped the door",
+   "want": {
+    "gait_changed": false,
+    "real_fall": false
+   },
+   "input": "Today 11:15 am. Single 2.5 g spike on the wrist while walking, no free-fall phase. Walking continued without pause at cadence 106. Tapped 'I am fine'. Gait this fortnight steady: ratio 1.04."
+  },
+  {
+   "name": "slow gradual decline",
+   "want": {
+    "gait_changed": true,
+    "real_fall": false,
+    "suggest": "cane"
+   },
+   "input": "8 weeks. Step-time ratio week by week: 1.04, 1.05, 1.07, 1.09, 1.12, 1.14, 1.17, 1.19. Cadence fell from 110 to 97 over the same weeks. Daytime walking only. No night events, pills all confirmed, no free-fall."
+  },
+  {
+   "name": "transcript: clear 'I'm fine'",
+   "want": {
+    "wearer_ok": "cancel"
+   },
+   "input": "Possible fall detected at 2:14 pm. Band asked 'did you fall?'. Transcript of the reply, with speech-to-text confidence per word: I'm (0.98) fine (0.97)."
+  },
+  {
+   "name": "transcript: clear 'not fine'",
+   "want": {
+    "wearer_ok": "escalate"
+   },
+   "input": "Possible fall detected at 2:14 pm. Band asked 'did you fall?'. Transcript of the reply, with speech-to-text confidence per word: I'm (0.97) not (0.95) fine (0.96)."
+  },
+  {
+   "name": "transcript: 'not' is shaky",
+   "want": {
+    "wearer_ok": "ask_again"
+   },
+   "input": "Possible fall detected at 2:14 pm. Band asked 'did you fall?'. Transcript of the reply, with speech-to-text confidence per word: I'm (0.91) not (0.38) fine (0.88)."
+  },
+  {
+   "name": "transcript: mumble",
+   "want": {
+    "wearer_ok": "ask_again"
+   },
+   "input": "Possible fall detected at 2:14 pm. Band asked 'did you fall?'. Transcript of the reply, with speech-to-text confidence per word: mm (0.31) the (0.42) fine (0.35)."
+  },
+  {
+   "name": "transcript: TV in background",
+   "want": {
+    "wearer_ok": "ask_again"
+   },
+   "input": "Possible fall detected at 2:14 pm. Band asked 'did you fall?'. Transcript of the reply, with speech-to-text confidence per word: and (0.88) now (0.90) the (0.93) weather (0.95) for (0.94) the (0.92) weekend (0.96). No tap on the band."
+  },
+  {
+   "name": "transcript: asks for help",
+   "want": {
+    "wearer_ok": "escalate"
+   },
+   "input": "Possible fall detected at 2:14 pm. Band asked 'did you fall?'. Transcript of the reply, with speech-to-text confidence per word: please (0.93) call (0.95) Lisa (0.81) I (0.90) can't (0.89) get (0.94) up (0.96)."
+  },
+  {
+   "name": "transcript: no reply at all",
+   "want": {
+    "wearer_ok": "ask_again"
+   },
+   "input": "Possible fall detected at 2:14 pm. Band asked 'did you fall?'. No speech heard in 10 seconds. No tap on the band. Band is moving normally (walking, cadence 104)."
+  },
+  {
+   "name": "v2: TV, other voice",
+   "want": {
+    "wearer_ok_v2": "ask_again"
+   },
+   "input": "Possible fall detected at 2:14 pm. Band and app asked 'did you fall?'. Speech heard: 'and now the weather for the weekend' (word confidence 0.88 to 0.96). Voice match with the wearer's enrolled voice: 0.11 (not her). Loudness at the band: quiet, far from the microphone. No tap on band or app. Band motion: small movements."
+  },
+  {
+   "name": "v2: her voice, fine",
+   "want": {
+    "wearer_ok_v2": "cancel"
+   },
+   "input": "Possible fall detected at 2:14 pm. Band and app asked 'did you fall?'. Speech heard: 'I'm fine, I just dropped my bag' (word confidence 0.90 to 0.98). Voice match with the wearer's enrolled voice: 0.93 (her). Loudness at the band: loud, close to the microphone. Band motion: walking."
+  },
+  {
+   "name": "v2: her voice fine + TV",
+   "want": {
+    "wearer_ok_v2": "cancel"
+   },
+   "input": "Possible fall detected at 2:14 pm. Band and app asked 'did you fall?'. Two voices heard. Voice A (match with wearer 0.91, close to the microphone): 'I'm okay' (0.94, 0.96). Voice B (match 0.08, far): 'stay tuned for more after the break' (0.9). App: tapped 'I'm fine'."
+  },
+  {
+   "name": "v2: groaning, no words",
+   "want": {
+    "wearer_ok_v2": "escalate"
+   },
+   "input": "Possible fall detected at 2:14 pm. Band and app asked 'did you fall?'. No words recognised. Non-speech sounds close to the microphone: low groaning, twice, and laboured breathing. No tap on band or app. Band motion: lying still, horizontal, for 90 seconds."
+  },
+  {
+   "name": "v2: silence, lying still",
+   "want": {
+    "wearer_ok_v2": "escalate"
+   },
+   "input": "Possible fall detected at 2:14 pm. Band and app asked 'did you fall?'. No speech and no other sound for 60 seconds. No tap on band or app. Band motion: none, band horizontal since the impact."
+  },
+  {
+   "name": "v2: silence, walking",
+   "want": {
+    "wearer_ok_v2": "ask_again"
+   },
+   "input": "Possible fall detected at 2:14 pm. Band and app asked 'did you fall?'. No speech for 20 seconds. No tap on band or app. Band motion: walking normally, cadence 104."
+  },
+  {
+   "name": "v2: other voice says fine",
+   "want": {
+    "wearer_ok_v2": "ask_again"
+   },
+   "input": "Possible fall detected at 2:14 pm. Band and app asked 'did you fall?'. Speech heard: 'she's fine, don't worry' (0.92 to 0.97). Voice match with the wearer's enrolled voice: 0.15 (not her). No tap on band or app. Band motion: none since the impact."
+  },
+  {
+   "name": "v2: her voice, 'not' shaky",
+   "want": {
+    "wearer_ok_v2": "ask_again"
+   },
+   "input": "Possible fall detected at 2:14 pm. Band and app asked 'did you fall?'. Speech heard: I'm (0.91) not (0.38) fine (0.88). Voice match with the wearer's enrolled voice: 0.90 (her). No tap on band or app. Band motion: small movements."
+  }
  ]
 }
