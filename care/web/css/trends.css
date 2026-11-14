@@ -108,7 +108,7 @@
 .tr-gh .tr-ic { width: 32px; height: 32px; border-radius: 11px; }
 .tr-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .tr-chart.wide { grid-column: 1 / -1; }
-.tr-chart.empty { padding-bottom: 12px; } .tr-chart.empty figcaption { margin-bottom: 0; }
+.tr-chart.empty { padding-bottom: 12px; align-self: start; } .tr-chart.empty figcaption { margin-bottom: 0; }
 .tr-chart { position: relative; margin: 0; background: var(--card); border-radius: 22px; padding: 12px 12px 8px; box-shadow: var(--shadow); min-width: 0; }
 .tr-chart figcaption { display: flex; flex-direction: column; gap: 1px; margin: 0 4px 4px; }
 .tr-chart figcaption b { font-size: 14.5px; } .tr-chart figcaption span { font-size: 12.5px; color: var(--muted); line-height: 1.35; }
@@ -168,3 +168,5 @@
   .tr-card { padding: 14px; border-radius: 24px; }
   .tr-chips { flex-wrap: nowrap; overflow-x: auto; margin: 0 -14px; padding: 0 14px 2px; scrollbar-width: none; } .tr-chip { flex: none; }
 }
+/* less text: hide secondary captions; the numbers, charts and tooltips carry the detail */
+.tr-legend, .tr-kpi-key, .tr-sum-sub:empty { display: none !important; }

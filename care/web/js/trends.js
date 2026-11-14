@@ -222,7 +222,7 @@
     out.spend.weekly_limit = spendLimit();
     const s = { period_label: R.period, prior_label: R.prior, range_days: R.days, from: fmtD(cur[0].date), to: fmtD(cur[cur.length - 1].date) + ' (today)',
       categories: { mental: 'Mental health', financial: 'Financial health', physical: 'Physical health' },
-      data_note: 'Past days are sample history until band 39 stores real days; today is live and partial.',
+      data_note: 'Sample history · today live',
       doses_per_day: st.byAgo(1).doses, metrics: out,
       events: eventsIn(range).map((e) => ({ date: e.ago === 0 ? 'today' : fmtD(dateAgo(e.ago)), kind: e.kind, label: e.label })) };
     if (withSeries) {
@@ -249,7 +249,8 @@
     const max = xs.length ? Math.max(...xs) : 1, min = xs.length ? Math.min(...xs) : 0;
     if (form !== 'line') {
       if (m.agg === 'sum' && key !== 'spend') { const s = Math.max(1, Math.ceil(max / 2)); return [0, 2 * s]; }   // counts: whole-number ticks
-      const top = Math.max(2, max), s = niceStep(top, 2); return [0, Math.ceil(top / s) * s];
+      const top = Math.max(2, max) * 1.04, p = Math.pow(10, Math.floor(Math.log10(top))), f = [1, 1.2, 1.6, 2, 2.4, 3, 4, 5, 6, 8, 10].find((c) => c * p >= top);
+      return [0, f * p];   // the middle tick (half) stays a round number
     }
     const pad = Math.max((max - min) * 0.25, max * 0.06, 1), s = niceStep(max - min + 2 * pad, 2);
     const lo = Math.max(0, Math.floor((min - pad) / s) * s); let hi = Math.ceil((max + pad) / s) * s;
@@ -369,7 +370,7 @@
   function renderEmbed(el) {
     const cat = CATS.find((c) => c.id === el.dataset.trendCat); if (!cat) return;
     el.classList.add('trends-root', 'tr-embed');
-    el.innerHTML = `<div class="tr-embed-head"><div><h3>${esc(cat.title)} over time</h3><p class="fine">Past days are sample history; today is live.</p></div>${segHtml()}</div>
+    el.innerHTML = `<div class="tr-embed-head"><div><h3>${esc(cat.title)} over time</h3><p class="fine">Sample history · today live</p></div>${segHtml()}</div>
       ${sectionHtml(cat, false)}<p class="fine tr-embed-foot">The AI summary and “Ask about Mom’s trends” are on the <a href="#/caregiver/c-trends">Trends</a> tab.</p>`;
     fillPlots(el);
   }
@@ -475,7 +476,7 @@
   const statsSig = (s) => JSON.stringify(s.metrics) + JSON.stringify(s.events);
   function renderSummary() {
     const R = RANGES[st.range], d = st.summary[st.range], box = document.getElementById('trSummary');
-    const head = `<div class="tr-head"><span class="tr-ic">${ico('sparkle', 20)}</span><div><h3>${esc(R.title)}</h3><p class="fine">A short read of Mom’s trend numbers for ${esc(R.span)}.</p></div><button type="button" class="pill small" data-summary aria-label="Refresh the summary">${ico('reset', 14)}<span class="tr-hide-sm">Refresh</span></button></div>`;
+    const head = `<div class="tr-head"><span class="tr-ic">${ico('sparkle', 20)}</span><div><h3>${esc(R.title)}</h3><p class="fine"></p></div><button type="button" class="pill small" data-summary aria-label="Refresh the summary">${ico('reset', 14)}<span class="tr-hide-sm">Refresh</span></button></div>`;
     if (!d) { box.innerHTML = head + '<p class="tr-wait"><span class="tr-dots" aria-hidden="true"><i></i><i></i><i></i></span>Reading Mom’s trends…</p>'; return; }
     if (d.error) { box.innerHTML = head + `<p class="empty">Couldn’t write the summary right now (${esc(d.error)}). Tap Refresh to try again.</p>`; return; }
     const stale = st.summarySig[st.range] !== statsSig(buildStats(st.range, false));
@@ -521,10 +522,10 @@
     root.innerHTML = `
       <div class="tr-filters" role="toolbar" aria-label="Trend range">${segHtml()}
         <button type="button" class="tr-tablebtn" data-table aria-pressed="false">${ico('receipt', 16)}<span>Table</span></button></div>
-      <p class="tr-note">${ico('clock', 16)}<span><b>Past days are sample history</b> until band 39 has stored real days. <b>Today is live</b> from the band, Mom’s conversations and her card, and updates as things happen.</span></p>
+      <p class="tr-note">${ico('clock', 16)}<span>Sample history · today live</span></p>
       <section class="tr-card tr-summary" aria-live="polite" id="trSummary"></section>
       <section class="tr-card tr-chat" aria-labelledby="trChatH">
-        <div class="tr-head"><span class="tr-ic">${ico('chat', 20)}</span><div><h3 id="trChatH">Ask about Mom’s trends</h3><p class="fine">Answers only from these numbers and today’s data, never a diagnosis.</p></div></div>
+        <div class="tr-head"><span class="tr-ic">${ico('chat', 20)}</span><div><h3 id="trChatH">Ask about Mom’s trends</h3><p class="fine">No diagnoses.</p></div></div>
         <ol class="tr-msgs" id="trMsgs" aria-live="polite"></ol>
         <div class="tr-chips">${['How has her sleep been?', 'Is her walking getting worse?', 'Anything about money I should know?', 'How is her memory?', 'What should I tell Dr. Patel?'].map((q) => `<button type="button" class="tr-chip" data-q="${esc(q)}">${esc(q)}</button>`).join('')}</div>
         <form class="tr-ask" id="trAsk"><input id="trQ" maxlength="300" placeholder="Ask about Mom’s trends…" autocomplete="off" aria-label="Ask about Mom’s trends" /><button class="pill violet" type="submit">Ask</button></form>

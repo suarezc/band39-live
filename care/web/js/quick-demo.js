@@ -73,9 +73,9 @@
     counts[cat]++;
     const got = lisaGets(ev);
     $('qNow').innerHTML = `<div class="q-ev"><span class="q-tag tag-${cat}">${CAT[cat]}</span><b>${esc(name)}</b><small>${esc(t)}</small></div>
-      <div class="q-lanes"><div class="ql"><h4>Margaret</h4><p>${esc(DOES[actName] || name)}</p></div>
-      <div class="ql"><h4>Band 39</h4><p>${led ? `<i class="q-led" style="--led:${led[0]}"></i>` : ''}${esc(DEVICE[i] || '')}</p></div>
-      <div class="ql lisa lv-${got.level}"><h4>Lisa</h4><p><b>${esc(got.title)}</b></p></div></div>`;
+      <div class="q-lanes"><div class="ql"><h2>Margaret</h2><p>${esc(DOES[actName] || name)}</p></div>
+      <div class="ql"><h2>Band 39</h2><p>${led ? `<i class="q-led" style="--led:${led[0]}"></i>` : ''}${esc(DEVICE[i] || '')}</p></div>
+      <div class="ql lisa lv-${got.level}"><h2>Lisa</h2><p><b>${esc(got.title)}</b></p></div></div>`;
     $('qProg').style.width = ((i + 1) / DAY.length * 100) + '%';
     const feed = $('qFeed'); const empty = feed.querySelector('.q-empty'); if (empty) empty.remove();
     feed.insertAdjacentHTML('afterbegin', `<li class="qf lv-${got.level} tag-${cat}"><time>${esc(t)}</time><b>${esc(got.title)}</b></li>`);
