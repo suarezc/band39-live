@@ -12,6 +12,7 @@
   GET  /api/live/transcript, /api/live/search?q=...&voice=main|other|unsure&person=<id>, /api/live/status, /api/live/people
   POST /api/live/enroll {"ids": [...]} the person who said these is the main person; /api/live/forget; /api/live/stop
   POST /api/live/recluster  every stored phrase assigned to people again; /api/live/person {"id", "name"} or {"id", "merge_into"}
+  GET  /api/digest[?date=YYYY-MM-DD]  the nightly summary;  POST /api/digest/run {"deep": false} builds it now
   POST /api/live/clip   {"seconds": 300} saves the last minutes of sound to a WAV file under experiments/data/live/clips/
 
 Keys come from environment variables (on Superserve they are stand-in tokens that the platform
@@ -107,8 +108,8 @@ class Handler(SimpleHTTPRequestHandler):
     def live(self):
         """The Live object, or None after answering 503 with the reason."""
         try:
-            import live
-            return live.get()
+            import live, watch
+            return watch.attach(live.get())   # starts the scam / call-for-help watcher once
         except Exception as e:   # the plain python3 has no numpy/av: say how to start the server instead
             self.send_json(503, {'error': 'Live transcript needs the project environment. Start the server with ../.venv/bin/python server/server.py (%s)' % type(e).__name__
                                  if isinstance(e, ImportError) else str(e)})
@@ -204,6 +205,11 @@ class Handler(SimpleHTTPRequestHandler):
                 'stripe': bool(KEY('STRIPE_SECRET_KEY')), 'openai': bool(KEY('OPENAI_API_KEY')), 'host': 'superserve' if os.environ.get('SUPERSERVE') else 'local'})
         if self.path == '/api/doctor':
             return self.send_json(200, {'inbox': DOCTOR_INBOX[-20:]})
+        if self.path.split('?')[0] == '/api/digest':     # the nightly summary (server/digest.py)
+            import digest
+            q = urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query)
+            d = digest.load((q.get('date') or [None])[0])
+            return self.send_json(200 if d else 404, d or {})
         return super().do_GET()
 
     def do_POST(self):
@@ -211,6 +217,10 @@ class Handler(SimpleHTTPRequestHandler):
             route = self.path.split('?')[0]
             if route.startswith('/api/live/'):
                 return self.live_post(route)
+            if route == '/api/digest/run':
+                import digest
+                req = json.loads(self.body(2000) or b'{}')
+                return self.send_json(200, digest.run(date=req.get('date'), deep=bool(req.get('deep'))))
             if route == '/api/transcribe':
                 return self.transcribe()
             if route == '/api/tts':
