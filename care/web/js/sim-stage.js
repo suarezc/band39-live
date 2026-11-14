@@ -412,7 +412,7 @@ export function createStage(container, opts = {}) {
     if (disposed) return;
     raf = requestAnimationFrame(frame);
     const dt = Math.min(0.05, clock.getDelta()); T0 += dt;
-    if (!visible && document.visibilityState !== 'visible') return;
+    if (!visible || document.visibilityState === 'hidden') return;
     update(dt, T0); applyNight(dt); applyLed(T0); renderer.render(scene, cam); overlays();
   }
   frame();

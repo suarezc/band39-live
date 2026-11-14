@@ -160,17 +160,17 @@
   let playing = null, dayAt = -1, dayDone = false;
   function catalogHtml() {
     return CATS.map((c) => `<section class="sim-cat cat-${c.key}" aria-labelledby="cat-${c.key}">
-      <header><span class="cat-ic">${I(c.ic, 22)}</span><div><h3 id="cat-${c.key}">${esc(c.name)}</h3><p>${esc(c.blurb)} · ${c.items.length} events</p></div>
+      <header><span class="cat-ic">${I(c.ic, 22)}</span><div><h3 id="cat-${c.key}">${esc(c.name)}</h3><p>${c.items.length} events</p></div>
         <button class="btn quiet" data-sim-cat="${c.key}">${I('play', 16)}<span>Run all</span></button></header>
       <ul class="sim-list">${c.items.map((it) => `<li><button class="sim-ev" data-sim="${it.id}">
         <span class="ev-ic">${I(it.ic, 20)}</span>
-        <span class="ev-tx"><b>${esc(it.name)}</b><small>${esc(it.expect)}</small></span>
+        <span class="ev-tx" title="${esc(it.expect)}"><b>${esc(it.name)}</b></span>
         <span class="ev-meta"><span class="chip">${I(SENSOR[it.sensor][0], 14)}${SENSOR[it.sensor][1]}</span><i class="ev-done" data-done="${it.id}"></i></span>
       </button></li>`).join('')}</ul>
     </section>`).join('');
   }
   function dayHtml() {
-    return `<div class="day-head"><div><h2>A full day</h2><p class="day-clock" id="dayClock">Every event in order, from 7:30 am through the night to the next morning.</p></div>
+    return `<div class="day-head"><div><h2>A full day</h2><p class="day-clock" id="dayClock">7:30 am → next morning</p></div>
       <button class="btn primary" data-sim-day id="dayPlay">${I('play', 16)}<span>Play the day</span></button></div>
       <ol class="day-strip" id="dayStrip">${DAYPLAN.map((st, i) => { const it = st.id && byId(st.id);
         return `<li><button class="day-step ${isNightT(st.t) || st.mode === 'night' ? 'night' : 'day'} ${st.mode ? 'mark' : ''} ${it && !st.mode ? 'cat-' + it.cat : ''}" data-day-step="${i}" title="${esc(it && !st.mode ? it.name : st.label)}">
@@ -226,7 +226,7 @@
     }).join('');
     return `<div class="ph-status"><span>${V.engine.fmtTime(V.sceneNow())}</span><span class="ph-isl"></span><span>${I('battery', 14)}</span></div>
       <div class="ph-head"><div><small>Lisa’s phone</small><b>Mom</b></div><span class="ph-st st-${st.level}">${esc(st.label)}</span></div>
-      <ul class="ph-list">${items || '<li class="ph-empty">No alerts yet. When the band or Pip notices something, it lands here.</li>'}</ul>`;
+      <ul class="ph-list">${items || '<li class="ph-empty">No alerts</li>'}</ul>`;
   }
 
   // ---- render ---------------------------------------------------------------------------------------------
@@ -254,7 +254,7 @@
     const b = $('simBracelet'); if (!b) return;
     const led = S.led, s = S.s;
     b.style.setProperty('--led', led ? led.color : 'transparent'); b.dataset.pattern = led ? (led.pattern || 'solid') : 'off';
-    $('simBandSay').textContent = led ? `Light: ${plain(led.say)}` : S.conn.kind === 'none' ? 'Not connected yet. Any event connects a pretend band.' : 'Light off, watching quietly';
+    $('simBandSay').textContent = led ? `Light: ${plain(led.say)}` : S.conn.kind === 'none' ? 'Not connected' : 'Light off, watching quietly';
     const mic = S.listen && S.listen.want ? (S.listen.src ? 'on' : S.listen.paused ? 'paused' : 'ready') : 'off';
     const stat = (k, v) => `<div><dt>${k}</dt><dd>${v}</dd></div>`;
     $('simBandStats').innerHTML = stat('Steps', (s.steps || 0).toLocaleString()) + stat('Battery', s.battery == null ? '–' : s.battery + '%')
@@ -273,6 +273,7 @@
     const it = byId(id); if (!it) return;
     $$('.sim-ev').forEach((b) => b.classList.toggle('running', b.dataset.sim === id));
     stageCall('caption', label || it.name);
+    const sn = $('simSensed'); if (sn) sn.innerHTML = `<span class="chip">${I(SENSOR[it.sensor][0], 14)}${SENSOR[it.sensor][1]}</span> ${esc(it.name)}`;
     try { await it.run(); } catch (e) { console.error(e); }
     ran.set(id, Date.now()); render();
   }

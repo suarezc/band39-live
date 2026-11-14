@@ -31,8 +31,10 @@ CHAT_SCHEMA = _obj({
 SUMMARY_INSTRUCTIONS = (
     "You write a short trend summary for Lisa about her mother Margaret, 78, who lives alone with early memory changes and wears "
     "a Vexo wrist band. You get per-metric stats for a period (value, previous period, change, weekly values, notable events) and "
-    "today's live facts. Write: a one-sentence headline; 3-5 notable changes (biggest or most care-relevant first, with numbers "
-    "and dates of events, e.g. connect restless nights to the new pill only as a timing observation); 1-3 things that stayed stable; "
+    "today's live facts. Each metric has a category (mental, financial, physical health). Write: a one-sentence headline; 3-5 "
+    "notable changes ordered mental health first, then financial health, then physical health (within each, biggest or most "
+    "care-relevant first; set metric to the stats key), with numbers "
+    "and dates of events (e.g. connect restless nights to the new pill only as a timing observation); 1-3 things that stayed stable; "
     "1-2 gentle, concrete next steps (e.g. mention something to Dr. Patel, talk with Mom, ask Ruth to check in). Lisa reads this "
     "on her phone: call Margaret 'Mom', keep every item to one short sentence (under 25 words), round numbers sensibly (64%, not "
     "63.1%). Never diagnose, never suggest changing medicines, no alarmism. Use only the numbers given. Do not mention data_note "
@@ -68,6 +70,8 @@ def _fmt(m, v):
         return '%d%%' % round(_num(v))
     n = _num(v)
     s = format(int(round(n)), ',') if abs(n) >= 100 or float(n).is_integer() else ('%.1f' % n)
+    if u.endswith('s') and n == 1:
+        u = u[:-1]
     return s + ((' ' + u) if u and not u.startswith('/') else u)
 
 
@@ -84,10 +88,13 @@ def _change_words(m):
         d = v - p
         return ('up %d points' % round(d) if d > 0 else 'down %d points' % round(-d)), d / 100.0
     if m.get('agg') == 'sum' and p == 0:
-        return ('new this period (none before)' if v > 0 else None), (1.0 if v > 0 else 0)
+        return ('new (none before)' if v > 0 else None), (1.0 if v > 0 else 0)
     if p == 0:
         return None, 0
     c = (v - p) / abs(p)
+    if m.get('agg') == 'sum':
+        n = format(int(round(p)), ',') if m.get('unit') != '$' else '$%s' % format(int(round(p)), ',')
+        return (('up from %s' if c > 0 else 'down from %s') % n if abs(c) >= 0.03 else 'about the same'), c
     return ('up %d%%' % round(c * 100) if c > 0 else 'down %d%%' % round(-c * 100)), c
 
 
@@ -113,9 +120,10 @@ def _summary_rules(stats):
     rows = []
     for k, m in M.items():
         words, rel = _change_words(m)
-        if not words:
+        if not words or k in ('urgent', 'warn', 'info'):
             continue
-        weight = abs(rel) * (1.6 if m.get('care_priority') else 1.0)
+        pts = m.get('unit') in ('%', '/100')
+        weight = min(2.0, abs(rel) * (4 if pts else 1)) * (1.6 if m.get('care_priority') else 1.0)
         rows.append((weight, k, m, words, rel))
     rows.sort(key=lambda r: -r[0])
     changes, stable = [], []
@@ -125,14 +133,16 @@ def _summary_rules(stats):
             continue
         if len(changes) >= 4:
             break
-        changes.append({'text': '%s: %s, %s from %s (%s).' % (m.get('label', k), _fmt(m, m.get('value')), words, prior, _fmt(m, m.get('prior'))),
-                        'metric': k, 'tone': tone})
+        tail = '' if words.startswith('new') else ' %s' % prior.replace('the ', 'in the ', 1) if m.get('agg') == 'sum' else ' from %s (%s)' % (prior, _fmt(m, m.get('prior')))
+        changes.append({'text': '%s: %s, %s%s.' % (m.get('label', k), _fmt(m, m.get('value')), words, tail), 'metric': k, 'tone': tone})
+    order = {'mental': 0, 'financial': 1, 'physical': 2}
+    changes.sort(key=lambda c: order.get((M.get(c['metric']) or {}).get('category'), 3))
     ev = [e for e in (stats.get('events') or []) if isinstance(e, dict)]
     if ev:
         changes.append({'text': 'Marked events %s: %s.' % (period, ', '.join(_event_text(e) for e in ev[:4])), 'metric': 'events', 'tone': 'neutral'})
     for k, m in M.items():
         words, rel = _change_words(m)
-        if m.get('value') is not None and abs(rel) < 0.06 and len(stable) < 3:
+        if m.get('value') is not None and abs(rel) < 0.03 and k not in ('urgent', 'warn', 'info') and len(stable) < 3:
             stable.append('%s steady at %s.' % (m.get('label', k), _fmt(m, m.get('value'))))
     if not changes:
         changes = [{'text': 'No big changes %s compared with %s.' % (period, prior), 'metric': 'all', 'tone': 'good'}]
@@ -141,7 +151,7 @@ def _summary_rules(stats):
     pill = next((e for e in ev if e.get('kind') == 'pill'), None)
     if concern & {'restless', 'restless_nights', 'sleep', 'wander', 'balance', 'falls'}:
         steps.append('Mention the sleep and balance changes%s to Dr. Patel at the next visit.' % (' since the new pill on %s' % pill.get('date') if pill else ''))
-    if concern & {'scam', 'declines'} or any(e.get('kind') == 'scam' for e in ev):
+    if concern & {'scam', 'declines', 'exploit', 'bills'} or any(e.get('kind') == 'scam' for e in ev):
         steps.append('Have a calm chat with Mom about the scam calls; her card limits blocked the risky payments.')
     if concern & {'recall', 'concern'} and len(steps) < 2:
         steps.append('Keep the daily memory moments going and note any new confusion for Dr. Patel.')
@@ -158,10 +168,13 @@ TOPICS = [
     (r'sleep|night|rest|tired|bed|wak', ['sleep', 'restless', 'restless_nights', 'wander'], 'sleep and nights'),
     (r'walk|step|move|activ|exercis|balanc|fall|steady|unsteady|dizz', ['steps', 'balance', 'falls'], 'walking and balance'),
     (r'shak|tremor|parkinson|hand', ['tremor'], 'shaking'),
-    (r'money|card|spend|scam|fraud|call|pay|bank|gift', ['scam', 'spend', 'declines'], 'money and scams'),
+    (r'money|card|spend|scam|fraud|call|pay|bank|gift|financ', ['scam', 'spend', 'declines', 'exploit', 'bills'], 'money and scams'),
     (r'memor|forget|remember|recall|confus|dementia|word|languag', ['recall', 'concern'], 'memory'),
     (r'mood|sad|lonely|happy|depress|down|upset|feel', ['mood'], 'mood'),
     (r'pill|med|dose|tablet|prescri', ['missed'], 'pills'),
+    (r'bill|overdue|rent|utilit', ['bills'], 'bills'),
+    (r'exploit|abuse|nephew|relative|borrow|taking advantage', ['exploit'], 'exploitation'),
+    (r'seizure|convuls|fit\b', ['seizure'], 'seizure-like events'),
     (r'alert|urgent|warn|emergenc', ['alerts_urgent', 'alerts_warn', 'falls'], 'alerts'),
 ]
 UNCOVERED = r'blood pressure|heart rate|pulse|weight|diet|eat|food|oxygen|sugar|glucose|temperature|doctor said|diagnos'
@@ -185,7 +198,7 @@ def _chat_rules(question, stats, today):
         words, rel = _change_words(m)
         s = '%s %s: %s' % (m.get('label', k), period, _fmt(m, m.get('value')))
         if words:
-            s += ', %s from %s' % (words, prior)
+            s += ', %s' % words if words.startswith('new') else ', %s %s' % (words, prior.replace('the ', 'in the ', 1)) if m.get('agg') == 'sum' else ', %s from %s' % (words, prior)
         if m.get('last_week') is not None and m.get('agg') != 'sum':
             s += '; last 7 days %s' % _fmt(m, m.get('last_week'))
         parts.append(s + '.')
