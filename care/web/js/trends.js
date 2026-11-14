@@ -35,7 +35,7 @@
     balance:  { label: 'Balance score', kpi: 'Balance', unit: '/100', agg: 'mean', good: 'up', form: 'line', fmt: int, pts: 1, care: 1 },
     tremor:   { label: 'Shaking score', kpi: 'Shaking', unit: '/4', agg: 'mean', good: 'down', form: 'line', fmt: (v) => v.toFixed(1), dom: [0, 4], flat: 0.3 },
     falls:    { label: 'Falls', unit: '', agg: 'sum', good: 'down', fmt: int, care: 1 },
-    sleep:    { label: 'Sleep', unit: 'h', per: 'a night', agg: 'mean', good: 'up', form: 'line', fmt: (v) => v.toFixed(1) + ' h' },
+    sleep:    { label: 'Sleep', unit: 'h', per: 'a night', agg: 'mean', good: 'up', form: 'line', fmt: (v) => v.toFixed(1) + ' h', dom: [0, 10] },
     restless: { label: 'Restless moments in bed', unit: 'epochs', per: 'a night', agg: 'mean', good: 'down', form: 'bar', fmt: int },
     restless_nights: { label: 'Restless nights', kpi: 'Restless nights', unit: 'nights', agg: 'sum', good: 'down', fmt: int, care: 1 },
     wander:   { label: 'Night wandering', unit: 'episodes', agg: 'sum', good: 'down', form: 'bar', fmt: int, care: 1 },
@@ -85,7 +85,7 @@
       let steps = 4300 + Math.sin((a / HIST) * Math.PI) * 260 + (dow === 0 ? 450 : 0) - drift * 1150 + g() * 330;
       if (fell || a === FALL_AGO - 1) steps *= 0.58;
       let balance = 72 - (afterPill ? 4 : 0) - drift * 2 + g() * 2.4; if (fell) balance -= 7;
-      const tu = r(); const tremor = tu < 0.14 ? 0 : tu > 0.86 ? 2 : 1;
+      const tremor = r1(clamp(1.05 + g() * 0.2, 0, 4));   // daily average of the band's 0-4 readings
       const sleep = afterPill ? 6.2 + g() * 0.45 : 7.1 + g() * 0.4;
       const restless = Math.max(4, Math.round(afterPill ? 33 + g() * 7 : 17 + g() * 5));
       const wander = r() < (afterPill ? 0.33 : 0.05) ? 1 : 0;
@@ -151,8 +151,10 @@
     if (t.declines && !t.scam) st.events.push({ ago: 0, kind: 'scam', label: 'Card declined today', live: 1 });
   }
   function windowDays(range, offset) { const R = RANGES[range], out = []; for (let a = offset + R.days - 1; a >= offset; a--) { const d = st.byAgo(a); if (d) out.push(d); } return out; }
+  const liveKey = (k) => (k === 'recall' ? 'asked' : k);
   function aggregate(key, days) {
     const m = MET[key];
+    days = days.filter((d) => !d.today || d.live.includes(liveKey(key)));   // today counts only where the live app measures it
     if (m.agg === 'ratio') { const a = sum(days.map((d) => d.asked)); return a ? (100 * sum(days.map((d) => d.remembered))) / a : null; }
     if (m.agg === 'sum') return sum(days.map((d) => d[key] || 0));
     const pool = days.length > 1 ? days.filter((d) => !d.today) : days;   // today's steps are a partial day: kept out of averages
@@ -172,7 +174,7 @@
     const m = MET[key];
     if (cur == null || pri == null) return { text: 'no earlier data', cls: 'flat', dir: 0, rel: 0 };
     const diff = cur - pri; let rel, text;
-    if (m.pts) { rel = diff / 100; text = Math.abs(diff) < 1 ? 'about the same' : `${diff > 0 ? 'up' : 'down'} ${Math.round(Math.abs(diff))} pts`; }
+    if (m.pts) { rel = diff / 100; const pts = Math.round(Math.abs(diff)); text = pts < 1 ? 'about the same' : `${diff > 0 ? 'up' : 'down'} ${pts} pt${pts === 1 ? '' : 's'}`; }
     else if (m.agg === 'sum') {
       if (pri === 0) { rel = cur > 0 ? 1 : 0; text = cur > 0 ? 'none the period before' : 'none, same as before'; }
       else { rel = diff / pri; text = Math.abs(rel) < 0.03 ? 'same as before' : `${diff > 0 ? 'up' : 'down'} from ${m.fmt(pri)}`; }
@@ -221,16 +223,21 @@
     const max = xs.length ? Math.max(...xs) : 1, min = xs.length ? Math.min(...xs) : 0;
     if (form !== 'line') { const top = Math.max(key === 'spend' ? 20 : 2, max); const s = niceStep(top, 2); return [0, Math.ceil(top / s) * s]; }
     const pad = Math.max((max - min) * 0.25, max * 0.06, 1), s = niceStep(max - min + 2 * pad, 2);
-    return [Math.max(0, Math.floor((min - pad) / s) * s), Math.ceil((max + pad) / s) * s];
+    const lo = Math.max(0, Math.floor((min - pad) / s) * s); let hi = Math.ceil((max + pad) / s) * s;
+    if (Math.round((hi - lo) / s) % 2) hi += s;   // even number of steps keeps the middle tick on a round number
+    return [lo, hi];
   }
   const tickFmt = (v) => (Math.abs(v) >= 10000 ? Math.round(v / 1000) + 'K' : Number.isInteger(v) ? v.toLocaleString() : v.toFixed(1));
   function barPath(x, y, w, h, base) { if (h <= 0.5) return ''; const r = Math.min(4, w / 2, h); return `M${x},${base}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${base}Z`; }
 
   // one chart = one svg; returns {html, model} where model drives the tooltip
+  // the days behind one plotted value: memory moments are few a day, so the daily line is a 7-day rolling rate
+  const rolling = (key) => key === 'recall' && RANGES[st.range].bin === 1;
+  function valueDays(key, b) { if (!rolling(key)) return b.days; const out = []; for (let a = b.agoHi + 6; a >= b.agoLo; a--) { const d = st.byAgo(a); if (d) out.push(d); } return out; }
   function chartSvg(key, B, W, H) {
     const isStack = key === 'alerts', m = MET[key] || { label: 'Alerts by level', fmt: int };
     const form = isStack ? 'bar' : m.form;
-    const vals = B.map((b) => (isStack ? sum(LVL.map(([k]) => aggregate(k, b.days))) : aggregate(key, b.days)));
+    const vals = B.map((b) => (isStack ? sum(LVL.map(([k]) => aggregate(k, b.days))) : aggregate(key, valueDays(key, b))));
     const [lo, hi] = domainFor(isStack ? 'urgent' : key, vals, form);
     const ml = 38, mr = 10, mt = 26, mb = 24, pw = W - ml - mr, ph = H - mt - mb, base = mt + ph, n = B.length, slot = pw / n;
     const X = (i) => ml + slot * (i + 0.5), Y = (v) => base - ((v - lo) / (hi - lo || 1)) * ph;
@@ -282,7 +289,7 @@
     const head = v == null ? 'No data yet' : m.agg === 'sum' ? `${m.fmt(v)} ${key === 'spend' ? 'spent' : 'in all'}` : m.agg === 'ratio' ? `${m.fmt(v)} remembered` : `Avg ${m.fmt(v)}${m.unit.startsWith('/') ? m.unit : ''}${m.per ? ' ' + m.per : ''}`;
     return `${head} · ${d.text}${d.text.startsWith('no earlier') ? '' : ' ' + R.vs}`;
   }
-  const chartTitle = (key) => (key === 'alerts' ? 'Alerts by level' : key === 'steps' ? 'Steps a day' : key === 'restless' ? 'Restless moments in bed' : key === 'sleep' ? 'Hours of sleep' : MET[key].label);
+  const chartTitle = (key) => (key === 'alerts' ? 'Alerts by level' : key === 'recall' && rolling(key) ? 'Memory moments remembered (7-day rate)' : key === 'steps' ? 'Steps a day' : key === 'restless' ? 'Restless moments in bed' : key === 'sleep' ? 'Hours of sleep' : MET[key].label);
 
   // ---- skeleton (built once; sections re-render independently so the chat never resets) -------------------
   root.innerHTML = `
@@ -322,7 +329,7 @@
       return `<div class="tr-kpi" role="group" aria-label="${esc(m.kpi)}: ${esc(v == null ? 'no data' : m.fmt(v))} ${esc(sub)}, ${esc(d.text)} ${esc(R.vs)}">
         <span class="tr-kpi-l">${esc(m.kpi)}</span><b class="tr-kpi-v">${v == null ? '—' : esc(m.fmt(v))}</b><span class="tr-kpi-s">${esc(sub)}</span>
         <span class="tr-delta ${d.cls}">${arrow}${esc(d.text)}</span>${spark(k)}</div>`;
-    }).join('') + `<p class="tr-kpi-key fine"><i class="k-prior"></i>previous period <i class="k-cur"></i>${esc(R.word)} · change ${esc(R.vs)}</p>`;
+    }).join('') + `<p class="tr-kpi-key fine"><span><i class="k-prior"></i>previous period</span><span><i class="k-cur"></i>${esc(R.word)}</span><span>changes are ${esc(R.vs)}</span></p>`;
   }
 
   // ---- charts ---------------------------------------------------------------------------------------------
@@ -351,7 +358,7 @@
     if (md.isStack) rows = LVL.map(([k, l]) => `<div class="tr-tip-row"><i class="key tr-sw-${k}"></i><b>${aggregate(k, b.days)}</b> ${l}</div>`).join('');
     else {
       const m = MET[md.key], v = md.vals[i];
-      const extra = md.key === 'recall' ? ` (${sum(b.days.map((d) => d.remembered))} of ${sum(b.days.map((d) => d.asked))})` : md.key === 'missed' ? ` of ${sum(b.days.map((d) => d.doses))}` : md.key === 'spend' && aggregate('declines', b.days) ? ` · ${aggregate('declines', b.days)} declined` : '';
+      const vd = valueDays(md.key, b).filter((d) => !d.today || d.live.includes('asked')), extra = md.key === 'recall' ? ` (${sum(vd.map((d) => d.remembered))} of ${sum(vd.map((d) => d.asked))}${rolling(md.key) ? ' over 7 days' : ''})` : md.key === 'missed' ? ` of ${sum(b.days.map((d) => d.doses))}` : md.key === 'spend' && aggregate('declines', b.days) ? ` · ${aggregate('declines', b.days)} declined` : '';
       rows = `<div class="tr-tip-row"><i class="key tr-sw-bar"></i><b>${v == null ? 'not measured' : esc(m.fmt(v))}</b>${v == null ? '' : ' ' + esc(m.unit.startsWith('/') ? m.unit : m.unit === '$' || m.unit === '%' || m.unit === 'h' ? '' : m.unit)}${esc(extra)}</div>`;
     }
     const evs = md.ev.filter((e) => e.i === i).map((e) => `<div class="tr-tip-ev">${ico(EV_ICON[e.kind], 13)}${esc(e.label)}</div>`).join('');
@@ -390,7 +397,7 @@
   const statsSig = (s) => JSON.stringify(s.metrics) + JSON.stringify(s.events);
   function renderSummary() {
     const R = RANGES[st.range], d = st.summary[st.range], box = $('trSummary');
-    const head = `<div class="tr-head"><span class="tr-ic">${ico('sparkle', 20)}</span><div><h3>${esc(R.title)}</h3><p class="fine">A short read of the trend numbers ${esc(R.period.replace('over ', 'for '))}.</p></div><button type="button" class="pill small" data-summary>${ico('reset', 14)}Refresh</button></div>`;
+    const head = `<div class="tr-head"><span class="tr-ic">${ico('sparkle', 20)}</span><div><h3>${esc(R.title)}</h3><p class="fine">A short read of the trend numbers ${esc(R.period.replace('over ', 'for '))}.</p></div><button type="button" class="pill small" data-summary aria-label="Refresh the summary">${ico('reset', 14)}<span class="tr-hide-sm">Refresh</span></button></div>`;
     if (!d) { box.innerHTML = head + '<p class="tr-wait"><span class="tr-dots" aria-hidden="true"><i></i><i></i><i></i></span>Reading Mom’s trends…</p>'; return; }
     if (d.error) { box.innerHTML = head + `<p class="empty">Couldn’t write the summary right now (${esc(d.error)}). Tap Refresh to try again.</p>`; return; }
     const stale = st.summarySig[st.range] !== statsSig(buildStats(st.range, false));

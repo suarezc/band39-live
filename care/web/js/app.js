@@ -485,7 +485,6 @@
       tile('tremor', `${L.tremor.score}/4`, L.tremor.hz ? `${L.tremor.hz} Hz · ${L.tremor.rms} °/s` : `${Math.round(L.tremor.minutesToday)} min today`, L.tremor.score >= 3 ? 'alert' : L.tremor.score ? 'watch' : 'ok', L.tremor.score * 25),
       tile('steps', s.steps.toLocaleString(), `${L.steps.cadence || 0}/min · goal ${L.steps.goal.toLocaleString()}${L.steps.discarded ? ` · ${L.steps.discarded} discarded` : ''}`, 'ok', s.steps / L.steps.goal * 100),
       tile('balance', L.balance.score == null ? '—' : `${L.balance.score}/100`, L.balance.score == null ? 'measured on walks' : `regularity ${Math.round((L.balance.regularity || 0) * 100)}%`, L.balance.score == null ? '' : L.balance.score < 55 ? 'alert' : L.balance.score < 70 ? 'watch' : 'ok', L.balance.score),
-      tile('sleep', L.sleep.epochs ? `${L.sleep.restless}% restless` : '—', V.mode === 'night' ? (L.sleep.epochs ? `${L.sleep.asleep ? 'asleep' : 'awake'} · ${L.sleep.epochs} epochs` : 'scoring…') : 'switch to Night mode', L.sleep.restless >= 30 ? 'watch' : 'ok', L.sleep.restless),
       tile('seizure', L.seizure.active ? 'Now' : L.seizure.count ? `${L.seizure.count} today` : 'None', L.seizure.seconds ? `${L.seizure.seconds}s at ${L.seizure.hz || '?'} Hz` : 'rhythmic 2–7 Hz ≥10 s', L.seizure.active || L.seizure.count ? 'alert' : 'ok'),
     ].join('');
     // memory
@@ -499,6 +498,7 @@
       tile('language', avg('language') == null ? '—' : `${avg('language')}`, ins ? `variety ${ins.metrics.type_token_ratio} · fillers ${ins.metrics.fillers}` : 'from conversations', lvl(avg('language')), avg('language')),
       tile('cognitive', avg('cognitive') == null ? '—' : `${avg('cognitive')}`, dm ? (dm.cognitive.signals[0] || 'oriented') : 'from conversations', lvl(avg('cognitive')), avg('cognitive')),
       tile('wander', L.wander.active ? 'Now' : `${L.wander.episodes}`, L.wander.active ? `${Math.round(L.wander.minutes)} min${L.wander.far ? ' · away' : ''}` : V.mode === 'night' ? 'watching tonight' : 'night mode only', L.wander.active ? 'alert' : L.wander.episodes ? 'watch' : 'ok'),
+      tile('sleep', L.sleep.epochs ? `${L.sleep.restless}% restless` : '—', V.mode === 'night' ? (L.sleep.epochs ? `${L.sleep.asleep ? 'asleep' : 'awake'} · ${L.sleep.epochs} epochs` : 'scoring…') : 'switch to Night mode', L.sleep.restless >= 30 ? 'watch' : 'ok', L.sleep.restless),
     ].join('');
     $('recallList').innerHTML = rc.map((r) => `<li><span class="res ${r.result}">${r.result}</span> · ${fmtTime(r.at)}<br><b>Q:</b> ${esc(r.q)}<br><b>Mom:</b> ${esc(r.a)}${r.hint ? ` <span class="muted">(expected: ${esc(r.hint)})</span>` : ''}</li>`).join('') || '<li class="empty">No memory moments yet. On Margaret’s Talk tab: “Pip, ask me something”.</li>';
     $('memNote').innerHTML = ins ? `<div class="ins-g"><h5>💬 What she said <span class="muted">· ${esc(ins.how)} · ${ins.source && ins.source.startsWith('openai') ? 'read by OpenAI' : 'offline rules'}</span></h5><ul><li>“${esc(ins.text)}”</li><li class="muted">${esc(ins.summary || '')}</li></ul></div>
@@ -510,11 +510,8 @@
     $('safeGrid').innerHTML = [
       tile('scam', sc ? sc.risk.scam.level : 'None', sc ? fmtTime(sc.at) : 'Pip listens in every conversation', lv(sc && sc.risk.scam.level)),
       tile('abuse', ab ? ab.risk.abuse.level : 'None', ab ? fmtTime(ab.at) : 'checked in every conversation', lv(ab && ab.risk.abuse.level)),
-      tile('fall', L.fall.count ? `${L.fall.count} today` : 'None', 'with 20 s check', L.fall.count ? 'alert' : 'ok'),
-      tile('seizure', L.seizure.count ? `${L.seizure.count} today` : 'None', 'urgent alert', L.seizure.count ? 'alert' : 'ok'),
     ].join('');
     $('evidence').innerHTML = V.insights.filter((x) => x.risk && (x.risk.scam.level !== 'none' || x.risk.abuse.level !== 'none')).map((x) => `<li>${fmtTime(x.at)} · ${x.risk.scam.level !== 'none' ? `<span class="lvl ${x.risk.scam.level}">scam ${x.risk.scam.level}</span> ${esc(x.risk.scam.evidence)} ` : ''}${x.risk.abuse.level !== 'none' ? `<span class="lvl ${x.risk.abuse.level}">abuse ${x.risk.abuse.level}</span> ${esc(x.risk.abuse.evidence)}` : ''}</li>`).join('') || '<li class="empty">Nothing worrying in Mom’s conversations.</li>';
-    $('moneyEvidence').innerHTML = $('evidence').innerHTML;
     $('bandGlance').innerHTML = [['Connection', V.conn.text], ['Battery', s.battery == null ? '—' : `${s.battery}% ${s.batteryState || ''}`], ['Signal', s.rssi == null ? '—' : `${s.rssi} dBm${s.far ? ' · away from home' : ''}`], ['Last moved', fmtTime(s.lastMoveAt)], ['Worn', s.offWrist ? 'maybe not' : 'yes']].map(([k, v]) => `<div class="gl"><small>${k}</small><b>${esc(v)}</b></div>`).join('');
     // care
     $('meds').innerHTML = meds.map(([t, v]) => `<span class="med med-${v}">${fmtTime(atToday(Date.now(), t))} · ${{ pending: 'later', due: 'due now', taken: 'taken ✓', missed: 'not confirmed', 'n/a': 'n/a' }[v]}</span>`).join('');
@@ -626,6 +623,7 @@
 
   // ---- routing ------------------------------------------------------------------------------------------
   function go(portal, tab) {
+    tab = { 'c-memory': 'c-mental', 'c-safety': 'c-financial', 'c-money': 'c-financial' }[tab] || tab;
     app.dataset.portal = portal;
     const t = tab || (portal === 'grandma' ? 'g-today' : portal === 'caregiver' ? 'c-home' : '');
     $$('.tab-pane').forEach((p) => p.classList.toggle('on', p.dataset.pane === t));
@@ -651,7 +649,7 @@
     const t = ev.target.closest('button, input[data-pick], a'); if (!t) return;
     const d = t.dataset;
     if (d.pick) { t.checked ? picked.add(d.pick) : picked.delete(d.pick); render(); return; }
-    if (d.go) return go(d.go);
+    if (d.go) return go(d.go, d.tab);
     if (d.tab) return go(app.dataset.portal, d.tab);
     if (d.mode) return act({ type: 'mode', mode: d.mode });
     if (d.info) return showInfo(d.info);

@@ -62,7 +62,8 @@
 .tr-spark path { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .tr-spark .prior { stroke: var(--tr-prior); } .tr-spark .cur { stroke: var(--tr-accent); }
 .tr-kpi-key { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 0 4px; }
-.tr-kpi-key i { display: inline-block; width: 14px; height: 2px; border-radius: 2px; } .tr-kpi-key .k-prior { background: var(--tr-prior); } .tr-kpi-key .k-cur { background: var(--tr-accent); margin-left: 6px; }
+.tr-kpi-key { gap: 4px 14px; } .tr-kpi-key span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.tr-kpi-key i { display: inline-block; width: 14px; height: 2px; border-radius: 2px; } .tr-kpi-key .k-prior { background: var(--tr-prior); } .tr-kpi-key .k-cur { background: var(--tr-accent); }
 
 /* chat */
 .tr-chat { display: flex; flex-direction: column; gap: 10px; }
@@ -145,6 +146,7 @@
   .tr-kpi { padding: 11px 12px 9px; } .tr-kpi-v { font-size: 23px; }
   .tr-grid { grid-template-columns: 1fr; }
   .tr-seg button { padding: 7px 11px; }
+  .tr-hide-sm { display: none; } .tr-head .pill.small { padding: 8px; }
   .tr-card { padding: 14px; border-radius: 24px; }
   .tr-chips { flex-wrap: nowrap; overflow-x: auto; margin: 0 -14px; padding: 0 14px 2px; scrollbar-width: none; } .tr-chip { flex: none; }
 }

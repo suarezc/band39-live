@@ -369,3 +369,19 @@ textarea { border-radius: 20px; width: 100%; resize: vertical; line-height: 1.5;
 @media (max-width: 420px) { .mic-pill [data-mic-label] { font-size: 13px; } .mic-pill { padding: 0 11px; } }
 /* caregiver tab bar: 8 tabs scroll sideways on small phones */
 @media (max-width: 560px) { .c-tabs { justify-content: flex-start; overflow-x: auto; scrollbar-width: none; } .c-tabs button { flex: 0 0 64px; } }
+/* caregiver: three health areas (1 mental · 2 financial · 3 physical), each with its trend charts on top */
+.cat-pane { --cat: #7A5CF0; --cat-l: #EFEAFE; }
+.cat-pane.cat-financial { --cat: #B5761F; --cat-l: #FBEFD9; } .cat-pane.cat-physical { --cat: #2C8A5E; --cat-l: #DDF3E8; }
+.app[data-mode="night"] .cat-pane { --cat-l: rgba(255,255,255,.08); }
+.cat-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.cat-head h3 { margin: 0; font-size: 21px; letter-spacing: -.01em; color: var(--ink); } .cat-head p { margin: 2px 0 0; font-size: 13.5px; color: var(--muted); }
+.cat-num { width: 40px; height: 40px; flex: none; border-radius: 14px; display: grid; place-items: center; font-weight: 800; font-size: 18px; background: var(--cat-l); color: var(--cat); }
+.trend-cat:empty { display: none; } .trend-cat { margin: 8px 0 4px; }
+/* landing: three health areas */
+.areas { margin: 4px 0 18px; } .areas h2 { margin: 0 0 10px; font-size: 19px; letter-spacing: -.01em; }
+.area-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.area { --cat: #7A5CF0; --cat-l: #EFEAFE; text-align: left; border: 0; border-radius: 24px; padding: 16px; background: var(--card); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 6px; color: var(--ink); }
+.area.cat-financial { --cat: #B5761F; --cat-l: #FBEFD9; } .area.cat-physical { --cat: #2C8A5E; --cat-l: #DDF3E8; }
+.area .cat-num { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; font-weight: 800; background: var(--cat-l); color: var(--cat); }
+.area b { font-size: 17px; } .area small { font-size: 13px; color: var(--ink2); line-height: 1.45; } .area em { font-style: normal; font-size: 12px; font-weight: 700; color: var(--cat); margin-top: auto; }
+.area:hover { transform: translateY(-1px); } .link-btn { border: 0; background: none; padding: 0; color: var(--violet); font-weight: 700; text-decoration: underline; cursor: pointer; font-size: inherit; }

@@ -22,9 +22,21 @@
     <div class="circle" id="circle"></div>
     <div class="portals">
       <button class="portal-card grandma" data-go="grandma"><span class="pc-ic">👵</span><b>Margaret’s portal</b><small>Big, simple screen for the person wearing the band: today, talk to Pip, messages, help.</small><span class="pc-go">Open →</span></button>
-      <button class="portal-card carer" data-go="caregiver"><span class="pc-ic">👩</span><b>Caregiver portal</b><small>For Lisa: alerts, physical and memory signals, safety, care and the circle.</small><span class="pc-go">Open →</span></button>
+      <button class="portal-card carer" data-go="caregiver"><span class="pc-ic">👩</span><b>Caregiver portal</b><small>For Lisa: alerts, then mental, financial and physical health with trends over time, an AI chat about Mom, care and the circle.</small><span class="pc-go">Open →</span></button>
       <button class="portal-card simc" data-go="sim"><span class="pc-ic sim-ic" data-ico="play"></span><b>Event simulator</b><small>Fire every event the band and Pip can capture, by mental, financial and physical health, and watch both portals react.</small><span class="pc-go">Open →</span></button>
     </div>
+    <section class="areas" aria-labelledby="areasH">
+      <h2 id="areasH">Three areas of Margaret’s health</h2>
+      <div class="area-grid">
+        <button class="area cat-mental" data-go="caregiver" data-tab="c-mental"><span class="cat-num">1</span><b>Mental health</b>
+          <small>Repeated questions, word-finding, orientation, memory moments, low mood, night wandering, restless sleep.</small><em>Voice · Motion · Band</em></button>
+        <button class="area cat-financial" data-go="caregiver" data-tab="c-financial"><span class="cat-num">2</span><b>Financial health</b>
+          <small>Scam calls, exploitation, missed bills, and Mom’s safe card: limits, scam freeze, one-time cards.</small><em>Voice · Card</em></button>
+        <button class="area cat-physical" data-go="caregiver" data-tab="c-physical"><span class="cat-num">3</span><b>Physical health</b>
+          <small>Falls, hand tremor, steps and balance, seizure-like movement, pills, SOS, band battery and wear.</small><em>Motion · Band · Voice</em></button>
+      </div>
+      <p class="fine">Each opens Lisa’s portal on that area, with today’s signals and the trend over time. Try them all in the <button class="link-btn" data-go="sim">event simulator</button>.</p>
+    </section>
     <div class="home-code card">
       <div><b>Household code</b> <span class="code" id="homeCode">——</span></div>
       <p class="fine">Open the caregiver portal on another phone with this code to follow along. Margaret’s device (the one connected to the band) shares its updates under the code; nobody without it can see them.</p>
@@ -167,34 +179,39 @@
           <div class="h">At a glance</div><div class="glance" id="glance"></div>
         </div>
       </div>
-      <!-- Trends: history, charts, AI summary + chat (js/trends.js) -->
-      <div class="tab-pane" data-pane="c-trends"><div id="trendsRoot" class="trends-root"><p class="fine">Loading Mom’s history…</p></div></div>
-      <!-- Physical -->
-      <div class="tab-pane" data-pane="c-physical">
-        <div class="l-card"><div class="h">Physical signals <span class="muted">· from band 39 motion</span></div><div class="sig-grid" id="physGrid"></div>
-          <p class="fine">Tap ? on any signal to see how it works and how to trigger it. Signals to look at, not diagnoses.</p></div>
-      </div>
-      <!-- Memory -->
-      <div class="tab-pane" data-pane="c-memory">
-        <div class="l-card"><div class="h">Memory signals <span class="muted">· voice notes, memory moments, nights</span></div><div class="sig-grid" id="memGrid"></div>
+      <!-- 1. Mental health -->
+      <div class="tab-pane" data-pane="c-mental">
+        <div class="l-card cat-pane cat-mental">
+          <div class="cat-head"><span class="cat-num">1</span><div><h3>Mental health</h3><p>Memory, thinking, mood and sleep</p></div></div>
+          <div class="trend-cat" data-trend-cat="mental"></div>
+          <div class="h">Right now</div><div class="sig-grid" id="memGrid"></div>
           <div class="h">Memory moments</div><ul class="recall-list" id="recallList"></ul>
-          <div class="h">Latest voice note</div><div class="ins" id="memNote"><p class="empty">When Mom talks to Pip, the transcript shows here with what it suggests.</p></div></div>
+          <div class="h">Latest voice note</div><div class="ins" id="memNote"><p class="empty">When Mom talks to Pip, the transcript shows here with what it suggests.</p></div>
+          <p class="fine">Tap ? on any signal to see how it works. Signals to look at, not diagnoses.</p></div>
       </div>
-      <!-- Safety -->
-      <div class="tab-pane" data-pane="c-safety">
-        <div class="l-card"><div class="h">Safety</div><div class="sig-grid" id="safeGrid"></div>
-          <div class="h">Evidence from voice notes</div><ul class="evidence" id="evidence"></ul>
-          <div class="h">Band & location</div><div class="glance" id="bandGlance"></div></div>
-      </div>
-      <!-- Money: financial health (Mom's safe card, from suarezc/band39-live) -->
-      <div class="tab-pane" data-pane="c-money">
-        <div class="l-card money">
+      <!-- 2. Financial health: scams, exploitation, Mom's safe card (money.js from suarezc/band39-live) -->
+      <div class="tab-pane" data-pane="c-financial">
+        <div class="l-card cat-pane cat-financial money">
+          <div class="cat-head"><span class="cat-num">2</span><div><h3>Financial health</h3><p>Scams, exploitation, bills and card spending</p></div></div>
+          <div class="trend-cat" data-trend-cat="financial"></div>
+          <div class="h">Right now</div><div class="sig-grid" id="safeGrid"></div>
           <div class="h">Mom’s safe card <span class="muted">· limits, and a freeze when a scam is suspected</span></div>
           <div class="money-body" id="moneyBody"></div>
           <p class="fine">Simulated in this page: no real card and no real money. Stripe Issuing offers the same controls on real cards. Scam alerts from Mom’s calls freeze the card; only you can unfreeze it.</p>
-          <div class="h">Scam and money signals</div><ul class="evidence" id="moneyEvidence"></ul>
+          <div class="h">Evidence from voice notes</div><ul class="evidence" id="evidence"></ul>
         </div>
       </div>
+      <!-- 3. Physical health -->
+      <div class="tab-pane" data-pane="c-physical">
+        <div class="l-card cat-pane cat-physical">
+          <div class="cat-head"><span class="cat-num">3</span><div><h3>Physical health</h3><p>Movement, falls, shaking, pills and the band</p></div></div>
+          <div class="trend-cat" data-trend-cat="physical"></div>
+          <div class="h">Right now <span class="muted">· from band 39 motion</span></div><div class="sig-grid" id="physGrid"></div>
+          <div class="h">Band & location</div><div class="glance" id="bandGlance"></div>
+          <p class="fine">Tap ? on any signal to see how it works and how to trigger it. Signals to look at, not diagnoses.</p></div>
+      </div>
+      <!-- Trends: history, charts, AI summary + chat (js/trends.js) -->
+      <div class="tab-pane" data-pane="c-trends"><div id="trendsRoot" class="trends-root"><p class="fine">Loading Mom’s history…</p></div></div>
       <!-- Care -->
       <div class="tab-pane" data-pane="c-care">
         <div class="l-card">
@@ -233,11 +250,10 @@
     </div>
     <nav class="tabbar c-tabs">
       <button data-tab="c-home"><span>🏠</span>Home<i class="badge" id="cHomeBadge"></i></button>
-      <button data-tab="c-trends"><span>📈</span>Trends</button>
+      <button data-tab="c-mental"><span>🧠</span>Mental</button>
+      <button data-tab="c-financial"><span>💳</span>Financial</button>
       <button data-tab="c-physical"><span>🏃‍♀️</span>Physical</button>
-      <button data-tab="c-memory"><span>🧠</span>Memory</button>
-      <button data-tab="c-safety"><span>🛡️</span>Safety</button>
-      <button data-tab="c-money"><span>💳</span>Money</button>
+      <button data-tab="c-trends"><span>📈</span>Trends</button>
       <button data-tab="c-care"><span>💊</span>Care</button>
       <button data-tab="c-circle"><span>👥</span>Circle</button>
     </nav>
