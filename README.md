@@ -33,3 +33,7 @@ With the server above running, open <http://localhost:8000/companion/vexo-compan
 Band taps answer the prompts, and the band's light follows them. It connects only to `Vexo-HACK-39`
 (`const BAND = 39` in `companion/js/live.js`). Tests: `node companion/tools/test_live.mjs`.
 After editing `companion/index.html`, `css/` or `js/`, rebuild the single file with `node companion/tools/bundle.cjs`.
+
+## Architecture and backend setup
+
+See [ARCHITECTURE.md](ARCHITECTURE.md): the hub, voice (Pipecat + Deepgram + Gemini), Stripe checkout, and where to wear the band for gait and balance. Python setup: `uv venv --python 3.12 .venv && uv pip install -r requirements.txt`, then `.venv/bin/python tools/check_keys.py`.

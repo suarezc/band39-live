@@ -1,0 +1,11 @@
+# Hub + voice + backend. Python 3.12 (Pipecat needs 3.11+).
+#   uv venv --python 3.12 .venv && uv pip install -r requirements.txt
+pipecat-ai[deepgram,google,silero]
+bleak
+pyserial
+av
+fastapi
+uvicorn[standard]
+stripe
+python-dotenv
+httpx
