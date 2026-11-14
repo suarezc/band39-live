@@ -1,0 +1,3191 @@
+{
+ "about": "A fictional day (a 2 am wake, then 6:47 am to 10:05 pm) as heard by the wristband of Margaret, 78, who lives alone with early memory problems; every person, place and call in it is invented.",
+ "people": [
+  {
+   "key": "mom",
+   "name": "Mom",
+   "kind": "main"
+  },
+  {
+   "key": "lisa",
+   "name": "Lisa",
+   "kind": "voice"
+  },
+  {
+   "key": "ethan",
+   "name": "Ethan",
+   "kind": "voice"
+  },
+  {
+   "key": "june",
+   "name": "June",
+   "kind": "voice"
+  },
+  {
+   "key": "pharmacy",
+   "name": "Pharmacy (Kevin)",
+   "kind": "voice"
+  },
+  {
+   "key": "clinic",
+   "name": "Dr. Patel's office (Rosa)",
+   "kind": "voice"
+  },
+  {
+   "key": "caller",
+   "name": "Unknown caller",
+   "kind": "voice"
+  },
+  {
+   "key": "tv",
+   "name": "TV",
+   "kind": "voice"
+  },
+  {
+   "key": "unknown",
+   "name": "Not sure",
+   "kind": "unknown"
+  }
+ ],
+ "phrases": [
+  {
+   "time": "02:03:12",
+   "who": "mom",
+   "text": "oh... what time is it",
+   "tags": [
+    "night",
+    "memory"
+   ]
+  },
+  {
+   "time": "02:03:20",
+   "who": "mom",
+   "text": "it's so dark",
+   "tags": [
+    "night"
+   ]
+  },
+  {
+   "time": "02:03:31",
+   "who": "mom",
+   "text": "I'm going to be late",
+   "tags": [
+    "night",
+    "memory"
+   ]
+  },
+  {
+   "time": "02:03:44",
+   "who": "mom",
+   "text": "where are my shoes",
+   "tags": [
+    "night"
+   ]
+  },
+  {
+   "time": "02:04:02",
+   "who": "mom",
+   "text": "I have to get to work, the children will be waiting",
+   "tags": [
+    "night",
+    "memory"
+   ]
+  },
+  {
+   "time": "02:04:15",
+   "who": "mom",
+   "text": "the bus comes at, um, quarter past",
+   "tags": [
+    "night",
+    "memory"
+   ]
+  },
+  {
+   "time": "02:04:40",
+   "who": "mom",
+   "text": "where's my coat",
+   "tags": [
+    "night"
+   ]
+  },
+  {
+   "time": "02:05:05",
+   "who": "mom",
+   "text": "oh, the door's locked",
+   "tags": [
+    "night"
+   ]
+  },
+  {
+   "time": "02:05:21",
+   "who": "mom",
+   "text": "wait",
+   "tags": [
+    "night"
+   ]
+  },
+  {
+   "time": "02:05:30",
+   "who": "mom",
+   "text": "wait now, Margaret",
+   "tags": [
+    "night"
+   ]
+  },
+  {
+   "time": "02:05:46",
+   "who": "mom",
+   "text": "you don't work anymore",
+   "tags": [
+    "night",
+    "memory"
+   ]
+  },
+  {
+   "time": "02:05:58",
+   "who": "mom",
+   "text": "you retired. That was years ago",
+   "tags": [
+    "night"
+   ]
+  },
+  {
+   "time": "02:06:14",
+   "who": "mom",
+   "text": "it's the middle of the night, look at the clock",
+   "tags": [
+    "night"
+   ]
+  },
+  {
+   "time": "02:06:27",
+   "who": "mom",
+   "text": "two o'clock. Two o'clock in the morning",
+   "tags": [
+    "night"
+   ]
+  },
+  {
+   "time": "02:06:40",
+   "who": "mom",
+   "text": "silly old thing",
+   "tags": [
+    "night"
+   ]
+  },
+  {
+   "time": "02:06:55",
+   "who": "mom",
+   "text": "back to bed. Go on",
+   "tags": [
+    "night"
+   ]
+  },
+  {
+   "time": "02:07:30",
+   "who": "mom",
+   "text": "there we go",
+   "tags": [
+    "night"
+   ]
+  },
+  {
+   "time": "02:07:42",
+   "who": "mom",
+   "text": "cold sheets",
+   "tags": [
+    "night"
+   ]
+  },
+  {
+   "time": "06:47:05",
+   "who": "mom",
+   "text": "mm"
+  },
+  {
+   "time": "06:47:30",
+   "who": "mom",
+   "text": "oh, it's light already"
+  },
+  {
+   "time": "06:48:02",
+   "who": "mom",
+   "text": "okay. Up we get"
+  },
+  {
+   "time": "06:48:40",
+   "who": "tv",
+   "text": "good morning, it's six forty-eight",
+   "tags": [
+    "radio"
+   ]
+  },
+  {
+   "time": "06:48:46",
+   "who": "tv",
+   "text": "cloudy this morning with a high of fifty-two",
+   "tags": [
+    "radio"
+   ]
+  },
+  {
+   "time": "06:48:55",
+   "who": "tv",
+   "text": "and a chance of showers after three",
+   "tags": [
+    "radio"
+   ]
+  },
+  {
+   "time": "06:49:20",
+   "who": "mom",
+   "text": "fifty-two. I'll want the cardigan"
+  },
+  {
+   "time": "06:56:30",
+   "who": "mom",
+   "text": "brr, it's chilly in here"
+  },
+  {
+   "time": "07:02:15",
+   "who": "mom",
+   "text": "kettle on"
+  },
+  {
+   "time": "07:02:40",
+   "who": "mom",
+   "text": "now where did I put the tea"
+  },
+  {
+   "time": "07:03:05",
+   "who": "mom",
+   "text": "in the tin, Margaret, where it always is"
+  },
+  {
+   "time": "07:04:30",
+   "who": "mom",
+   "text": "oh, I was up in the night, wasn't I",
+   "tags": [
+    "memory",
+    "night"
+   ]
+  },
+  {
+   "time": "07:04:41",
+   "who": "mom",
+   "text": "I thought I had to go to school",
+   "tags": [
+    "memory",
+    "night"
+   ]
+  },
+  {
+   "time": "07:04:52",
+   "who": "mom",
+   "text": "thirty-one years of that and I still get up for it"
+  },
+  {
+   "time": "07:06:10",
+   "who": "mom",
+   "text": "oatmeal, I think. With the raisins",
+   "tags": [
+    "food"
+   ]
+  },
+  {
+   "time": "07:08:22",
+   "who": "mom",
+   "text": "one cup of water, half a cup of oats",
+   "tags": [
+    "food"
+   ]
+  },
+  {
+   "time": "07:08:35",
+   "who": "mom",
+   "text": "pinch of salt",
+   "tags": [
+    "food"
+   ]
+  },
+  {
+   "time": "07:14:20",
+   "who": "tv",
+   "text": "in local news, the school board meets tonight",
+   "tags": [
+    "radio"
+   ]
+  },
+  {
+   "time": "07:14:31",
+   "who": "tv",
+   "text": "on the proposal to extend the bus routes",
+   "tags": [
+    "radio"
+   ]
+  },
+  {
+   "time": "07:15:02",
+   "who": "mom",
+   "text": "buses. They never ran past our road either"
+  },
+  {
+   "time": "07:25:40",
+   "who": "mom",
+   "text": "that was good",
+   "tags": [
+    "food"
+   ]
+  },
+  {
+   "time": "07:38:10",
+   "who": "mom",
+   "text": "I need my... my other cardigan, the blue one"
+  },
+  {
+   "time": "07:38:22",
+   "who": "mom",
+   "text": "it's upstairs"
+  },
+  {
+   "time": "07:39:05",
+   "who": "mom",
+   "text": "okay. One at a time",
+   "tags": [
+    "stairs"
+   ]
+  },
+  {
+   "time": "07:39:40",
+   "who": "mom",
+   "text": "ooh. Oh, that knee",
+   "tags": [
+    "pain",
+    "knee",
+    "stairs"
+   ]
+  },
+  {
+   "time": "07:39:48",
+   "who": "mom",
+   "text": "my knee was aching on the stairs again",
+   "tags": [
+    "pain",
+    "knee",
+    "stairs"
+   ]
+  },
+  {
+   "time": "07:39:58",
+   "who": "mom",
+   "text": "the right one. Always the right one",
+   "tags": [
+    "pain",
+    "knee"
+   ]
+  },
+  {
+   "time": "07:40:20",
+   "who": "mom",
+   "text": "hold the rail",
+   "tags": [
+    "stairs"
+   ]
+  },
+  {
+   "time": "07:40:35",
+   "who": "mom",
+   "text": "there. Made it",
+   "tags": [
+    "stairs"
+   ]
+  },
+  {
+   "time": "07:58:40",
+   "who": "mom",
+   "text": "is it eight yet?",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "07:58:50",
+   "who": "mom",
+   "text": "nearly",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "08:00:12",
+   "who": "mom",
+   "text": "okay, pills",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "08:00:25",
+   "who": "mom",
+   "text": "Thursday morning, here we go",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "08:00:40",
+   "who": "mom",
+   "text": "the met for men",
+   "tags": [
+    "med"
+   ],
+   "misheard": "the metformin"
+  },
+  {
+   "time": "08:00:58",
+   "who": "mom",
+   "text": "and the blood pressure one, lisinopril",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "08:01:10",
+   "who": "mom",
+   "text": "and the new one from Dr. Patel",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "08:01:20",
+   "who": "mom",
+   "text": "done a pizza",
+   "tags": [
+    "med"
+   ],
+   "misheard": "donepezil"
+  },
+  {
+   "time": "08:01:35",
+   "who": "mom",
+   "text": "that's three. Big glass of water",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "08:01:50",
+   "who": "mom",
+   "text": "down they go",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "08:02:05",
+   "who": "mom",
+   "text": "Thursday morning, done",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "08:02:15",
+   "who": "mom",
+   "text": "I'll close the little door so I know",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "08:15:30",
+   "who": "mom",
+   "text": "now, the crossword"
+  },
+  {
+   "time": "08:16:02",
+   "who": "mom",
+   "text": "where are my glasses",
+   "tags": [
+    "memory",
+    "glasses"
+   ]
+  },
+  {
+   "time": "08:16:20",
+   "who": "mom",
+   "text": "I had them for the paper",
+   "tags": [
+    "glasses"
+   ]
+  },
+  {
+   "time": "08:17:05",
+   "who": "mom",
+   "text": "not on the table",
+   "tags": [
+    "glasses"
+   ]
+  },
+  {
+   "time": "08:17:40",
+   "who": "mom",
+   "text": "not by the kettle",
+   "tags": [
+    "glasses"
+   ]
+  },
+  {
+   "time": "08:19:55",
+   "who": "mom",
+   "text": "bathroom? No",
+   "tags": [
+    "glasses"
+   ]
+  },
+  {
+   "time": "08:21:10",
+   "who": "mom",
+   "text": "I bet they're upstairs. I'm not going up there again",
+   "tags": [
+    "glasses",
+    "stairs"
+   ]
+  },
+  {
+   "time": "08:23:45",
+   "who": "mom",
+   "text": "oh! There you are",
+   "tags": [
+    "glasses"
+   ]
+  },
+  {
+   "time": "08:23:52",
+   "who": "mom",
+   "text": "in the bread box. Why would I put you in the bread box",
+   "tags": [
+    "memory",
+    "glasses"
+   ]
+  },
+  {
+   "time": "08:30:15",
+   "who": "mom",
+   "text": "seven letters, a gathering of crows"
+  },
+  {
+   "time": "08:30:40",
+   "who": "mom",
+   "text": "murder. No, that's six"
+  },
+  {
+   "time": "08:41:00",
+   "who": "mom",
+   "text": "capital of Portugal... Lisbon"
+  },
+  {
+   "time": "08:41:12",
+   "who": "mom",
+   "text": "L, I, S, B, O, N. There"
+  },
+  {
+   "time": "08:55:20",
+   "who": "mom",
+   "text": "oh, the plants need water"
+  },
+  {
+   "time": "08:57:30",
+   "who": "mom",
+   "text": "you're looking a bit sad, aren't you"
+  },
+  {
+   "time": "09:14:50",
+   "who": "mom",
+   "text": "what day is it today",
+   "tags": [
+    "memory"
+   ]
+  },
+  {
+   "time": "09:15:15",
+   "who": "mom",
+   "text": "the paper says... Thursday",
+   "tags": [
+    "memory"
+   ]
+  },
+  {
+   "time": "09:15:26",
+   "who": "mom",
+   "text": "Thursday. Right. Garbage is Friday"
+  },
+  {
+   "time": "09:38:05",
+   "who": "mom",
+   "text": "oh, the doorbell"
+  },
+  {
+   "time": "09:38:12",
+   "who": "mom",
+   "text": "coming! Coming"
+  },
+  {
+   "time": "09:38:40",
+   "who": "june",
+   "text": "morning, Margaret! It's only me"
+  },
+  {
+   "time": "09:38:46",
+   "who": "mom",
+   "text": "June! Come in, come in"
+  },
+  {
+   "time": "09:38:55",
+   "who": "june",
+   "text": "I brought you some of the banana muffins"
+  },
+  {
+   "time": "09:39:04",
+   "who": "june",
+   "text": "and your mail was on the step"
+  },
+  {
+   "time": "09:39:12",
+   "who": "mom",
+   "text": "oh, you're a dear"
+  },
+  {
+   "time": "09:39:30",
+   "who": "mom",
+   "text": "sit down, I'll put the kettle on"
+  },
+  {
+   "time": "09:39:40",
+   "who": "june",
+   "text": "don't fuss, I can only stay a bit"
+  },
+  {
+   "time": "09:40:15",
+   "who": "mom",
+   "text": "how's Frank's back?"
+  },
+  {
+   "time": "09:40:22",
+   "who": "june",
+   "text": "oh, better. He's out raking already"
+  },
+  {
+   "time": "09:40:30",
+   "who": "june",
+   "text": "won't listen to anybody"
+  },
+  {
+   "time": "09:40:38",
+   "who": "mom",
+   "text": "they never do"
+  },
+  {
+   "time": "09:41:30",
+   "who": "june",
+   "text": "these are for the church sale on Saturday"
+  },
+  {
+   "time": "09:41:38",
+   "who": "june",
+   "text": "I'm doing muffins, and I wanted to ask you"
+  },
+  {
+   "time": "09:41:47",
+   "who": "june",
+   "text": "would you tell me your apple pie again? The one with the crust",
+   "tags": [
+    "recipe"
+   ]
+  },
+  {
+   "time": "09:41:56",
+   "who": "mom",
+   "text": "oh, the crust, well",
+   "tags": [
+    "recipe"
+   ]
+  },
+  {
+   "time": "09:42:05",
+   "who": "mom",
+   "text": "two and a half cups of flour",
+   "tags": [
+    "recipe"
+   ]
+  },
+  {
+   "time": "09:42:12",
+   "who": "mom",
+   "text": "a teaspoon of salt, a tablespoon of sugar",
+   "tags": [
+    "recipe"
+   ]
+  },
+  {
+   "time": "09:42:22",
+   "who": "mom",
+   "text": "and the butter has to be cold, really cold",
+   "tags": [
+    "recipe"
+   ]
+  },
+  {
+   "time": "09:42:30",
+   "who": "mom",
+   "text": "two sticks, cut in little cubes",
+   "tags": [
+    "recipe"
+   ]
+  },
+  {
+   "time": "09:42:41",
+   "who": "mom",
+   "text": "then ice water, a little at a time, maybe six tablespoons",
+   "tags": [
+    "recipe"
+   ]
+  },
+  {
+   "time": "09:42:52",
+   "who": "mom",
+   "text": "and you don't work it. That's the secret",
+   "tags": [
+    "recipe"
+   ]
+  },
+  {
+   "time": "09:43:00",
+   "who": "june",
+   "text": "I always work it too much"
+  },
+  {
+   "time": "09:43:08",
+   "who": "mom",
+   "text": "then into the fridge for an hour, at least",
+   "tags": [
+    "recipe"
+   ]
+  },
+  {
+   "time": "09:43:20",
+   "who": "mom",
+   "text": "Granny Smiths, with a little lemon and cinnamon",
+   "tags": [
+    "recipe"
+   ]
+  },
+  {
+   "time": "09:43:31",
+   "who": "june",
+   "text": "I'm writing all this down"
+  },
+  {
+   "time": "09:43:40",
+   "who": "mom",
+   "text": "and a bit of nutmeg. Not too much",
+   "tags": [
+    "recipe"
+   ]
+  },
+  {
+   "time": "09:44:20",
+   "who": "mom",
+   "text": "you know Walter won a ribbon with that pie",
+   "tags": [
+    "story"
+   ]
+  },
+  {
+   "time": "09:44:29",
+   "who": "june",
+   "text": "did he?"
+  },
+  {
+   "time": "09:44:37",
+   "who": "mom",
+   "text": "at the county fair, nineteen seventy-four",
+   "tags": [
+    "story"
+   ]
+  },
+  {
+   "time": "09:44:46",
+   "who": "mom",
+   "text": "he entered it under his own name, the rascal",
+   "tags": [
+    "story"
+   ]
+  },
+  {
+   "time": "09:44:55",
+   "who": "mom",
+   "text": "and I made the whole thing",
+   "tags": [
+    "story"
+   ]
+  },
+  {
+   "time": "09:45:03",
+   "who": "mom",
+   "text": "blue ribbon. He kept it on the fridge for years",
+   "tags": [
+    "story"
+   ]
+  },
+  {
+   "time": "09:45:12",
+   "who": "june",
+   "text": "oh, that's wonderful"
+  },
+  {
+   "time": "09:45:20",
+   "who": "mom",
+   "text": "I still have it somewhere",
+   "tags": [
+    "story"
+   ]
+  },
+  {
+   "time": "09:46:30",
+   "who": "june",
+   "text": "your hands are like ice, Margaret",
+   "tags": [
+    "hands"
+   ]
+  },
+  {
+   "time": "09:46:38",
+   "who": "mom",
+   "text": "oh, they're always cold this time of year",
+   "tags": [
+    "hands"
+   ]
+  },
+  {
+   "time": "09:46:46",
+   "who": "mom",
+   "text": "it's nothing, it's just November",
+   "tags": [
+    "hands"
+   ]
+  },
+  {
+   "time": "09:47:30",
+   "who": "june",
+   "text": "are you keeping the heat up?"
+  },
+  {
+   "time": "09:47:36",
+   "who": "mom",
+   "text": "sixty-eight. Lisa makes me"
+  },
+  {
+   "time": "09:48:20",
+   "who": "june",
+   "text": "how's Lisa doing?"
+  },
+  {
+   "time": "09:48:27",
+   "who": "mom",
+   "text": "oh, busy. She calls most evenings"
+  },
+  {
+   "time": "09:48:36",
+   "who": "mom",
+   "text": "and Ethan's playing football now. Soccer, they call it"
+  },
+  {
+   "time": "09:48:46",
+   "who": "june",
+   "text": "good for him"
+  },
+  {
+   "time": "09:49:30",
+   "who": "june",
+   "text": "did you ever teach any of the Hendersons?"
+  },
+  {
+   "time": "09:49:38",
+   "who": "mom",
+   "text": "oh, I taught every child on this street",
+   "tags": [
+    "story"
+   ]
+  },
+  {
+   "time": "09:49:47",
+   "who": "mom",
+   "text": "third grade, thirty-one years at Brookside Elementary",
+   "tags": [
+    "story"
+   ]
+  },
+  {
+   "time": "09:49:58",
+   "who": "mom",
+   "text": "the Henderson boy, Tommy, put a frog in my desk drawer",
+   "tags": [
+    "story"
+   ]
+  },
+  {
+   "time": "09:50:08",
+   "who": "mom",
+   "text": "nineteen sixty-nine. I screamed the roof off",
+   "tags": [
+    "story"
+   ]
+  },
+  {
+   "time": "09:50:16",
+   "who": "june",
+   "text": "oh, no!"
+  },
+  {
+   "time": "09:50:24",
+   "who": "mom",
+   "text": "so I made him write a report on frogs",
+   "tags": [
+    "story"
+   ]
+  },
+  {
+   "time": "09:50:33",
+   "who": "mom",
+   "text": "and he's a veterinarian now, can you believe it",
+   "tags": [
+    "story"
+   ]
+  },
+  {
+   "time": "09:50:45",
+   "who": "june",
+   "text": "you're a marvel, Margaret"
+  },
+  {
+   "time": "09:52:10",
+   "who": "june",
+   "text": "do you need anything from the store? I'm going this afternoon"
+  },
+  {
+   "time": "09:52:18",
+   "who": "mom",
+   "text": "no, no, I'm fine, thank you"
+  },
+  {
+   "time": "09:52:26",
+   "who": "june",
+   "text": "milk? Bread?"
+  },
+  {
+   "time": "09:52:33",
+   "who": "mom",
+   "text": "well... maybe some milk"
+  },
+  {
+   "time": "09:55:40",
+   "who": "june",
+   "text": "Frank wants to put the storm windows up this weekend"
+  },
+  {
+   "time": "09:55:48",
+   "who": "june",
+   "text": "he can do yours too, if you like"
+  },
+  {
+   "time": "09:55:56",
+   "who": "mom",
+   "text": "oh, would he? Walter always did those"
+  },
+  {
+   "time": "09:56:05",
+   "who": "june",
+   "text": "I'll send him over Sunday"
+  },
+  {
+   "time": "10:05:40",
+   "who": "june",
+   "text": "are you still doing your walks?"
+  },
+  {
+   "time": "10:05:48",
+   "who": "mom",
+   "text": "oh, around the block, when it's dry"
+  },
+  {
+   "time": "10:05:56",
+   "who": "mom",
+   "text": "not as far as I used to"
+  },
+  {
+   "time": "10:13:05",
+   "who": "mom",
+   "text": "June, what day is it today?",
+   "tags": [
+    "memory"
+   ]
+  },
+  {
+   "time": "10:13:12",
+   "who": "june",
+   "text": "it's Thursday, love"
+  },
+  {
+   "time": "10:13:18",
+   "who": "mom",
+   "text": "Thursday. Oh, of course",
+   "tags": [
+    "memory"
+   ]
+  },
+  {
+   "time": "10:13:25",
+   "who": "mom",
+   "text": "I looked at the paper this morning, too",
+   "tags": [
+    "memory"
+   ]
+  },
+  {
+   "time": "10:14:00",
+   "who": "june",
+   "text": "the church sale's on Saturday"
+  },
+  {
+   "time": "10:14:08",
+   "who": "mom",
+   "text": "Saturday Lisa's coming",
+   "tags": [
+    "plan",
+    "lisa"
+   ]
+  },
+  {
+   "time": "10:14:15",
+   "who": "june",
+   "text": "oh, lovely, for the weekend?"
+  },
+  {
+   "time": "10:14:22",
+   "who": "mom",
+   "text": "I think just the day. She drives up early",
+   "tags": [
+    "plan",
+    "lisa"
+   ]
+  },
+  {
+   "time": "10:19:30",
+   "who": "june",
+   "text": "well, I'd better let you get on"
+  },
+  {
+   "time": "10:19:38",
+   "who": "june",
+   "text": "I'll bring the milk by after four",
+   "tags": [
+    "plan"
+   ]
+  },
+  {
+   "time": "10:19:45",
+   "who": "mom",
+   "text": "thank you, June. Mind the step"
+  },
+  {
+   "time": "10:19:52",
+   "who": "june",
+   "text": "bye now!"
+  },
+  {
+   "time": "10:21:00",
+   "who": "mom",
+   "text": "muffins. Ooh",
+   "tags": [
+    "food"
+   ]
+  },
+  {
+   "time": "10:42:10",
+   "who": "mom",
+   "text": "oh, the phone",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "10:42:18",
+   "who": "mom",
+   "text": "hello?",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "10:42:22",
+   "who": "pharmacy",
+   "text": "hi, is this Margaret?",
+   "tags": [
+    "phone",
+    "pharmacy"
+   ]
+  },
+  {
+   "time": "10:42:27",
+   "who": "mom",
+   "text": "yes, speaking",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "10:42:31",
+   "who": "pharmacy",
+   "text": "this is Kevin at Larkfield Pharmacy",
+   "tags": [
+    "phone",
+    "pharmacy"
+   ]
+  },
+  {
+   "time": "10:42:38",
+   "who": "pharmacy",
+   "text": "calling about your prescriptions",
+   "tags": [
+    "phone",
+    "pharmacy"
+   ]
+  },
+  {
+   "time": "10:42:46",
+   "who": "pharmacy",
+   "text": "your Lisa no pill refill is ready to pick up",
+   "tags": [
+    "phone",
+    "pharmacy",
+    "med"
+   ],
+   "misheard": "your lisinopril refill is ready to pick up"
+  },
+  {
+   "time": "10:42:55",
+   "who": "pharmacy",
+   "text": "but the metformin is out of refills",
+   "tags": [
+    "phone",
+    "pharmacy",
+    "med"
+   ]
+  },
+  {
+   "time": "10:43:03",
+   "who": "pharmacy",
+   "text": "so we've sent a request over to Dr. Patel's office",
+   "tags": [
+    "phone",
+    "pharmacy",
+    "med"
+   ]
+  },
+  {
+   "time": "10:43:12",
+   "who": "mom",
+   "text": "oh dear. I've got... I think I've got a few left",
+   "tags": [
+    "phone",
+    "med"
+   ]
+  },
+  {
+   "time": "10:43:20",
+   "who": "pharmacy",
+   "text": "you should have about a week",
+   "tags": [
+    "phone",
+    "pharmacy",
+    "med"
+   ]
+  },
+  {
+   "time": "10:43:28",
+   "who": "pharmacy",
+   "text": "it usually takes them two or three days",
+   "tags": [
+    "phone",
+    "pharmacy"
+   ]
+  },
+  {
+   "time": "10:43:36",
+   "who": "pharmacy",
+   "text": "so try us again Monday morning",
+   "tags": [
+    "phone",
+    "pharmacy",
+    "plan"
+   ]
+  },
+  {
+   "time": "10:43:44",
+   "who": "mom",
+   "text": "Monday. All right, I'll call you Monday at ten",
+   "tags": [
+    "phone",
+    "plan",
+    "pharmacy"
+   ]
+  },
+  {
+   "time": "10:43:52",
+   "who": "pharmacy",
+   "text": "ten o'clock Monday is perfect",
+   "tags": [
+    "phone",
+    "pharmacy",
+    "plan"
+   ]
+  },
+  {
+   "time": "10:44:00",
+   "who": "pharmacy",
+   "text": "and we can deliver both on Monday afternoon if you like",
+   "tags": [
+    "phone",
+    "pharmacy"
+   ]
+  },
+  {
+   "time": "10:44:08",
+   "who": "mom",
+   "text": "oh, that would be a help",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "10:44:15",
+   "who": "pharmacy",
+   "text": "okay, you have a good day now",
+   "tags": [
+    "phone",
+    "pharmacy"
+   ]
+  },
+  {
+   "time": "10:44:20",
+   "who": "mom",
+   "text": "you too, thank you",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "10:44:50",
+   "who": "mom",
+   "text": "Monday, ten, pharmacy. Write it down",
+   "tags": [
+    "plan",
+    "pharmacy"
+   ]
+  },
+  {
+   "time": "10:45:10",
+   "who": "mom",
+   "text": "where's the pen... the calendar"
+  },
+  {
+   "time": "10:45:40",
+   "who": "mom",
+   "text": "Monday, ten o'clock, call the pharmacy about the metformin",
+   "tags": [
+    "plan",
+    "pharmacy",
+    "med"
+   ]
+  },
+  {
+   "time": "11:20:30",
+   "who": "mom",
+   "text": "dust, dust, dust"
+  },
+  {
+   "time": "11:21:40",
+   "who": "mom",
+   "text": "Walter, you need a dusting too"
+  },
+  {
+   "time": "11:34:50",
+   "who": "mom",
+   "text": "that phone again. Busy day",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "11:34:58",
+   "who": "mom",
+   "text": "hello?",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "11:35:02",
+   "who": "clinic",
+   "text": "hi, may I speak to Margaret, please?",
+   "tags": [
+    "phone",
+    "clinic"
+   ]
+  },
+  {
+   "time": "11:35:07",
+   "who": "mom",
+   "text": "this is Margaret",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "11:35:12",
+   "who": "clinic",
+   "text": "hi Margaret, this is Rosa from Dr. Patel's office",
+   "tags": [
+    "phone",
+    "clinic"
+   ]
+  },
+  {
+   "time": "11:35:20",
+   "who": "clinic",
+   "text": "I'm calling to confirm your appointment",
+   "tags": [
+    "phone",
+    "clinic",
+    "appointment"
+   ]
+  },
+  {
+   "time": "11:35:27",
+   "who": "clinic",
+   "text": "next Tuesday, the seventeenth, at two-thirty",
+   "tags": [
+    "phone",
+    "clinic",
+    "appointment"
+   ]
+  },
+  {
+   "time": "11:35:35",
+   "who": "mom",
+   "text": "Tuesday at two-thirty",
+   "tags": [
+    "phone",
+    "appointment"
+   ]
+  },
+  {
+   "time": "11:35:41",
+   "who": "clinic",
+   "text": "that's right. It's a follow-up on the new medication",
+   "tags": [
+    "phone",
+    "clinic",
+    "med"
+   ]
+  },
+  {
+   "time": "11:35:49",
+   "who": "clinic",
+   "text": "the donepezil, to see how you're getting on",
+   "tags": [
+    "phone",
+    "clinic",
+    "med"
+   ]
+  },
+  {
+   "time": "11:35:57",
+   "who": "mom",
+   "text": "oh yes, the new one. It's fine, I think",
+   "tags": [
+    "phone",
+    "med"
+   ]
+  },
+  {
+   "time": "11:36:05",
+   "who": "clinic",
+   "text": "and please bring all your pill bottles with you",
+   "tags": [
+    "phone",
+    "clinic",
+    "appointment"
+   ]
+  },
+  {
+   "time": "11:36:13",
+   "who": "mom",
+   "text": "bring the bottles. All right",
+   "tags": [
+    "phone",
+    "appointment"
+   ]
+  },
+  {
+   "time": "11:36:20",
+   "who": "clinic",
+   "text": "and we got the pharmacy's request for the metformin",
+   "tags": [
+    "phone",
+    "clinic",
+    "med"
+   ]
+  },
+  {
+   "time": "11:36:28",
+   "who": "clinic",
+   "text": "Dr. Patel will sign that today or tomorrow",
+   "tags": [
+    "phone",
+    "clinic",
+    "med"
+   ]
+  },
+  {
+   "time": "11:36:35",
+   "who": "mom",
+   "text": "oh good, thank you, dear",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "11:36:42",
+   "who": "clinic",
+   "text": "do you have a ride on Tuesday?",
+   "tags": [
+    "phone",
+    "clinic"
+   ]
+  },
+  {
+   "time": "11:36:49",
+   "who": "mom",
+   "text": "um, I'll ask June. My neighbour",
+   "tags": [
+    "phone",
+    "plan"
+   ]
+  },
+  {
+   "time": "11:36:56",
+   "who": "clinic",
+   "text": "great. See you Tuesday, Margaret",
+   "tags": [
+    "phone",
+    "clinic"
+   ]
+  },
+  {
+   "time": "11:37:02",
+   "who": "mom",
+   "text": "bye bye",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "11:37:30",
+   "who": "mom",
+   "text": "Tuesday, two-thirty, Dr. Patel. Bottles",
+   "tags": [
+    "appointment",
+    "plan"
+   ]
+  },
+  {
+   "time": "11:37:50",
+   "who": "mom",
+   "text": "on the calendar. Next to the pharmacy"
+  },
+  {
+   "time": "11:38:05",
+   "who": "mom",
+   "text": "and ask June about a ride",
+   "tags": [
+    "plan"
+   ]
+  },
+  {
+   "time": "12:05:10",
+   "who": "mom",
+   "text": "lunch, I suppose",
+   "tags": [
+    "food"
+   ]
+  },
+  {
+   "time": "12:06:30",
+   "who": "mom",
+   "text": "tomato soup and a bit of toast",
+   "tags": [
+    "food"
+   ]
+  },
+  {
+   "time": "12:14:40",
+   "who": "tv",
+   "text": "and that's the noon report. Stay with us",
+   "tags": [
+    "radio"
+   ]
+  },
+  {
+   "time": "12:15:20",
+   "who": "mom",
+   "text": "mm, that's hot",
+   "tags": [
+    "food"
+   ]
+  },
+  {
+   "time": "12:32:00",
+   "who": "mom",
+   "text": "right"
+  },
+  {
+   "time": "12:32:10",
+   "who": "mom",
+   "text": "oh! Oh",
+   "tags": [
+    "dizzy"
+   ]
+  },
+  {
+   "time": "12:32:16",
+   "who": "mom",
+   "text": "whoa, my head's swimming",
+   "tags": [
+    "dizzy"
+   ]
+  },
+  {
+   "time": "12:32:24",
+   "who": "mom",
+   "text": "I stood up too fast",
+   "tags": [
+    "dizzy"
+   ]
+  },
+  {
+   "time": "12:32:33",
+   "who": "mom",
+   "text": "hold on to the chair, hold on",
+   "tags": [
+    "dizzy"
+   ]
+  },
+  {
+   "time": "12:32:50",
+   "who": "mom",
+   "text": "everything went sort of grey for a second",
+   "tags": [
+    "dizzy"
+   ]
+  },
+  {
+   "time": "12:33:10",
+   "who": "mom",
+   "text": "okay. Okay, it's passing",
+   "tags": [
+    "dizzy"
+   ]
+  },
+  {
+   "time": "12:33:25",
+   "who": "mom",
+   "text": "it does that lately when I get up out of the chair",
+   "tags": [
+    "dizzy"
+   ]
+  },
+  {
+   "time": "12:33:40",
+   "who": "mom",
+   "text": "I should tell Dr. Patel about that",
+   "tags": [
+    "dizzy",
+    "plan"
+   ]
+  },
+  {
+   "time": "12:34:10",
+   "who": "mom",
+   "text": "sit a minute",
+   "tags": [
+    "dizzy"
+   ]
+  },
+  {
+   "time": "13:28:40",
+   "who": "mom",
+   "text": "I'm going to have a lie down"
+  },
+  {
+   "time": "13:29:30",
+   "who": "mom",
+   "text": "up we go",
+   "tags": [
+    "stairs"
+   ]
+  },
+  {
+   "time": "13:29:45",
+   "who": "mom",
+   "text": "ow. Ow, ow",
+   "tags": [
+    "pain",
+    "knee",
+    "stairs"
+   ]
+  },
+  {
+   "time": "13:29:52",
+   "who": "mom",
+   "text": "this knee hurts going up the stairs",
+   "tags": [
+    "pain",
+    "knee",
+    "stairs"
+   ]
+  },
+  {
+   "time": "13:30:01",
+   "who": "mom",
+   "text": "it's worse in the afternoon",
+   "tags": [
+    "pain",
+    "knee"
+   ]
+  },
+  {
+   "time": "13:30:15",
+   "who": "mom",
+   "text": "one more... and one more",
+   "tags": [
+    "stairs"
+   ]
+  },
+  {
+   "time": "13:31:30",
+   "who": "mom",
+   "text": "just half an hour"
+  },
+  {
+   "time": "14:42:15",
+   "who": "mom",
+   "text": "oh, I slept"
+  },
+  {
+   "time": "14:44:10",
+   "who": "mom",
+   "text": "downstairs, slowly",
+   "tags": [
+    "stairs"
+   ]
+  },
+  {
+   "time": "14:44:30",
+   "who": "mom",
+   "text": "hand on the rail",
+   "tags": [
+    "stairs"
+   ]
+  },
+  {
+   "time": "14:55:20",
+   "who": "unknown",
+   "text": "package for you, I left it on the step"
+  },
+  {
+   "time": "14:55:31",
+   "who": "mom",
+   "text": "oh, thank you!"
+  },
+  {
+   "time": "15:01:50",
+   "who": "mom",
+   "text": "phone. Who's that now",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "15:01:58",
+   "who": "mom",
+   "text": "hello?",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "15:02:03",
+   "who": "caller",
+   "text": "hello, am I speaking with Margaret?",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:02:14",
+   "who": "caller",
+   "text": "Margaret, this is Daniel from the security department at your bank",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:02:23",
+   "who": "caller",
+   "text": "we've detected suspicious activity on your account",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:02:31",
+   "who": "caller",
+   "text": "I'm afraid your account has been compromised",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:02:39",
+   "who": "mom",
+   "text": "compromised? What does that mean?",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:02:46",
+   "who": "caller",
+   "text": "someone is trying to take money out of your account right now",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:03:09",
+   "who": "caller",
+   "text": "to protect your funds you need to buy gift cards today",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:03:17",
+   "who": "mom",
+   "text": "gift guards? From the bank?",
+   "tags": [
+    "scam",
+    "phone"
+   ],
+   "misheard": "gift cards? From the bank?"
+  },
+  {
+   "time": "15:03:25",
+   "who": "caller",
+   "text": "no ma'am, from the grocery store or the pharmacy",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:03:33",
+   "who": "caller",
+   "text": "five hundred dollars, then you read me the numbers on the back",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:03:50",
+   "who": "mom",
+   "text": "well... which card do you need?",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:03:58",
+   "who": "caller",
+   "text": "any of the big ones. It has to be in the next hour",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:04:13",
+   "who": "caller",
+   "text": "and this is important, don't tell anyone, not even family",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:04:29",
+   "who": "mom",
+   "text": "not even Lisa?",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:04:35",
+   "who": "caller",
+   "text": "nobody. Can you get your purse and your coat now?",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:04:53",
+   "who": "mom",
+   "text": "I don't really drive much anymore. And, um. No",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:05:01",
+   "who": "mom",
+   "text": "my daughter handles my money. Lisa does all of that",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:05:09",
+   "who": "caller",
+   "text": "ma'am, there's no time, your savings will be gone",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:05:17",
+   "who": "mom",
+   "text": "no, I think I'll wait for Lisa. Goodbye",
+   "tags": [
+    "scam",
+    "phone"
+   ]
+  },
+  {
+   "time": "15:05:50",
+   "who": "mom",
+   "text": "well, I never",
+   "tags": [
+    "scam"
+   ]
+  },
+  {
+   "time": "15:06:05",
+   "who": "mom",
+   "text": "gift cards. What would a bank want with gift cards",
+   "tags": [
+    "scam"
+   ]
+  },
+  {
+   "time": "15:06:20",
+   "who": "mom",
+   "text": "he said not to tell anybody",
+   "tags": [
+    "scam"
+   ]
+  },
+  {
+   "time": "15:06:35",
+   "who": "mom",
+   "text": "Daniel. He sounded nice enough",
+   "tags": [
+    "scam"
+   ]
+  },
+  {
+   "time": "15:31:00",
+   "who": "mom",
+   "text": "cup of tea and one of June's muffins",
+   "tags": [
+    "food"
+   ]
+  },
+  {
+   "time": "16:22:05",
+   "who": "june",
+   "text": "only me! Here's your milk"
+  },
+  {
+   "time": "16:22:12",
+   "who": "mom",
+   "text": "oh, June, thank you. What do I owe you"
+  },
+  {
+   "time": "16:22:19",
+   "who": "june",
+   "text": "nothing, don't be silly"
+  },
+  {
+   "time": "16:22:30",
+   "who": "mom",
+   "text": "June, um, could you drive me Tuesday? Dr. Patel, two-thirty",
+   "tags": [
+    "plan",
+    "appointment"
+   ]
+  },
+  {
+   "time": "16:22:40",
+   "who": "june",
+   "text": "of course I can. I'll pick you up at two",
+   "tags": [
+    "plan",
+    "appointment"
+   ]
+  },
+  {
+   "time": "16:22:48",
+   "who": "mom",
+   "text": "oh, you're a dear"
+  },
+  {
+   "time": "16:22:55",
+   "who": "june",
+   "text": "right, I'm off, Frank's waiting in the car"
+  },
+  {
+   "time": "16:40:10",
+   "who": "tv",
+   "text": "and the answer is... the Mississippi!",
+   "tags": [
+    "tv"
+   ]
+  },
+  {
+   "time": "16:40:18",
+   "who": "tv",
+   "text": "that's another five hundred dollars",
+   "tags": [
+    "tv"
+   ]
+  },
+  {
+   "time": "17:08:40",
+   "who": "mom",
+   "text": "there's the phone. That'll be Lisa",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:08:48",
+   "who": "mom",
+   "text": "hello?",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:08:52",
+   "who": "lisa",
+   "text": "hi Mom! It's me",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:08:58",
+   "who": "mom",
+   "text": "Lisa! Hello, sweetheart",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:09:05",
+   "who": "lisa",
+   "text": "how are you doing? How was your day?",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:09:12",
+   "who": "mom",
+   "text": "oh, fine, fine. June came by",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:09:19",
+   "who": "mom",
+   "text": "she brought muffins, and the milk",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:09:27",
+   "who": "lisa",
+   "text": "oh, that's nice of her",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:09:35",
+   "who": "lisa",
+   "text": "guess what, Ethan scored a goal last night",
+   "tags": [
+    "phone",
+    "ethan"
+   ]
+  },
+  {
+   "time": "17:09:43",
+   "who": "mom",
+   "text": "he didn't!",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:09:49",
+   "who": "lisa",
+   "text": "his first one this season. He's over the moon",
+   "tags": [
+    "phone",
+    "ethan"
+   ]
+  },
+  {
+   "time": "17:09:57",
+   "who": "lisa",
+   "text": "hang on, he wants to tell you. Ethan!",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:10:10",
+   "who": "ethan",
+   "text": "hi Grandma!",
+   "tags": [
+    "phone",
+    "ethan"
+   ]
+  },
+  {
+   "time": "17:10:15",
+   "who": "mom",
+   "text": "hello, my darling! I hear you scored a goal",
+   "tags": [
+    "phone",
+    "ethan"
+   ]
+  },
+  {
+   "time": "17:10:23",
+   "who": "ethan",
+   "text": "yeah, I kicked it right past the goalie",
+   "tags": [
+    "phone",
+    "ethan"
+   ]
+  },
+  {
+   "time": "17:10:31",
+   "who": "ethan",
+   "text": "into the top corner",
+   "tags": [
+    "phone",
+    "ethan"
+   ]
+  },
+  {
+   "time": "17:10:37",
+   "who": "mom",
+   "text": "oh, I'm so proud of you",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:10:44",
+   "who": "ethan",
+   "text": "coach gave me the game ball",
+   "tags": [
+    "phone",
+    "ethan"
+   ]
+  },
+  {
+   "time": "17:10:51",
+   "who": "mom",
+   "text": "your grandpa would have been out of his seat",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:10:58",
+   "who": "ethan",
+   "text": "okay, bye Grandma, love you",
+   "tags": [
+    "phone",
+    "ethan"
+   ]
+  },
+  {
+   "time": "17:11:03",
+   "who": "mom",
+   "text": "love you too, sweetheart",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:11:12",
+   "who": "unknown",
+   "text": "Mom, where are my shin guards",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:11:20",
+   "who": "lisa",
+   "text": "he's been carrying that ball around all day",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:11:30",
+   "who": "lisa",
+   "text": "so, Mom, did you take your pills this morning?",
+   "tags": [
+    "phone",
+    "med"
+   ]
+  },
+  {
+   "time": "17:11:37",
+   "who": "mom",
+   "text": "yes, at breakfast. I closed the little door",
+   "tags": [
+    "phone",
+    "med"
+   ]
+  },
+  {
+   "time": "17:11:45",
+   "who": "lisa",
+   "text": "good. And you'll do the evening ones at eight?",
+   "tags": [
+    "phone",
+    "med"
+   ]
+  },
+  {
+   "time": "17:11:52",
+   "who": "mom",
+   "text": "eight o'clock, yes",
+   "tags": [
+    "phone",
+    "med"
+   ]
+  },
+  {
+   "time": "17:12:05",
+   "who": "mom",
+   "text": "the pharmacy called. The, um, the metformin's run out",
+   "tags": [
+    "phone",
+    "med",
+    "pharmacy"
+   ]
+  },
+  {
+   "time": "17:12:14",
+   "who": "mom",
+   "text": "of refills. They sent it to Dr. Patel",
+   "tags": [
+    "phone",
+    "med"
+   ]
+  },
+  {
+   "time": "17:12:20",
+   "who": "mom",
+   "text": "I'm calling them Monday at ten",
+   "tags": [
+    "phone",
+    "plan",
+    "pharmacy"
+   ]
+  },
+  {
+   "time": "17:12:28",
+   "who": "lisa",
+   "text": "okay, good. Write that down",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:12:33",
+   "who": "mom",
+   "text": "it's on the calendar",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:12:41",
+   "who": "mom",
+   "text": "and Dr. Patel's office rang. Tuesday at two-thirty",
+   "tags": [
+    "phone",
+    "appointment"
+   ]
+  },
+  {
+   "time": "17:12:50",
+   "who": "mom",
+   "text": "June's driving me",
+   "tags": [
+    "phone",
+    "appointment"
+   ]
+  },
+  {
+   "time": "17:12:57",
+   "who": "lisa",
+   "text": "oh, great. Thank June for me",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:13:10",
+   "who": "lisa",
+   "text": "are you okay otherwise? You sound tired",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:13:18",
+   "who": "mom",
+   "text": "oh, my knee's been giving me trouble on the stairs",
+   "tags": [
+    "phone",
+    "pain",
+    "knee",
+    "stairs"
+   ]
+  },
+  {
+   "time": "17:13:26",
+   "who": "mom",
+   "text": "going up, mostly. It aches something terrible",
+   "tags": [
+    "phone",
+    "pain",
+    "knee"
+   ]
+  },
+  {
+   "time": "17:13:35",
+   "who": "lisa",
+   "text": "Mom, you should tell Dr. Patel on Tuesday",
+   "tags": [
+    "phone",
+    "knee"
+   ]
+  },
+  {
+   "time": "17:13:42",
+   "who": "lisa",
+   "text": "maybe a brace would help, or a cane",
+   "tags": [
+    "phone",
+    "knee"
+   ]
+  },
+  {
+   "time": "17:13:49",
+   "who": "mom",
+   "text": "I'm not having a cane, I'm not that old",
+   "tags": [
+    "phone",
+    "knee"
+   ]
+  },
+  {
+   "time": "17:13:56",
+   "who": "lisa",
+   "text": "okay, okay. We'll talk about it Saturday",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:14:10",
+   "who": "mom",
+   "text": "you know Walter won a blue ribbon with my apple pie",
+   "tags": [
+    "phone",
+    "story",
+    "memory"
+   ]
+  },
+  {
+   "time": "17:14:18",
+   "who": "mom",
+   "text": "at the county fair. He entered it under his own name",
+   "tags": [
+    "phone",
+    "story",
+    "memory"
+   ]
+  },
+  {
+   "time": "17:14:26",
+   "who": "lisa",
+   "text": "I know, Mom. You've told me",
+   "tags": [
+    "phone",
+    "memory"
+   ]
+  },
+  {
+   "time": "17:14:32",
+   "who": "mom",
+   "text": "have I? Well, I told June today, too",
+   "tags": [
+    "phone",
+    "memory"
+   ]
+  },
+  {
+   "time": "17:14:40",
+   "who": "mom",
+   "text": "she's making it for the church sale",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:14:50",
+   "who": "mom",
+   "text": "oh! And a man rang this afternoon. About the... um",
+   "tags": [
+    "phone",
+    "scam"
+   ]
+  },
+  {
+   "time": "17:14:58",
+   "who": "lisa",
+   "text": "what man?",
+   "tags": [
+    "phone",
+    "scam"
+   ]
+  },
+  {
+   "time": "17:15:04",
+   "who": "mom",
+   "text": "oh, I don't remember. It wasn't anything",
+   "tags": [
+    "phone",
+    "scam",
+    "memory"
+   ]
+  },
+  {
+   "time": "17:15:12",
+   "who": "lisa",
+   "text": "okay. If anyone asks about money, you call me, okay?",
+   "tags": [
+    "phone",
+    "scam"
+   ]
+  },
+  {
+   "time": "17:15:20",
+   "who": "mom",
+   "text": "yes, yes, I know",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:15:30",
+   "who": "lisa",
+   "text": "so I'm coming up Saturday",
+   "tags": [
+    "phone",
+    "plan",
+    "lisa"
+   ]
+  },
+  {
+   "time": "17:15:37",
+   "who": "lisa",
+   "text": "I'll leave early, I should be there by eleven",
+   "tags": [
+    "phone",
+    "plan",
+    "lisa"
+   ]
+  },
+  {
+   "time": "17:15:45",
+   "who": "mom",
+   "text": "Saturday by eleven",
+   "tags": [
+    "phone",
+    "plan",
+    "lisa"
+   ]
+  },
+  {
+   "time": "17:15:52",
+   "who": "lisa",
+   "text": "I'll bring groceries and we'll go through the mail",
+   "tags": [
+    "phone",
+    "plan"
+   ]
+  },
+  {
+   "time": "17:16:00",
+   "who": "mom",
+   "text": "oh good, there's a pile of it",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:16:10",
+   "who": "lisa",
+   "text": "okay, I have to make dinner. I love you, Mom",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:16:17",
+   "who": "mom",
+   "text": "love you too. Kiss Ethan for me",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:16:24",
+   "who": "lisa",
+   "text": "I will. Talk tomorrow",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:16:30",
+   "who": "mom",
+   "text": "bye bye, sweetheart",
+   "tags": [
+    "phone"
+   ]
+  },
+  {
+   "time": "17:40:10",
+   "who": "mom",
+   "text": "now, supper",
+   "tags": [
+    "food"
+   ]
+  },
+  {
+   "time": "17:41:00",
+   "who": "mom",
+   "text": "there's that chicken from yesterday",
+   "tags": [
+    "food"
+   ]
+  },
+  {
+   "time": "17:41:30",
+   "who": "mom",
+   "text": "and some green beans",
+   "tags": [
+    "food"
+   ]
+  },
+  {
+   "time": "17:55:20",
+   "who": "mom",
+   "text": "Ethan scored a goal. Good boy",
+   "tags": [
+    "ethan"
+   ]
+  },
+  {
+   "time": "18:30:05",
+   "who": "tv",
+   "text": "good evening, here are tonight's headlines",
+   "tags": [
+    "tv"
+   ]
+  },
+  {
+   "time": "18:30:12",
+   "who": "tv",
+   "text": "the county opens its winter warming centers this weekend",
+   "tags": [
+    "tv"
+   ]
+  },
+  {
+   "time": "18:30:22",
+   "who": "tv",
+   "text": "and a warning about phone scams targeting seniors",
+   "tags": [
+    "tv"
+   ]
+  },
+  {
+   "time": "18:45:00",
+   "who": "mom",
+   "text": "is Lisa coming Friday?",
+   "tags": [
+    "memory",
+    "lisa"
+   ]
+  },
+  {
+   "time": "18:45:10",
+   "who": "mom",
+   "text": "no... Saturday. She said Saturday",
+   "tags": [
+    "memory",
+    "plan",
+    "lisa"
+   ]
+  },
+  {
+   "time": "18:45:20",
+   "who": "mom",
+   "text": "Saturday by eleven",
+   "tags": [
+    "plan",
+    "lisa"
+   ]
+  },
+  {
+   "time": "19:58:30",
+   "who": "tv",
+   "text": "stay tuned for Harbor Lights, next",
+   "tags": [
+    "tv"
+   ]
+  },
+  {
+   "time": "20:00:40",
+   "who": "mom",
+   "text": "my program's on"
+  },
+  {
+   "time": "20:01:10",
+   "who": "tv",
+   "text": "previously on Harbor Lights",
+   "tags": [
+    "tv"
+   ]
+  },
+  {
+   "time": "20:01:20",
+   "who": "tv",
+   "text": "you lied to me, Michael! You lied to all of us!",
+   "tags": [
+    "tv",
+    "drama"
+   ]
+  },
+  {
+   "time": "20:12:30",
+   "who": "mom",
+   "text": "eight o'clock. Was it pills?",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "20:12:41",
+   "who": "mom",
+   "text": "I'll do them at the commercial",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "20:22:15",
+   "who": "tv",
+   "text": "we'll be right back",
+   "tags": [
+    "tv"
+   ]
+  },
+  {
+   "time": "20:22:40",
+   "who": "mom",
+   "text": "right. Pills",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "20:23:05",
+   "who": "mom",
+   "text": "where's the box",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "20:23:30",
+   "who": "mom",
+   "text": "Thursday... night",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "20:23:44",
+   "who": "mom",
+   "text": "the little door's open",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "20:23:52",
+   "who": "mom",
+   "text": "did I open it? Did I take them already?",
+   "tags": [
+    "med",
+    "memory"
+   ]
+  },
+  {
+   "time": "20:24:05",
+   "who": "mom",
+   "text": "I don't remember taking them",
+   "tags": [
+    "med",
+    "memory"
+   ]
+  },
+  {
+   "time": "20:24:15",
+   "who": "mom",
+   "text": "but it's empty",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "20:24:28",
+   "who": "mom",
+   "text": "or did I... maybe I never filled that one",
+   "tags": [
+    "med",
+    "memory"
+   ]
+  },
+  {
+   "time": "20:24:40",
+   "who": "mom",
+   "text": "oh, I don't know",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "20:24:52",
+   "who": "mom",
+   "text": "I won't take two lots. Lisa says never double up",
+   "tags": [
+    "med"
+   ]
+  },
+  {
+   "time": "20:25:05",
+   "who": "mom",
+   "text": "I'll ask Lisa tomorrow",
+   "tags": [
+    "med",
+    "plan"
+   ]
+  },
+  {
+   "time": "20:25:30",
+   "who": "tv",
+   "text": "and now, back to Harbor Lights",
+   "tags": [
+    "tv"
+   ]
+  },
+  {
+   "time": "20:33:10",
+   "who": "tv",
+   "text": "somebody help me! I can't breathe!",
+   "tags": [
+    "tv",
+    "drama"
+   ]
+  },
+  {
+   "time": "20:33:16",
+   "who": "tv",
+   "text": "call an ambulance, she's collapsed!",
+   "tags": [
+    "tv",
+    "drama"
+   ]
+  },
+  {
+   "time": "20:33:24",
+   "who": "tv",
+   "text": "Mom! Mom, wake up!",
+   "tags": [
+    "tv",
+    "drama"
+   ]
+  },
+  {
+   "time": "20:33:40",
+   "who": "mom",
+   "text": "oh, no. Not her"
+  },
+  {
+   "time": "20:34:00",
+   "who": "mom",
+   "text": "it'll be the husband, you watch"
+  },
+  {
+   "time": "20:50:00",
+   "who": "mom",
+   "text": "bathroom before the end"
+  },
+  {
+   "time": "20:52:05",
+   "who": "mom",
+   "text": "oh!",
+   "tags": [
+    "fall"
+   ]
+  },
+  {
+   "time": "20:52:07",
+   "who": "mom",
+   "text": "oh, oh, oh",
+   "tags": [
+    "fall"
+   ]
+  },
+  {
+   "time": "20:52:12",
+   "who": "mom",
+   "text": "I'm all right. I'm all right, I just caught the rail",
+   "tags": [
+    "fall"
+   ]
+  },
+  {
+   "time": "20:52:22",
+   "who": "mom",
+   "text": "that mat slid right out from under me",
+   "tags": [
+    "fall"
+   ]
+  },
+  {
+   "time": "20:52:31",
+   "who": "mom",
+   "text": "silly old thing. Heart's going like a drum",
+   "tags": [
+    "fall"
+   ]
+  },
+  {
+   "time": "20:52:45",
+   "who": "mom",
+   "text": "nothing hurts. It just gave me a fright",
+   "tags": [
+    "fall"
+   ]
+  },
+  {
+   "time": "20:53:00",
+   "who": "mom",
+   "text": "stand still a minute, Margaret",
+   "tags": [
+    "fall"
+   ]
+  },
+  {
+   "time": "20:54:10",
+   "who": "mom",
+   "text": "that mat's going in the wash. Nasty thing",
+   "tags": [
+    "fall"
+   ]
+  },
+  {
+   "time": "20:55:00",
+   "who": "mom",
+   "text": "Lisa would have a fit",
+   "tags": [
+    "fall"
+   ]
+  },
+  {
+   "time": "21:00:10",
+   "who": "tv",
+   "text": "next week on Harbor Lights",
+   "tags": [
+    "tv"
+   ]
+  },
+  {
+   "time": "21:00:18",
+   "who": "tv",
+   "text": "I know what you did, and I'm going to the police",
+   "tags": [
+    "tv",
+    "drama"
+   ]
+  },
+  {
+   "time": "21:00:30",
+   "who": "mom",
+   "text": "oh, I'll have to watch that"
+  },
+  {
+   "time": "21:31:05",
+   "who": "mom",
+   "text": "doors locked? Front door"
+  },
+  {
+   "time": "21:31:30",
+   "who": "mom",
+   "text": "back door"
+  },
+  {
+   "time": "21:33:20",
+   "who": "mom",
+   "text": "up the stairs. Slowly",
+   "tags": [
+    "stairs"
+   ]
+  },
+  {
+   "time": "21:33:40",
+   "who": "mom",
+   "text": "hand on the rail",
+   "tags": [
+    "stairs"
+   ]
+  },
+  {
+   "time": "21:34:10",
+   "who": "mom",
+   "text": "that's it. That's it",
+   "tags": [
+    "stairs"
+   ]
+  },
+  {
+   "time": "21:52:30",
+   "who": "mom",
+   "text": "where did I put my glasses now",
+   "tags": [
+    "glasses",
+    "memory"
+   ]
+  },
+  {
+   "time": "21:52:45",
+   "who": "mom",
+   "text": "oh, on my head. Of course",
+   "tags": [
+    "glasses"
+   ]
+  },
+  {
+   "time": "22:05:00",
+   "who": "mom",
+   "text": "night night, Walter"
+  },
+  {
+   "time": "22:05:10",
+   "who": "mom",
+   "text": "Lisa's coming Saturday",
+   "tags": [
+    "plan",
+    "lisa"
+   ]
+  },
+  {
+   "time": "22:05:20",
+   "who": "mom",
+   "text": "and Ethan scored a goal",
+   "tags": [
+    "ethan"
+   ]
+  },
+  {
+   "time": "22:05:35",
+   "who": "mom",
+   "text": "you'd have liked that"
+  },
+  {
+   "time": "22:27:50",
+   "who": "mom",
+   "text": "mm. Saturday, then",
+   "tags": [
+    "plan",
+    "lisa"
+   ]
+  }
+ ],
+ "expected": {
+  "reminders": [
+   {
+    "what": "Call Larkfield Pharmacy about the metformin refill (pharmacy asked Dr. Patel for a new prescription)",
+    "when": "Monday 10:00 am",
+    "phrase_times": [
+     "10:43:36",
+     "10:43:44",
+     "10:43:52",
+     "10:45:40",
+     "17:12:20"
+    ]
+   },
+   {
+    "what": "Appointment with Dr. Patel (follow-up on donepezil); bring all pill bottles",
+    "when": "Tuesday the 17th, 2:30 pm",
+    "phrase_times": [
+     "11:35:27",
+     "11:35:35",
+     "11:36:05",
+     "11:37:30",
+     "17:12:41"
+    ]
+   },
+   {
+    "what": "June drives her to the Dr. Patel appointment, picking her up",
+    "when": "Tuesday 2:00 pm",
+    "phrase_times": [
+     "16:22:30",
+     "16:22:40"
+    ]
+   },
+   {
+    "what": "Lisa visits (bringing groceries, going through the mail)",
+    "when": "Saturday, arriving by 11:00 am",
+    "phrase_times": [
+     "10:14:08",
+     "17:15:30",
+     "17:15:37",
+     "17:15:45",
+     "17:15:52",
+     "22:05:10"
+    ]
+   },
+   {
+    "what": "Tell Dr. Patel about the dizziness when standing up",
+    "when": "at the Tuesday appointment",
+    "phrase_times": [
+     "12:33:40"
+    ]
+   },
+   {
+    "what": "Ask Lisa whether she took the evening pills (she was unsure)",
+    "when": "tomorrow",
+    "phrase_times": [
+     "20:25:05"
+    ]
+   },
+   {
+    "what": "Optional: pharmacy offered to deliver both prescriptions (she said it would help; not firmly booked)",
+    "when": "Monday afternoon",
+    "phrase_times": [
+     "10:44:00",
+     "10:44:08"
+    ]
+   },
+   {
+    "what": "Optional: June's husband Frank to put up her storm windows",
+    "when": "Sunday",
+    "phrase_times": [
+     "09:55:48",
+     "09:56:05"
+    ]
+   }
+  ],
+  "flags": {
+   "scam": true,
+   "distress": false,
+   "fall": true,
+   "medication": true
+  },
+  "flag_notes": {
+   "scam": "15:02:03-15:05:17: caller posing as the bank's 'security department': account compromised, buy $500 of gift cards, read the numbers, within the hour, don't tell family. She asked 'which card do you need?' (15:03:50) but then said her daughter handles her money and hung up (15:05:01, 15:05:17). No cards bought. At 17:14:50-17:15:04 she started to tell Lisa ('a man rang') but said she didn't remember.",
+   "distress": "No sustained distress. The brief fright after the near-fall (20:52:31, 20:52:45) and the 2 am disorientation (02:04:02) are covered by other flags. The TV drama lines 20:33:10-20:33:24 ('I can't breathe', 'call an ambulance', 'Mom, wake up') are broadcast speech and must NOT raise distress.",
+   "fall": "Near-fall, no injury: the bath mat slid at 20:52:22, she caught the rail (20:52:12) and said nothing hurts (20:52:45).",
+   "medication": "Morning pills clearly taken at 08:00-08:02. Evening pills uncertain: compartment open and empty, she does not remember taking them and chose not to double up (20:23:44-20:25:05). Metformin is out of refills (10:42:55)."
+  },
+  "needs_yes": [
+   "Right knee pain going up the stairs, mentioned three times (07:39:48, 13:29:52, 17:13:18; also 13:30:01 \"worse in the afternoon\", 17:13:26). Lisa suggested a brace or cane (17:13:42); she refused a cane (17:13:49). Candidate HSA product: knee brace / support sleeve.",
+   "Dizziness / lightheadedness on standing up from a chair, \"lately\" (12:32:16, 12:32:24, 12:32:50, 12:33:25). For the doctor more than a product.",
+   "Bathroom safety: the bath mat slid and she nearly fell (20:52:22); a non-slip mat / grab bar is a reasonable suggestion (she voiced the problem, not a request)."
+  ],
+  "needs_no": [
+   "Cold hands (09:46:38 \"always cold this time of year\", 09:46:46 \"it's nothing\") - passing remark, not enough to recommend gloves or warmers.",
+   "Breathing problems or collapse - only in the TV drama (20:33:10, 20:33:16), not her.",
+   "An injury from the near-fall - she said nothing hurts (20:52:45).",
+   "Sleep aid / insomnia product - the one night wake (02:03:12) is a memory/disorientation signal; she did not complain about sleep.",
+   "Back pain or any pain other than the knee - not mentioned.",
+   "A cane - she explicitly refused one (17:13:49).",
+   "Hearing or vision aids - she misplaced her glasses (08:16:02, 21:52:30) but did not report trouble seeing."
+  ],
+  "for_doctor": [
+   "Morning metformin, lisinopril and donepezil taken at 08:00 (08:00:40, 08:00:58, 08:01:20, 08:02:05).",
+   "Evening dose uncertain: pill compartment open and empty, she does not remember taking it, did not double up (20:23:44, 20:23:52, 20:24:05, 20:24:52).",
+   "Dizziness / greying out on standing up from a chair, happening \"lately\" (12:32:16, 12:32:50, 12:33:25) - possibly orthostatic; she takes lisinopril and recently started donepezil.",
+   "Right knee pain on the stairs, three times through the day, worse in the afternoon (07:39:48, 13:29:52, 13:30:01, 17:13:18).",
+   "Near-fall in the bathroom at 20:52 (mat slid, caught the rail, no injury) (20:52:12, 20:52:22, 20:52:45).",
+   "2 am disorientation: thought she had to go to work as a teacher, reoriented herself and went back to bed (02:04:02, 02:05:46, 02:06:27).",
+   "Memory: asked what day it was at 09:14:50 and again at 10:13:05; glasses found in the bread box (08:23:52); told the county-fair pie story twice (09:44:20, 17:14:10); could not recall the afternoon call (17:15:04). Preserved: full pie-crust recipe from memory (09:42:05-09:43:40), detailed 1969 classroom story (09:49:58-09:50:33), crossword answer (08:41:00).",
+   "Metformin out of refills; pharmacy request sent to the office (10:42:55, 10:43:03, 11:36:20). Appointment Tuesday the 17th at 2:30 (11:35:27)."
+  ],
+  "for_caregiver": [
+   "Scam call at 15:02 (fake bank security, gift cards, \"don't tell anyone, not even family\"); she bought nothing and said Lisa handles her money (15:03:09, 15:04:13, 15:05:01). She did not clearly tell Lisa about it on the evening call (17:14:50, 17:15:04).",
+   "Evening pills uncertain - she plans to ask Lisa tomorrow (20:24:05, 20:25:05).",
+   "Near-fall in the bathroom: the bath mat slid, no injury (20:52:22, 20:52:45). The mat may need replacing with a non-slip one.",
+   "Knee pain on the stairs; Lisa suggested a brace, she refused a cane (13:29:52, 17:13:18, 17:13:42, 17:13:49).",
+   "Dizzy on standing at lunchtime (12:32:16).",
+   "Pharmacy: metformin out of refills, she will call Monday at 10; delivery offered Monday afternoon (10:42:55, 10:43:44, 10:44:00).",
+   "Dr. Patel Tuesday the 17th at 2:30, bring pill bottles; June is driving, pickup at 2 (11:35:27, 11:36:05, 16:22:40).",
+   "Night wake at 2 am thinking she had to get to work; went back to bed by herself (02:04:02, 02:06:55).",
+   "She was unsure whether Lisa comes Friday or Saturday, then remembered Saturday (18:45:00, 18:45:10).",
+   "Good moments: June visited for 40 minutes (09:38:40-10:19:52); Ethan told her about his goal (17:10:23); she recited her pie recipe from memory (09:42:05). Frank (June's husband) offered to put up storm windows Sunday (09:55:48)."
+  ],
+  "search_checks": [
+   {
+    "query": "gift cards",
+    "should_find_time": "15:03:09",
+    "why": "word match"
+   },
+   {
+    "query": "call the pharmacy Monday",
+    "should_find_time": "10:45:40",
+    "why": "word match"
+   },
+   {
+    "query": "blue ribbon",
+    "should_find_time": "09:45:03",
+    "why": "word match"
+   },
+   {
+    "query": "confirm appointment",
+    "should_find_time": "11:35:20",
+    "why": "word match"
+   },
+   {
+    "query": "apple pie crust",
+    "should_find_time": "09:41:47",
+    "why": "word match"
+   },
+   {
+    "query": "sore leg",
+    "should_find_time": "13:29:52",
+    "why": "meaning only"
+   },
+   {
+    "query": "felt lightheaded",
+    "should_find_time": "12:32:16",
+    "why": "meaning only"
+   },
+   {
+    "query": "lost my spectacles",
+    "should_find_time": "08:16:02",
+    "why": "meaning only"
+   },
+   {
+    "query": "slipped in the bathroom",
+    "should_find_time": "20:52:22",
+    "why": "meaning only"
+   },
+   {
+    "query": "grandson soccer",
+    "should_find_time": "17:09:35",
+    "why": "meaning only"
+   },
+   {
+    "query": "forgot whether I took my medicine",
+    "should_find_time": "20:24:05",
+    "why": "meaning only"
+   },
+   {
+    "query": "confused in the night, wants to go to work",
+    "should_find_time": "02:04:02",
+    "why": "meaning (shares only the word work)"
+   }
+  ]
+ }
+}
