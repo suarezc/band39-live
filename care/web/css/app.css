@@ -479,3 +479,4 @@ textarea { border-radius: 20px; width: 100%; resize: vertical; line-height: 1.5;
 @keyframes qflow { 0%, 100% { box-shadow: none; } 15% { box-shadow: 0 0 0 3px rgba(176,83,47,.25); border-color: var(--terra); } }
 @media (max-width: 720px) { .q-lanes.big { gap: 22px; } .q-lanes.big .ql:not(:last-child)::after { right: auto; left: 50%; top: auto; bottom: -19px; transform: translateX(-50%) rotate(90deg); } }
 @media (prefers-reduced-motion: reduce) { .q-flow li { animation: none; } }
+.app.in-product .q-now .q-lanes, .app.in-product .q-now .q-flow { display: none; }   /* product.html shows them large under the phones */

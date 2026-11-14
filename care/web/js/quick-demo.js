@@ -100,6 +100,10 @@
       <ol class="q-flow" aria-label="Information flow">${(FLOW[sk] || FLOW.mic).map(([ic, label], k) => `<li style="--k:${k}">${ico(ic, 14)}<span>${esc(label)}</span></li>`).join('')}</ol>`;
     played++; $('qProg').style.width = playing ? ((i + 1) / DAY.length * 100) + '%' : '0%';
     const feed = $('qFeed'); const empty = feed.querySelector('.q-empty'); if (empty) empty.remove();
+    if (window.parent !== window) {   // product.html shows the same event large, next to the phones
+      try { window.parent.postMessage({ type: 'b39-event', t, cat, catName: CAT[cat], name, does: DOES[actName] || name, say, sensor: sn[1], sensorIcon: sn[0], reading: DEVICE[i] || '', bandDoes: does,
+        led: led ? led[0] : null, lisa: got, where: got.level === 'urgent' ? 'Full-screen alert' : TAB[cat], flow: FLOW[sk] || FLOW.mic }, location.origin); } catch (_) { /* ignore */ }
+    }
     feed.insertAdjacentHTML('afterbegin', `<li class="qf lv-${got.level} tag-${cat}"><time>${esc(t)}</time><b>${esc(got.title)}</b></li>`);
     paintCounts(playing ? i + 1 : played);
   }
