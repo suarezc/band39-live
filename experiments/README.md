@@ -171,6 +171,18 @@ refuses to create a card. The script says so and stops.
 unfreeze, one-time cards); `node experiments/cards/test_card_rules.cjs` runs its 7 checks. The page says
 it is a simulation. The care app uses the same file: its "Possible scam" alert freezes the card (`care/web/js/money.js`).
 
+## Model files (not in git)
+
+Two small models run on this computer. Download them once into `experiments/models/`:
+
+    mkdir -p experiments/models && cd experiments/models
+    curl -L -o "wespeaker_en_voxceleb_CAM++.onnx" "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/wespeaker_en_voxceleb_CAM++.onnx"
+    curl -L -o minilm-model.onnx "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/onnx/model.onnx"
+    curl -L -o minilm-tokenizer.json "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/tokenizer.json"
+
+The first (29 MB) tells whose voice a phrase is; the other two (90 MB) turn a phrase into a vector for search by meaning.
+Both are needed by the care app's live transcript (`care/server/live.py`).
+
 ## Self-test of the analysis
 
     .venv/bin/python experiments/analyze.py --selftest

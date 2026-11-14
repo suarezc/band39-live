@@ -67,12 +67,9 @@ button { font: inherit; touch-action: manipulation; cursor: pointer; }
 .bubble::before { content: ""; position: absolute; left: -8px; top: 26px; border: 8px solid transparent; border-right-color: #fff; border-left: 0; }
 .band-line { display: flex; align-items: center; gap: 14px; background: #fff; border-radius: 20px; padding: 10px 14px; }
 .band-line p { margin: 0; font-size: 17px; color: #4A3A28; }
-.gm-ring { --led: #d9d3ea; width: 46px; height: 46px; border-radius: 50%; flex: none; display: grid; place-items: center; background: #2b2350; }
-.gm-ring span { width: 26px; height: 26px; border-radius: 50%; background: var(--led); box-shadow: 0 0 12px 2px var(--led); }
-.gm-ring[data-pattern="off"] span { background: #4a4170; box-shadow: none; }
-.gm-ring[data-pattern="blink"] span { animation: blink .8s steps(1) infinite; } .gm-ring[data-pattern="flash"] span { animation: blink .5s steps(1) infinite; }
-.gm-ring[data-pattern="breathe"] span { animation: breathe 2.4s ease-in-out infinite; } .gm-ring[data-pattern="solid"] span { animation: none; }
-@keyframes blink { 50% { opacity: .15; } } @keyframes breathe { 50% { opacity: .35; transform: scale(.85); } }
+.gm-dot { width: 14px; height: 14px; border-radius: 50%; flex: none; background: #CFC6B8; }  /* connection status only, not the band's light */
+.gm-dot[data-on="1"] { background: #4CAF7A; }
+@keyframes breathe { 50% { opacity: .35; transform: scale(.85); } }
 .gm-prompt { position: relative; border-radius: 26px; padding: 22px; background: #fff; border: 3px solid #F3E6D3; min-height: 170px; }
 .gm-prompt h4 { font-size: 28px; line-height: 1.2; letter-spacing: -.02em; margin: 0 0 8px; }
 .gm-prompt:has(.gm-count) h4 { padding-right: 60px; }
@@ -169,4 +166,4 @@ button { font: inherit; touch-action: manipulation; cursor: pointer; }
   .m-card { padding: 18px; } .m-greet { font-size: 25px; } .m-time { font-size: 34px; } .pip { width: 84px; height: 84px; } .bubble { font-size: 17px; }
   .m-actions { grid-template-columns: 1fr; } .sig-grid { grid-template-columns: 1fr 1fr; }
 }
-@media (prefers-reduced-motion: reduce) { .pip, .gm-ring span, .big.talk.on { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { .pip, .big.talk.on { animation: none !important; } }

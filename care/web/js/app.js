@@ -1,5 +1,5 @@
 /* Band 39 care app: Margaret's screen + Lisa's app, live from the Vexo Open band.
- * band events → motion lab (7 labels) + care engine (prompts, light, alerts)
+ * band events → motion lab (7 labels) + care engine (prompts, alerts)
  * Margaret's voice → band mic → /api/transcribe (Deepgram) → /api/analyze (OpenAI) → insights
  * /api/tts (ElevenLabs) reads to Margaret · /api/checkout (Stripe) · /api/doctor
  * Keys never reach this page.
@@ -45,10 +45,10 @@
     if (type === 'wander') addCondition('wander', { n: lab.labels.wander.episodes, min: Math.round(d.minutes) });
     renderAll();
   });
-  engine.subscribe(() => { renderAll(); applyLed(); });
+  engine.subscribe(renderAll);
 
   // ---- band connection ---------------------------------------------------------------------
-  let kit = null, band = null, sim = null, kind = 'none', busy = false, lastLedKey = '', ledBusy = false, micOn = false;
+  let kit = null, band = null, sim = null, kind = 'none', busy = false;
   async function loadKit() { if (!kit) kit = await import(KIT); return kit; }
   function setConn(text, level) { const el = $('lvConnState'); el.textContent = text; el.dataset.level = level || ''; }
 
@@ -73,7 +73,6 @@
       await band.configure({ events: true, activity: true, battery: true, temperature: true, motion: 50, link: true });
       engine.state.connected = true;
       engine.ingest({ type: 'connect', transport: kind, name: band.name });
-      lastLedKey = ''; applyLed();
       setConn(kind === 'ble' ? `Connected to ${band.name}` : `Pretend ${BAND_NAME} (kit simulator)`, 'ok');
     } catch (e) {
       band = sim = null; kind = 'none';
@@ -81,7 +80,7 @@
     } finally { busy = false; renderConn(); }
   }
   async function disconnect(quiet) {
-    const b = band; band = sim = null; kind = 'none'; micOn = false;
+    const b = band; band = sim = null; kind = 'none';
     if (b) { try { await b.disconnect(); } catch (_) { /* gone */ } }
     if (!quiet) { engine.ingest({ type: 'disconnect', reason: 'closed' }); setConn('Not connected', ''); renderConn(); }
   }
@@ -96,17 +95,7 @@
     b.on('notice', (e) => engine.ingest({ type: 'notice', kind: e.kind }));
     b.on('disconnect', (e) => { if (b !== band) return; engine.ingest({ type: 'disconnect', reason: e.reason }); if (e.reason !== 'closed') { band = sim = null; kind = 'none'; setConn(`Lost ${BAND_NAME}. Double-tap it, then Connect`, 'err'); renderConn(); } });
     b.on('reconnecting', () => setConn(`Reconnecting to ${BAND_NAME}…`, 'wait'));
-    b.on('reconnected', () => { setConn(`Reconnected to ${BAND_NAME}`, 'ok'); lastLedKey = ''; engine.ingest({ type: 'reconnected' }); });
-  }
-  async function applyLed() {
-    if (!band || ledBusy || micOn) return;          // the band refuses light changes while the mic is on
-    const want = engine.led();
-    const key = want ? `${want.color}/${want.pattern}/${want.period}/${want.brightness}` : 'off';
-    if (key === lastLedKey) return;
-    ledBusy = true;
-    try { if (want) await band.setLed(want.color, { brightness: want.brightness, pattern: want.pattern, period: want.period }); else await band.ledOff(); }
-    catch (_) { /* denied while mic on */ }
-    lastLedKey = key; ledBusy = false;
+    b.on('reconnected', () => { setConn(`Reconnected to ${BAND_NAME}`, 'ok'); engine.ingest({ type: 'reconnected' }); });
   }
 
   // ---- Margaret talks: band mic → WAV → Deepgram → OpenAI -----------------------------------
@@ -126,14 +115,14 @@
     const chunks = [];
     const sound = new k.BandAudio((samples) => chunks.push(k.toInt16(samples)));
     const off = band.on('audio', (a) => sound.push(a));
-    micOn = true; await band.configure({ audio: true });
+    await band.configure({ audio: true });
     recording = { chunks, sound, off, timer: setTimeout(stopTalk, 12000) };
     note('Listening… speak now. Press again when you’re done. (Your words go to Deepgram to be written down.)'); renderAll();
   }
   async function stopTalk() {
     const r = recording; if (!r) return; recording = null; clearTimeout(r.timer);
     try { await band.configure({ audio: false }); } catch (_) { /* link gone */ }
-    micOn = false; r.off(); r.sound.close(); lastLedKey = ''; applyLed(); renderAll();
+    r.off(); r.sound.close(); renderAll();
     const n = r.chunks.reduce((s, c) => s + c.length, 0); if (n < 8000) return note('That was very short. Try again and speak for a few seconds.');
     const all = new Int16Array(n); let o = 0; for (const c of r.chunks) { all.set(c, o); o += c.length; }
     note('Writing down what you said…');
@@ -234,12 +223,12 @@
   const greet = (now) => { const h = new Date(now).getHours(); return h < 5 ? 'Hello' : h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'; };
 
   function renderMargaret() {
-    const s = engine.state, now = clock.scene(), p = engine.prompt(), led = micOn ? { color: '#3E8EF7', pattern: 'solid', say: 'solid blue: listening to you' } : engine.led();
+    const s = engine.state, now = clock.scene(), p = engine.prompt();
     $('gmGreet').textContent = `${greet(now)}, Margaret`;
     $('gmTime').textContent = fmtTime(now);
     $('gmDate').textContent = new Date(now).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-    const ring = $('gmRing'); ring.style.setProperty('--led', led ? led.color : '#d9d3ea'); ring.dataset.pattern = led ? led.pattern : 'off';
-    $('gmBandSay').textContent = led ? `Your band is ${led.say}` : (band ? 'Your band is resting quietly' : 'Your band is not connected');
+    $('gmBandDot').dataset.on = band ? '1' : '';
+    $('gmBandSay').textContent = !band ? 'Your band is not connected' : (window.VexoLiveTranscript && window.VexoLiveTranscript.listening) ? 'Your band is connected and listening' : 'Your band is connected';
     const night = (() => { const h = new Date(now).getHours(); return h >= 22 || h < 6; })();
     const worried = p && ['fall', 'help', 'checkin'].includes(p.kind) || (banner && ['scam', 'seizure'].includes(banner.kind));
     $('pip').dataset.mood = worried ? 'worried' : night ? 'sleepy' : (engine.led() && engine.led().kind === 'good') ? 'happy' : 'calm';
@@ -288,7 +277,7 @@
     $('shopFoot').hidden = !recs.length; $('shopTotal').textContent = `$${total}`; $('payBtn').disabled = !total;
     $('payBtn').textContent = cfg.stripe ? 'Pay with Stripe' : 'Pay with Stripe (not connected)';
     const sum = doctorSummary(); $('docSum').textContent = sum || 'No findings to share yet.'; $('docBtn').disabled = !sum;
-    $('cgThread').innerHTML = s.messages.slice(-6).map((m) => `<li class="msg ${m.from === 'Lisa' ? 'me' : 'her'}"><span>${esc(m.text)}</span><small>${fmtTime(m.at)}${m.from === 'Lisa' ? (m.read ? ' · read ✓' : ' · delivered') : m.viaBand ? ' · from her band' : ''}</small></li>`).join('') || '<li class="empty">Messages appear on Mom’s screen, and her band glows violet until she reads them.</li>';
+    $('cgThread').innerHTML = s.messages.slice(-6).map((m) => `<li class="msg ${m.from === 'Lisa' ? 'me' : 'her'}"><span>${esc(m.text)}</span><small>${fmtTime(m.at)}${m.from === 'Lisa' ? (m.read ? ' · read ✓' : ' · delivered') : m.viaBand ? ' · from her band' : ''}</small></li>`).join('') || '<li class="empty">Messages appear on Mom’s screen until she reads them.</li>';
     $('cgTimeline').innerHTML = s.timeline.slice(0, 14).map((t) => `<li class="tl tl-${t.kind}"><time>${fmtTime(t.at)}</time><span>${t.icon}</span>${esc(t.text)}</li>`).join('');
     const n = s.alerts.filter((a) => !a.ack && a.level !== 'good').length; $('tabBadge').textContent = n ? '· ' + n : '';
   }
@@ -366,5 +355,5 @@
   });
   if (new URLSearchParams(location.search).get('paid') === '1') note('Thank you! Your order is paid. 🎉');
   renderConn(); renderAll();
-  window.VexoCare = { engine, lab, connect, demoSignal, handleNote, conditions, get kind() { return kind; }, insightsLog };
+  window.VexoCare = { engine, lab, connect, demoSignal, handleNote, conditions, get kind() { return kind; }, get band() { return band; }, insightsLog };
 })();

@@ -12,3 +12,4 @@ httpx
 numpy
 kaldi-native-fbank
 onnxruntime
+tokenizers

@@ -6,6 +6,12 @@
   POST /api/tts         {"text": ...} -> audio/mpeg  (ElevenLabs if ELEVENLABS_API_KEY is set, else Deepgram's Aura voice)
   POST /api/checkout    {"items": [{id, name, price, qty}]} -> Stripe Checkout URL (or demo mode)
   POST /api/doctor      {"summary": ...} -> doctor inbox (in memory; GET lists it)
+  Live transcript (server/live.py; needs the project's .venv Python and two model files):
+  POST /api/live/audio  the band's Opus packets as they arrive ([u16 seq][u16 length][bytes] repeated)
+  GET  /api/live/events text as people speak, as server-sent events (interim, final, status)
+  GET  /api/live/transcript, /api/live/search?q=...&voice=main|other|unsure, /api/live/status
+  POST /api/live/enroll {"ids": [...]} these phrases are the main voice; /api/live/forget; /api/live/stop
+  POST /api/live/clip   {"seconds": 300} saves the last minutes of sound to a WAV file under experiments/data/live/clips/
 
 Keys come from environment variables (on Superserve they are stand-in tokens that the platform
 swaps for the real key on the way out), or locally from KEYS_FILE (default ~/.config/vexo-band39/env),
@@ -96,7 +102,91 @@ class Handler(SimpleHTTPRequestHandler):
             raise ValueError('too large')
         return self.rfile.read(n) if n else b''
 
+    # ---- live transcript (server/live.py) ----------------------------------------------------
+    def live(self):
+        """The Live object, or None after answering 503 with the reason."""
+        try:
+            import live
+            return live.get()
+        except Exception as e:   # the plain python3 has no numpy/av: say how to start the server instead
+            self.send_json(503, {'error': 'Live transcript needs the project environment. Start the server with ../.venv/bin/python server/server.py (%s)' % type(e).__name__
+                                 if isinstance(e, ImportError) else str(e)})
+            return None
+
+    def live_get(self, route, query):
+        lv = self.live()
+        if lv is None:
+            return
+        if route == '/api/live/status':
+            return self.send_json(200, lv.status())
+        if route == '/api/live/transcript':
+            return self.send_json(200, {'phrases': lv.store.recent(int(query.get('limit', ['60'])[0]))})
+        if route == '/api/live/search':
+            q = query.get('q', [''])[0][:300]
+            return self.send_json(200, {'query': q, 'hits': lv.search(q, query.get('voice', [''])[0] or None, int(query.get('limit', ['10'])[0]),
+                                                                      float(query.get('recency', ['0'])[0]))})
+        if route == '/api/live/events':
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/event-stream')
+            self.send_header('X-Accel-Buffering', 'no')
+            self.end_headers()
+            q = lv.subscribe()
+            try:
+                self.wfile.write(b'data: ' + json.dumps(lv.status()).encode() + b'\n\n'); self.wfile.flush()
+                while True:
+                    try:
+                        event = q.get(timeout=10)
+                        self.wfile.write(b'data: ' + json.dumps(event).encode() + b'\n\n')
+                    except Exception as e:
+                        if type(e).__name__ != 'Empty':
+                            raise
+                        self.wfile.write(b': still here\n\n')
+                    self.wfile.flush()
+            except (BrokenPipeError, ConnectionResetError, OSError):
+                pass
+            finally:
+                lv.unsubscribe(q)
+            return
+        self.send_json(404, {'error': 'not found'})
+
+    def live_post(self, route):
+        if not KEY('DEEPGRAM_API_KEY'):
+            return self.send_json(503, {'error': 'Live transcript needs a Deepgram key on the server.'})
+        lv = self.live()
+        if lv is None:
+            return
+        if route == '/api/live/audio':
+            raw, packets, at = self.body(2_000_000), [], 0
+            while at + 4 <= len(raw):
+                seq, n = int.from_bytes(raw[at:at + 2], 'little'), int.from_bytes(raw[at + 2:at + 4], 'little')
+                packets.append((seq, raw[at + 4:at + 4 + n])); at += 4 + n
+            lv.feed_packets(packets)
+            return self.send_json(200, {'ok': True, 'packets': len(packets)})
+        if route == '/api/live/pcm':
+            lv.feed_pcm(self.body(4_000_000))
+            return self.send_json(200, {'ok': True})
+        if route == '/api/live/stop':
+            lv.stop()
+            return self.send_json(200, lv.status())
+        if route == '/api/live/enroll':
+            ids = [int(i) for i in json.loads(self.body(20000) or b'{}').get('ids', [])][:50]
+            return self.send_json(200, lv.enroll(ids))
+        if route == '/api/live/clip':
+            return self.send_json(200, lv.save_clip(float(json.loads(self.body(2000) or b'{}').get('seconds', 300))))
+        if route == '/api/live/forget':
+            return self.send_json(200, lv.forget_voice())
+        self.send_json(404, {'error': 'not found'})
+
     def do_GET(self):
+        if self.path.startswith('/api/live/'):
+            parts = urllib.parse.urlsplit(self.path)
+            try:
+                return self.live_get(parts.path, urllib.parse.parse_qs(parts.query))
+            except (BrokenPipeError, ConnectionResetError):
+                return
+            except Exception as e:
+                sys.stderr.write('live: %r\n' % e)
+                return self.send_json(500, {'error': type(e).__name__})
         if self.path == '/api/config':
             return self.send_json(200, {
                 'deepgram': bool(KEY('DEEPGRAM_API_KEY')), 'elevenlabs': bool(KEY('ELEVENLABS_API_KEY')), 'voice': 'elevenlabs' if KEY('ELEVENLABS_API_KEY') else 'deepgram' if KEY('DEEPGRAM_API_KEY') else None,
@@ -108,6 +198,8 @@ class Handler(SimpleHTTPRequestHandler):
     def do_POST(self):
         try:
             route = self.path.split('?')[0]
+            if route.startswith('/api/live/'):
+                return self.live_post(route)
             if route == '/api/transcribe':
                 return self.transcribe()
             if route == '/api/tts':

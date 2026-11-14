@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="css/app.css" />
 <link rel="stylesheet" href="css/money.css" />
 <link rel="stylesheet" href="css/scores.css" />
+<link rel="stylesheet" href="css/live.css" />
 </head>
 <body>
 <main class="app live" id="live" data-conn="none" data-tab="margaret">
@@ -52,14 +53,14 @@
           </svg>
           <div class="bubble" id="pipSay">Hi Margaret! I’m Pip. I’ll keep an eye on things with your band.</div>
         </div>
-        <div class="band-line"><div class="gm-ring" id="gmRing" data-pattern="off"><span></span></div><p id="gmBandSay">Your band is not connected</p></div>
+        <div class="band-line"><span class="gm-dot" id="gmBandDot" aria-hidden="true"></span><p id="gmBandSay">Your band is not connected</p></div>
         <div class="gm-prompt kind-calm" id="gmPrompt" aria-live="polite"></div>
         <div class="gm-prompt kind-checkin gm-card-rest" id="gmCard" aria-live="polite" hidden></div>
         <div class="m-actions">
           <button class="big talk" id="mTalk"><span class="mic">🎙</span><span id="mTalkLabel">Talk to Lisa</span></button>
           <button class="big read" id="mRead">🔈 Read to me</button>
         </div>
-        <p class="m-note" id="mTalkNote">Hold your band near and speak. The light turns blue while it listens, and your words are written down by Deepgram.</p>
+        <p class="m-note" id="mTalkNote">Hold your band near and speak. Your words are written down by Deepgram.</p>
         <div class="gm-replies">
           <span>Send Lisa:</span>
           <button data-reply="I’m fine ❤️">I’m fine ❤️</button>
@@ -138,7 +139,7 @@
       </div>
     </section>
   </div>
-  <p class="fine foot">Not a medical device. Thresholds need tuning on real wearers. The band has no vibration motor; it answers with its colour light. Margaret, Lisa, Dr. Patel and pill times are fictional. Keys stay on the server.</p>
+  <p class="fine foot">Not a medical device. Thresholds need tuning on real wearers. Margaret, Lisa, Dr. Patel and pill times are fictional. Keys stay on the server.</p>
 </main>
 <audio id="voice" hidden></audio>
 <script src="js/care-engine.js"></script>
@@ -148,5 +149,6 @@
 <script src="js/card-rules.js"></script>
 <script src="js/money.js"></script>
 <script src="js/scores.js"></script>
+<script src="js/live.js"></script>
 </body>
 </html>

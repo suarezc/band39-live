@@ -4,3 +4,4 @@ __pycache__/
 .venv/
 experiments/data/
 experiments/models/*.onnx
+experiments/models/
