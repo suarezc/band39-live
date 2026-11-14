@@ -13,8 +13,11 @@ Live from the Vexo Open band **Vexo-HACK-39** (`BAND = 39` in `web/js/app.js`).
 - **Care shop**: HSA/FSA-eligible equipment matched to what was detected (`web/js/catalog.js`), paid via **Stripe**
   Checkout (needs `STRIPE_SECRET_KEY`; demo mode until then). **Tell Dr. Patel** sends a summary to the clinic inbox.
 - **Live transcript** (`server/live.py`, `web/js/live.js`): once Start listening is pressed it is always on while the band is connected. The band's
-  microphone streams to the server and on to Deepgram; each phrase comes back as text, is labelled by voice (Mom / Someone else / Not sure, from a
-  local voice model), and is stored in SQLite. Search fuses words (BM25) and meaning (MiniLM vectors) by reciprocal rank, and can filter by voice.
+  microphone streams to the server and on to Deepgram; each phrase comes back as text, is attributed to a person (Mom, Voice 2, Voice 3, ... or a
+  name given on the page; from a local voice model, each person's voiceprint built from their clear phrases; short lines can go with Deepgram's
+  speaker just before or after, marked "?"), and is stored in SQLite. A Voices strip filters the transcript by person; `POST /api/live/recluster`
+  reassigns every stored line (thresholds tuned on the real band: `tools/test_voices.py`). Search fuses words (BM25) and meaning (MiniLM
+  vectors) by reciprocal rank, and can filter by person.
   Needs the project environment and two model files (`../experiments/README.md`): **run the server with `../.venv/bin/python server/server.py`**.
   No sound is written to disk unless `POST /api/live/clip` is called; the transcript and the voiceprint live in `../experiments/data/live/` (not in git).
   Try it with no band: `../.venv/bin/python tools/test_live_transcript.py` (add `--voices` for two voices).

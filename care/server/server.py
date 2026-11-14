@@ -9,8 +9,9 @@
   Live transcript (server/live.py; needs the project's .venv Python and two model files):
   POST /api/live/audio  the band's Opus packets as they arrive ([u16 seq][u16 length][bytes] repeated)
   GET  /api/live/events text as people speak, as server-sent events (interim, final, status)
-  GET  /api/live/transcript, /api/live/search?q=...&voice=main|other|unsure, /api/live/status
-  POST /api/live/enroll {"ids": [...]} these phrases are the main voice; /api/live/forget; /api/live/stop
+  GET  /api/live/transcript, /api/live/search?q=...&voice=main|other|unsure&person=<id>, /api/live/status, /api/live/people
+  POST /api/live/enroll {"ids": [...]} the person who said these is the main person; /api/live/forget; /api/live/stop
+  POST /api/live/recluster  every stored phrase assigned to people again; /api/live/person {"id", "name"} or {"id", "merge_into"}
   POST /api/live/clip   {"seconds": 300} saves the last minutes of sound to a WAV file under experiments/data/live/clips/
 
 Keys come from environment variables (on Superserve they are stand-in tokens that the platform
@@ -123,8 +124,11 @@ class Handler(SimpleHTTPRequestHandler):
             return self.send_json(200, {'phrases': lv.store.recent(int(query.get('limit', ['60'])[0]))})
         if route == '/api/live/search':
             q = query.get('q', [''])[0][:300]
+            person = query.get('person', [''])[0]
             return self.send_json(200, {'query': q, 'hits': lv.search(q, query.get('voice', [''])[0] or None, int(query.get('limit', ['10'])[0]),
-                                                                      float(query.get('recency', ['0'])[0]))})
+                                                                      float(query.get('recency', ['0'])[0]), int(person) if person.isdigit() else None)})
+        if route == '/api/live/people':
+            return self.send_json(200, {'people': lv.people()})
         if route == '/api/live/events':
             self.send_response(200)
             self.send_header('Content-Type', 'text/event-stream')
@@ -175,6 +179,13 @@ class Handler(SimpleHTTPRequestHandler):
             return self.send_json(200, lv.save_clip(float(json.loads(self.body(2000) or b'{}').get('seconds', 300))))
         if route == '/api/live/forget':
             return self.send_json(200, lv.forget_voice())
+        if route == '/api/live/recluster':
+            return self.send_json(200, lv.recluster())
+        if route == '/api/live/person':
+            req = json.loads(self.body(2000) or b'{}')
+            merge = req.get('merge_into')
+            out = lv.person(int(req.get('id', 0)), req.get('name'), None if merge is None else int(merge))
+            return self.send_json(400 if 'error' in out else 200, out)
         self.send_json(404, {'error': 'not found'})
 
     def do_GET(self):

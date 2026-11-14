@@ -3,6 +3,7 @@ does (the band's Opus packets, 50 a second), prints what comes back, then search
 
     ../.venv/bin/python tools/test_live_transcript.py                 the kit's sample voice (16 s)
     ../.venv/bin/python tools/test_live_transcript.py --voices        two made-up voices take turns (Deepgram text-to-speech)
+    ../.venv/bin/python tools/test_live_transcript.py --voices http://localhost:8040    another server (default http://localhost:8039)
 
 The server must be running: ../.venv/bin/python server/server.py   (this SENDS the sound to Deepgram)
 """
@@ -16,10 +17,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT / 'vexo-open-kit' / 'python'))
-BASE = 'http://localhost:8039'
+BASE = next((a.rstrip('/') for a in sys.argv[1:] if a.startswith('http')), 'http://localhost:8039')
 
 
 def call(path, data=None, kind='application/octet-stream'):
+    if isinstance(data, dict):
+        data, kind = json.dumps(data).encode(), 'application/json'
     req = urllib.request.Request(BASE + path, data=data, headers={'Content-Type': kind} if data is not None else {})
     with urllib.request.urlopen(req, timeout=60) as r:
         return json.loads(r.read())
@@ -32,7 +35,8 @@ def listen(finals):
                 e = json.loads(line[6:])
                 if e['type'] == 'final':
                     finals.append(e)
-                    print('  [%-7s %s  %5.1f dB  speaker %s]  %s' % (e['voice'], '    ' if e['match'] is None else '%.2f' % e['match'], e['loud_db'] or 0, e['speaker'], e['text']))
+                    print('  [%-9s %-7s %s  %5.1f dB  speaker %s]  %s' % ((e.get('person') or 'Not sure') + ('?' if e.get('inferred') else ''), e['voice'],
+                                                                     '    ' if e['match'] is None else '%.2f' % e['match'], e['loud_db'] or 0, e['speaker'], e['text']))
 
 
 def play_packets(packets):
@@ -76,7 +80,11 @@ if '--voices' in sys.argv:
               (A, 'I had toast and tea for breakfast, and my knee hurt a little when I walked to the corner shop.')]
     for voice, text in script:
         print('playing %s: %s' % ('voice A' if voice == A else 'voice B', text[:60] + '...'))
+        n = len(finals)
         play_pcm(say(voice, text) + b'\0' * 32000)               # one second of quiet between turns
+        time.sleep(1.5)
+        for e in finals[n:]:
+            e['truth'] = 'A' if voice == A else 'B'
 else:
     from vexo_open import audio
     play_packets(audio.ogg_packets(str(ROOT / 'vexo-open-kit' / 'dashboard' / 'speech' / 'sample-speech.opus')))
@@ -84,6 +92,19 @@ time.sleep(1)
 print('stop ->', call('/api/live/stop', b''))
 time.sleep(1)
 print('\n%d phrases came back.' % len(finals))
+if '--voices' in sys.argv:
+    people = call('/api/live/people')['people']
+    print('\npeople:', ', '.join('#%d %s (%s, %d lines)' % (p['id'], p['name'], p['kind'], p['phrases']) for p in people))
+    whose = {}
+    for e in finals:
+        whose.setdefault(e.get('truth'), set()).add(e.get('person_id'))
+    print('voice A lines went to person', whose.get('A'), '| voice B lines went to person', whose.get('B'))
+    b = next((p for p in people if p['kind'] != 'main' and p['phrases']), None)
+    if b:
+        print('rename #%d ->' % b['id'], [p['name'] for p in call('/api/live/person', {'id': b['id'], 'name': 'Caller'})['people']])
+        hits = call('/api/live/search?' + urllib.parse.urlencode({'q': 'money', 'person': b['id'], 'limit': 5}))['hits']
+        print('search "money" person=%d ->' % b['id'], ['%s: %s' % (h['person'], h['text'][:40]) for h in hits])
+        print('recluster ->', ', '.join('#%d %s %d lines' % (p['id'], p['name'], p['phrases']) for p in call('/api/live/recluster', {})['people']))
 queries = (['who asked for gift cards', 'pharmacy', 'what did she eat', 'jail'] if '--voices' in sys.argv else ['birds thirsty', 'pitcher', 'rain'])
 for q in queries:
     for voice in ([None, 'main', 'other'] if '--voices' in sys.argv else [None]):

@@ -46,3 +46,20 @@
 .lt-results:empty { display: none; }
 .lt-hit { background: #fff; }
 .lt-none { padding: 4px 8px; margin: 0; }
+/* people: a tint per person (the chip and pill always carry the name too) */
+.lt-chip[data-voice="person"] { max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+[data-tint="0"]:not([data-voice="main"]) { background: #E3F1FF; color: #1D4F86; }
+[data-tint="1"]:not([data-voice="main"]) { background: var(--peach-l); color: #8A4A1C; }
+[data-tint="2"]:not([data-voice="main"]) { background: #DDF5E8; color: #1F6B47; }
+[data-tint="3"]:not([data-voice="main"]) { background: #FCE4F1; color: #8A2560; }
+[data-tint="4"]:not([data-voice="main"]) { background: #E6F4F6; color: #1E6670; }
+[data-tint="5"]:not([data-voice="main"]) { background: #F1ECDF; color: #6B5523; }
+.lt-pill[data-voice="main"] { background: #EAE3FF; color: var(--violet-d); }
+.lt-people { display: flex; flex-wrap: wrap; gap: 6px; }
+.lt-pill { border: 2px solid transparent; border-radius: 999px; padding: 4px 11px; font: inherit; font-size: 12.5px; cursor: pointer; background: #F1EEFA; color: var(--ink2); white-space: nowrap; }
+.lt-pill b { font-weight: 800; }
+.lt-pill[aria-pressed="true"] { border-color: currentColor; }
+.lt-pill:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+.lt-rename { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.lt-rename input { width: 110px; border: 1px solid var(--line); border-radius: 999px; padding: 3px 9px; font: inherit; font-size: 12px; }
+.lt-row[hidden], .lt-people[hidden] { display: none; }

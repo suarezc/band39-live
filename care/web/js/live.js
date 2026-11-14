@@ -1,7 +1,7 @@
 /* Band 39 care · Live transcript for Lisa.
  * Streams the band's microphone (Opus packets) to the server in ~200 ms batches; the server sends
- * the words back over Server-Sent Events, each finished phrase labelled by voice (Mom or someone
- * else). A search box looks over everything written down so far.
+ * the words back over Server-Sent Events, each finished phrase labelled with the person who said it
+ * (Mom, Voice 2, ... or a name given here). A search box looks over everything written down so far.
  * Batch framing: [u16 LE seq][u16 LE byte length][packet bytes], repeated. One request in flight.
  * All server and band text goes in with textContent: transcripts are untrusted.
  */
@@ -55,6 +55,7 @@
   notice.hidden = true;
   const counts = el('p', 'fine lt-counts'); counts.hidden = true;
   const err = el('p', 'lt-err'); err.hidden = true; err.setAttribute('role', 'alert');
+  const strip = el('div', 'lt-people'); strip.setAttribute('role', 'group'); strip.setAttribute('aria-label', 'Voices heard: pick one to show only their lines'); strip.hidden = true;
   const list = el('ol', 'lt-list'); list.setAttribute('aria-label', 'What was said, newest at the bottom');
   const empty = el('li', 'lt-empty fine', 'Nothing written down yet.');
   const interim = el('p', 'lt-interim'); interim.hidden = true; interim.setAttribute('aria-live', 'polite');
@@ -68,7 +69,7 @@
   sRow.append(q, who);
   const results = el('ul', 'lt-results'); results.setAttribute('aria-live', 'polite');
   search.append(sRow, results);
-  wrap.append(head, always, hint, notice, counts, err, list, interim, voiceRow, search);
+  wrap.append(head, always, hint, notice, counts, err, strip, list, interim, voiceRow, search);
   list.append(empty);
 
   const anchor = document.querySelector('.carer .scores') || document.querySelector('.carer .cg-head');
@@ -116,15 +117,27 @@
 
   // ---- transcript list ------------------------------------------------------------------------
   const rows = new Map();
-  function chip(voice) { const v = VOICE[voice] ? voice : 'unknown'; const c = el('span', 'lt-chip', VOICE[v]); c.dataset.voice = v; return c; }
+  // The chip names the person (text, never colour alone); a tint per person; "?" when only Deepgram's speaker number said who.
+  function chip(p) {
+    if (p && p.person_id != null && p.person) {
+      const c = el('span', 'lt-chip', p.person + (p.inferred ? ' ?' : ''));
+      c.dataset.voice = p.voice === 'main' ? 'main' : 'person'; c.dataset.tint = String(p.person_id % 6);
+      if (p.inferred) c.title = 'Inferred: the line was too short to recognise the voice, so it goes with the speaker heard just before or after';
+      return c;
+    }
+    const v = p && VOICE[p.voice] ? p.voice : 'unknown'; const c = el('span', 'lt-chip', VOICE[v]); c.dataset.voice = v; return c;
+  }
+  let people = [], only = null;          // the people heard so far; only: a person id to show alone
+  const shown = (li) => only == null || li.dataset.person === String(only);
   function meta(p) {
     const bits = [clock(p.at)];
     if (p.match != null) bits.push(`match ${Math.round(p.match * 100)}%`);
+    if (p.inferred) bits.push('who: from the speaker before or after');
     if (p.loud_db != null) bits.push(`${Math.round(p.loud_db)} dB`);
     return bits.filter(Boolean).join(' · ');
   }
   function row(p) {
-    const li = el('li', 'lt-row'); li.dataset.id = p.id;
+    const li = el('li', 'lt-row'); li.dataset.id = p.id; li.dataset.person = p.person_id == null ? '' : String(p.person_id);
     const body = el('div', 'lt-body'); body.append(el('span', 'lt-text', p.text || ''), el('span', 'lt-meta', meta(p)));
     const mom = button('lt-mom', 'This is Mom'); const rowErr = el('span', 'lt-rowerr'); rowErr.hidden = true;
     mom.onclick = async () => {
@@ -133,8 +146,27 @@
       catch (e) { rowErr.textContent = e.message; rowErr.hidden = false; }
       finally { mom.disabled = false; }
     };
-    const side = el('div', 'lt-side'); side.append(mom, rowErr);
-    li.append(chip(p.voice), body, side);
+    const side = el('div', 'lt-side'); side.append(mom);
+    if (p.person_id != null) {
+      const name = button('lt-mom lt-name', 'Name this voice'); side.append(name);
+      name.onclick = () => {
+        const box = el('form', 'lt-rename'); const input = el('input'); input.type = 'text'; input.maxLength = 40; input.value = p.voice === 'main' && p.person === 'Mom' ? '' : (p.person || '');
+        input.setAttribute('aria-label', 'Name for this voice'); input.placeholder = 'Name';
+        const save = button('lt-mom', 'Save'); save.type = 'submit'; const cancel = button('lt-mom', 'Cancel');
+        box.append(input, save, cancel); name.replaceWith(box); input.focus();
+        const close = () => box.replaceWith(name);
+        cancel.onclick = close;
+        input.addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.preventDefault(); close(); } });
+        box.onsubmit = async (e) => {
+          e.preventDefault(); save.disabled = true; rowErr.hidden = true;
+          try { await call('api/live/person', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: p.person_id, name: input.value.trim() }) }); close(); loadPeople(); loadTranscript(); }
+          catch (er) { rowErr.textContent = er.message; rowErr.hidden = false; save.disabled = false; }
+        };
+      };
+    }
+    side.append(rowErr);
+    li.append(chip(p), body, side);
+    li.hidden = !shown(li);
     return li;
   }
   const atBottom = () => list.scrollHeight - list.scrollTop - list.clientHeight < 24;
@@ -177,8 +209,9 @@
       if (!d || !d.type) return;
       if (d.type === 'status') { status = d; render(); }
       else if (d.type === 'interim') { interim.textContent = d.text || ''; interim.hidden = !d.text; }
-      else if (d.type === 'final') { interim.textContent = ''; interim.hidden = true; addPhrase(d); }
-      else if (d.type === 'relabel') { loadTranscript(); refreshStatus(); }
+      else if (d.type === 'final') { interim.textContent = ''; interim.hidden = true; addPhrase(d); peopleSoon(); }
+      else if (d.type === 'relabel') { loadTranscript(); refreshStatus(); loadPeople(); }
+      else if (d.type === 'people') loadPeople();
     };
   }
 
@@ -279,6 +312,37 @@
     await refreshStatus(); loadTranscript();
   };
 
+  // ---- the voices heard: one pill each; a pill shows only that person's lines --------------------
+  function filter(id) {
+    only = id; for (const li of rows.values()) li.hidden = !shown(li);
+    for (const b of strip.querySelectorAll('.lt-pill')) b.setAttribute('aria-pressed', String(b.dataset.person === String(only)));
+  }
+  function renderPeople() {
+    strip.textContent = '';
+    const heard = people.filter((p) => p.phrases > 0 || p.kind === 'main');
+    strip.hidden = !heard.length;
+    for (const p of heard) {
+      const b = button('lt-pill', ''); b.dataset.person = String(p.id); b.dataset.tint = String(p.id % 6); if (p.kind === 'main') b.dataset.voice = 'main';
+      b.append(el('b', '', p.name), el('span', '', ` · ${p.phrases} line${p.phrases === 1 ? '' : 's'}`));
+      b.setAttribute('aria-pressed', String(String(p.id) === String(only)));
+      b.onclick = () => filter(String(p.id) === String(only) ? null : p.id);
+      strip.append(b);
+    }
+    if (only != null && !people.some((p) => String(p.id) === String(only))) filter(null);
+    // the search filter: anyone, or one person (falls back to Mom / someone else while no one is known)
+    const keep = who.value; who.textContent = '';
+    const opts = heard.length ? [['', 'Anyone'], ...heard.map((p) => ['p:' + p.id, p.name])] : [['', 'Anyone'], ['main', 'Mom'], ['other', 'Someone else']];
+    for (const [v, label] of opts) { const o = el('option', '', label); o.value = v; who.append(o); }
+    who.value = opts.some(([v]) => v === keep) ? keep : '';
+  }
+  let pSeq = 0, pTimer = null;
+  async function loadPeople() {
+    const mine = ++pSeq;
+    try { const r = await call('api/live/people'); if (mine === pSeq && r && Array.isArray(r.people)) { people = r.people; renderPeople(); } }
+    catch (_) { /* the strip stays as it was */ }
+  }
+  function peopleSoon() { clearTimeout(pTimer); pTimer = setTimeout(loadPeople, 600); }
+
   // ---- search ---------------------------------------------------------------------------------
   let sTimer = null, sSeq = 0;
   async function runSearch() {
@@ -287,7 +351,8 @@
     results.textContent = '';
     if (!text) return;
     try {
-      const r = await call(`api/live/search?q=${encodeURIComponent(text)}${who.value ? '&voice=' + who.value : ''}&limit=8`);
+      const f = who.value.startsWith('p:') ? '&person=' + who.value.slice(2) : who.value ? '&voice=' + who.value : '';
+      const r = await call(`api/live/search?q=${encodeURIComponent(text)}${f}&limit=8`);
       if (mine !== sSeq) return;
       results.textContent = '';
       const hits = (r && r.hits) || [];
@@ -296,7 +361,7 @@
         const li = el('li', 'lt-hit'); const body = el('div', 'lt-body');
         const how = [h.word_rank != null ? `words #${h.word_rank}` : '', h.meaning_rank != null ? `meaning #${h.meaning_rank}` : '', clock(h.at)].filter(Boolean).join(' · ');
         body.append(el('span', 'lt-text', h.text || ''), el('span', 'lt-meta', how));
-        li.append(chip(h.voice), body); results.append(li);
+        li.append(chip(h), body); results.append(li);
       }
     } catch (e) { if (mine === sSeq) { results.textContent = ''; results.append(el('li', 'lt-rowerr', `Search failed: ${e.message}`)); } }
   }
@@ -307,7 +372,7 @@
   // ---- go -------------------------------------------------------------------------------------
   setInterval(() => { render(); autoTick(); }, POLL_MS);
   render();
-  refreshStatus().then(() => { if (!unavailable) { loadTranscript(); openEvents(); } autoTick(); });
+  refreshStatus().then(() => { if (!unavailable) { loadTranscript(); loadPeople(); openEvents(); } autoTick(); });
 
   api.start = start; api.stop = stop;
   Object.defineProperty(api, 'listening', { get() { return listening; }, enumerable: true });
