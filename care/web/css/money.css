@@ -24,3 +24,5 @@
 .money-tx .bd.n { background: #FCE4E7; color: var(--red-d); }
 .pill.green { background: var(--green); color: #fff; box-shadow: 0 3px 0 var(--green-d); }
 .pill.red { background: var(--red); color: #fff; box-shadow: 0 3px 0 var(--red-d); }
+/* Margaret's side: the card is frozen. Calm, large type, one action. */
+.gm-card-rest { margin-top: 14px; min-height: 0; }

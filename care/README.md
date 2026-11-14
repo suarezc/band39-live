@@ -13,7 +13,7 @@ Live from the Vexo Open band **Vexo-HACK-39** (`BAND = 39` in `web/js/app.js`).
   Checkout (needs `STRIPE_SECRET_KEY`; demo mode until then). **Tell Dr. Patel** sends a summary to the clinic inbox.
 - **Mom's safe card** (`web/js/money.js`, rules in `web/js/card-rules.js`): a card with limits ($50 a purchase, $200 a week, no wires or
   crypto) in Lisa's column. A "Possible scam" alert from the care engine freezes it; only Lisa unfreezes it. The care shop can pay with a
-  one-time card that closes after its one purchase. **Simulated in the page: no real card, no real money.** Screens and plan:
+  one-time card that closes after its one purchase. While it is frozen Margaret's screen says "Your card is taking a short rest" (no limits, no "scam"). **Simulated in the page: no real card, no real money.** Screens and plan:
   `../mockups/financial-ui.html`. Real cards via Stripe Issuing: `../experiments/cards/card_demo.py` (blocked on Stripe's side).
   Try it: 🧪 "Try it without a band" → the **Card** row, or the **Scam call** voice note.
 - Look: soft self-care-app style (pastel sky, rounded type, chunky pills, original mascot "Pip").

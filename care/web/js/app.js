@@ -159,7 +159,7 @@
     banner = null;
     if (r.scam && r.scam.level !== 'none') {
       engine.raise(r.scam.level === 'high' ? 'urgent' : 'warn', 'Possible scam call', `${r.scam.evidence || 'From Mom’s voice note.'} Call Mom before she pays anyone.`, 'scam');
-      banner = { kind: 'scam', title: 'That sounds like a scam 🛡️', body: 'Please don’t buy gift cards or share bank details. Lisa has been told and will call you.' };
+      banner = { kind: 'scam', title: 'Let’s pause for a moment 💛', body: 'Please don’t buy gift cards or share bank details with anyone today. Lisa has been told and will call you.' };
     }
     if (r.abuse && r.abuse.level !== 'none' && r.abuse.level !== 'low') {
       engine.raise(r.abuse.level === 'high' ? 'urgent' : 'warn', 'Possible abuse or exploitation', `${r.abuse.evidence || ''} Check in privately. Adult Protective Services can help.`, 'abuse');

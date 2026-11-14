@@ -77,9 +77,21 @@
     }
     return ul;
   }
+  // Margaret's screen while the card is frozen. She never sees limits, declines or the word "scam".
+  function renderMargaret(frozen) {
+    const box = document.getElementById('gmCard'); if (!box) return;
+    box.hidden = !frozen;
+    if (!frozen || box.dataset.shown === '1') { if (!frozen) box.dataset.shown = ''; return; }
+    box.dataset.shown = '1'; box.textContent = '';
+    const btns = el('div', 'gm-btns'); const call = el('button', 'gm-btn go', '📞 Ask Lisa to call me'); call.dataset.reply = 'Please call me';
+    btns.append(call);
+    box.append(el('h4', '', 'Your card is taking a short rest 💳'), el('p', '', 'You did nothing wrong. Lisa will call you in a moment.'),
+               el('p', '', 'If someone is asking you for money or gift cards, it is fine to hang up.'), btns);
+  }
   function render() {
     body.textContent = '';
     const frozen = card.status === 'frozen';
+    renderMargaret(frozen);
     const spent = R.weekSpent(card);
     if (frozen) {
       const a = el('div', 'money-alert');
