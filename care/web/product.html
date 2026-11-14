@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Band 39 · Margaret, Lisa and a day in 30 seconds</title>
+<link rel="stylesheet" href="fonts/fonts.css" />
+<style>
+  /* Band 39 product page: the elderly portal, the caregiver portal and the 30-second simulator, live and linked.
+     Three copies of the app share one household code; the simulator drives the pretend band (it is the hub)
+     and the two portals follow it every ~1.5 s through /api/state, exactly like two real phones would. */
+  :root { --paper: #F5EEE5; --card: #FFFDFA; --ink: #2E241E; --ink2: #5C4C42; --muted: #745F51; --line: #E9DED1; --terra: #B0532F; --terra-d: #8E3F20; --bezel: #2A221D; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: radial-gradient(1200px 520px at 85% -10%, #FBE3D2 0%, transparent 60%), var(--paper); color: var(--ink); font: 15px/1.45 Figtree, ui-sans-serif, system-ui, sans-serif; min-height: 100vh; }
+  header { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; max-width: 1560px; margin: 0 auto; padding: 18px 24px 10px; }
+  h1 { margin: 0; font: 600 30px/1 Fraunces, Georgia, serif; letter-spacing: -.02em; }
+  header p { margin: 0; color: var(--ink2); }
+  .tabs { margin-left: auto; display: none; gap: 4px; padding: 3px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); }
+  .tabs button { height: 34px; padding: 0 14px; border: 0; border-radius: 999px; background: none; color: var(--ink2); font: 600 14px Figtree, system-ui, sans-serif; cursor: pointer; }
+  .tabs button[aria-selected="true"] { background: var(--ink); color: var(--paper); }
+  main { display: grid; grid-template-columns: 392px 392px minmax(520px, 1fr); gap: 20px; max-width: 1560px; margin: 0 auto; padding: 8px 24px 32px; align-items: start; }
+  .panel { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .panel h2 { display: flex; align-items: center; gap: 9px; margin: 0; font: 700 13px/1 Figtree, system-ui, sans-serif; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+  .panel h2 span { width: 24px; height: 24px; border-radius: 8px; display: grid; place-items: center; background: #F8E3D8; color: var(--terra-d); font-size: 13px; letter-spacing: 0; }
+  .panel h2 a { margin-left: auto; color: var(--terra-d); font-size: 12px; letter-spacing: 0; text-transform: none; text-decoration: none; font-weight: 700; }
+  .panel h2 a:hover { text-decoration: underline; }
+  .phone { position: relative; width: 392px; height: 812px; border: 10px solid var(--bezel); border-radius: 48px; background: var(--bezel); box-shadow: 0 24px 50px -24px rgba(60,35,20,.55); overflow: hidden; }
+  .phone::before { content: ''; position: absolute; top: 8px; left: 50%; width: 96px; height: 26px; transform: translateX(-50%); background: var(--bezel); border-radius: 999px; z-index: 2; pointer-events: none; }
+  .phone iframe { width: 100%; height: 100%; border: 0; border-radius: 38px; background: #EAF2FF; display: block; }
+  .screen { height: 812px; border: 1px solid var(--line); border-radius: 26px; overflow: hidden; background: var(--card); box-shadow: 0 24px 50px -28px rgba(60,35,20,.45); }
+  .screen iframe { width: 100%; height: 100%; border: 0; display: block; }
+  footer { max-width: 1560px; margin: 0 auto; padding: 0 24px 28px; color: var(--muted); font-size: 13px; }
+  @media (max-width: 1360px) { main { grid-template-columns: 392px 392px; } .panel.sim { grid-column: 1 / -1; order: -1; } .screen { height: 760px; } }
+  @media (max-width: 860px) {
+    header { padding: 14px 14px 8px; } h1 { font-size: 24px; } header p { display: none; } .tabs { display: flex; }
+    main { grid-template-columns: 1fr; padding: 6px 14px 24px; } .panel { display: none; } .panel.on { display: flex; } .panel.sim { order: 0; }
+    .phone { width: 100%; max-width: 392px; height: 760px; margin: 0 auto; } .screen { height: 78vh; min-height: 560px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+  :focus-visible { outline: 3px solid var(--terra); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Band 39</h1>
+  <p>One day, three screens. Press play in the simulator.</p>
+  <div class="tabs" role="tablist" aria-label="Screens">
+    <button role="tab" data-show="elder" aria-selected="false">Margaret</button>
+    <button role="tab" data-show="carer" aria-selected="false">Lisa</button>
+    <button role="tab" data-show="sim" aria-selected="true">Simulator</button>
+  </div>
+</header>
+<main>
+  <section class="panel elder" id="elder" aria-labelledby="h-elder">
+    <h2 id="h-elder"><span>1</span>Elderly portal<a href="/#/grandma/g-today" target="_blank" rel="noopener">Open</a></h2>
+    <div class="phone"><iframe title="Margaret's portal" data-src="#/grandma/g-today" data-phone="1" loading="eager"></iframe></div>
+  </section>
+  <section class="panel carer" id="carer" aria-labelledby="h-carer">
+    <h2 id="h-carer"><span>2</span>Caregiver portal<a href="/#/caregiver/c-home" target="_blank" rel="noopener">Open</a></h2>
+    <div class="phone"><iframe title="Lisa's caregiver portal" data-src="#/caregiver/c-home" data-phone="1" loading="eager"></iframe></div>
+  </section>
+  <section class="panel sim on" id="sim" aria-labelledby="h-sim">
+    <h2 id="h-sim"><span>3</span>Simulator<a href="/" target="_blank" rel="noopener">Open</a></h2>
+    <div class="screen"><iframe title="Simulator: a day in 30 seconds" data-src="#/" loading="eager"></iframe></div>
+  </section>
+</main>
+<footer>Signals, not diagnoses. Past days are sample history. The card is simulated.</footer>
+<script>
+  // one household code for all three screens (the app reads ?home=), so the portals follow the simulator's band
+  (function () {
+    const ok = (c) => /^[A-Z0-9]{6}$/.test(c || '');
+    let home = (new URL(location.href).searchParams.get('home') || '').toUpperCase();
+    if (!ok(home)) home = (localStorage.getItem('b39home') || '').toUpperCase();
+    if (!ok(home)) { home = Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[b % 32]).join(''); }
+    localStorage.setItem('b39home', home);
+    document.querySelectorAll('iframe[data-src]').forEach((f) => { f.src = `index.html?embed=1${f.dataset.phone ? '&phone=1' : ''}&home=${home}${f.dataset.src === '#/' && new URL(location.href).searchParams.get('autoplay') ? '&autoplay=1' : ''}${f.dataset.src}`; });
+    // phones: one screen at a time
+    const tabs = document.querySelectorAll('[data-show]');
+    tabs.forEach((b) => b.addEventListener('click', () => {
+      tabs.forEach((x) => x.setAttribute('aria-selected', String(x === b)));
+      document.querySelectorAll('.panel').forEach((p) => p.classList.toggle('on', p.id === b.dataset.show));
+    }));
+  })();
+</script>
+</body>
+</html>

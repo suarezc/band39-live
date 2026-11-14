@@ -50,12 +50,14 @@
   // voice event: the line is spoken on stage, then goes down the mic path
   const say = (text, a = 'talk', o) => () => { act(a, o, text.replace(/^Pip,\s*/, '')); voice(text); };
 
+  // sample medication list (illustrative only, not medical advice)
+  const MEDS = [['8:00 am', 'Donepezil 5 mg', 'memory'], ['8:00 am', 'Lisinopril 10 mg', 'blood pressure'], ['8:00 pm', 'Metformin 500 mg', 'blood sugar'], ['8:00 pm', 'Sertraline 25 mg (new)', 'mood']];
   // ---- the catalog --------------------------------------------------------------------------------------
   const CATS = [
     { key: 'mental', ic: 'brain', name: 'Mental health', blurb: 'Memory, thinking, mood and sleep', items: [
       { ic: 'repeat', name: 'Repeats herself', sensor: 'voice', expect: 'Memory signal rises: the same question twice.',
         run: say('Did Lisa call today? I can’t remember if Lisa called. Did Lisa call today?', 'confused') },
-      { ic: 'chat', name: 'Word-finding trouble', sensor: 'voice', expect: 'Language score rises: fillers, “thingy”, empty words.',
+      { pin: 2, ic: 'chat', name: 'Speech deterioration', sensor: 'voice', expect: 'Language score rises: fillers, “thingy”, empty words.',
         run: say('Um, I went to the, um, the thingy, what’s it called, the place with the books. And I got the, the thing.') },
       { ic: 'compass', name: 'Confused about time and place', sensor: 'voice', expect: 'Orientation concern rises; Pip gently says what day it is.',
         run: say('Pip, is it Monday? I need to get ready for work at the school, the children are waiting for me.', 'confused') },
@@ -63,7 +65,7 @@
         run: () => { act('talk', {}, 'Lisa is coming with the twins!'); recall('Lisa is coming with the twins!'); } },
       { ic: 'puzzle', name: 'Memory moment: forgot', sensor: 'voice', expect: 'Scored “forgot”; Pip kindly reminds her; trend for Lisa.',
         run: () => { act('confused', {}, 'Hmm. I don’t know. Nobody, I think.'); recall('Hmm. I don’t know. Nobody, I think.'); } },
-      { ic: 'cloud', name: 'Lonely, low mood', sensor: 'voice', expect: 'Pip comforts her and can tell Lisa; mood is logged.',
+      { pin: 3, ic: 'cloud', name: 'Social isolation', sensor: 'voice', expect: 'Pip comforts her and can tell Lisa; mood is logged.',
         run: say('Pip, I haven’t talked to anyone all week. Nobody needs me anymore. What’s the point of getting up.', 'sad') },
       { ic: 'moon', name: 'Night wandering', sensor: 'motion', expect: 'Walking at night opens “Up at night?” on her screen; Lisa is told.',
         run: async () => { await band(); night(); act('nightwalk'); V.demoSignal('nightwalk'); } },
@@ -71,9 +73,14 @@
         run: async () => { await band(); night(); act('sleep', { restless: true }); V.demoSignal('restless'); } },
       { ic: 'chair', name: 'Withdrawn: no movement for 3 h', sensor: 'band', expect: 'Check-in on her screen; no answer in 25 s and Lisa hears.',
         run: async () => { await band(); day(); act('sit'); V.demoSignal('stop'); engine.state.lastMoveAt = V.sceneNow() - (engine.cfg.inactivityMin * 60000 + 1000); engine.tick(); } },
+      { pin: 1, ic: 'puzzle', name: 'Memory decline', sensor: 'voice', expect: 'Memory moments slip to 2 of 5 this week; trend alert for Lisa.',
+        run: () => { act('confused', {}, 'Sunday? I don’t remember anyone coming.'); recall('Sunday? I don’t remember anyone coming.');
+          engine.raise('warn', 'Memory decline', 'Mom remembered 2 of 5 memory moments this week, down from 4 of 5 last week. Worth mentioning to Dr. Patel.', 'memory-decline'); } },
+      { pin: 4, ic: 'shield', name: 'Abuse detection', sensor: 'voice', expect: 'Abuse flagged from her words; Pip tells Lisa quietly.',
+        run: say('Pip, he shouts at me and grabbed my arm so hard it bruised. I’m scared to tell anyone.', 'sad') },
     ] },
     { key: 'financial', ic: 'coin', name: 'Financial health', blurb: 'Scams, exploitation, bills and care spending', items: [
-      { ic: 'call', name: 'Grandchild-in-jail scam call', sensor: 'voice', expect: 'Overheard on the phone: urgent scam alert to Lisa. Pip stays quiet.',
+      { pin: 1, ic: 'call', name: 'Scam attempt: grandchild in jail', sensor: 'voice', expect: 'Overheard on the phone: urgent scam alert to Lisa. Pip stays quiet.',
         run: say('Yes, this is his grandma. He’s in jail? How much is the bail? Gift cards from the pharmacy, okay, I’ll go buy them now.', 'phone') },
       { ic: 'bank', name: 'Fake bank asks for her PIN', sensor: 'voice', expect: 'Scam flagged: someone asking for bank codes.',
         run: say('You’re from my bank? My account is locked? Okay. The code you just texted me is 4 8 1 9, and my PIN is my birthday.', 'phone') },
@@ -84,7 +91,7 @@
           voice('You say my roof is falling in? Eight thousand dollars cash today and you start right now? Let me find my checkbook.'); } },
       { ic: 'shield', name: 'Family member takes her money', sensor: 'voice', expect: 'Exploitation flagged; Pip tells Lisa.',
         run: say('Pip, my nephew took my bank card again and he yells when I ask for it back. I’m scared of him.', 'sad') },
-      { ic: 'receipt', name: 'Missed bills', sensor: 'voice', expect: 'Logged for Lisa; memory signal; Pip offers a reminder.',
+      { pin: 3, ic: 'receipt', name: 'Missed bill payment', sensor: 'voice', expect: 'Logged for Lisa; memory signal; Pip offers a reminder.',
         run: say('Pip, the electric company sent a red letter. I think I forgot to pay it again, and the phone bill too.', 'confused') },
       { ic: 'cart', name: 'HSA care items for what was found', sensor: 'app', expect: 'Lisa’s Care tab: HSA/FSA-eligible items matched to today, paid with Stripe.',
         run: () => V.go('caregiver', 'c-care') },
@@ -96,14 +103,17 @@
         run: () => { act('confused'); card(4000, 'QuickWire Money Transfer', 'wire'); } },
       { ic: 'unlock', name: 'Lisa unfreezes the card', sensor: 'app', expect: 'After a scam freeze, only Lisa can turn the card back on.',
         run: () => { const m = M(); if (m && m.card.status === 'frozen') m.unfreeze(); else if (m) { m.freezeByLisa(); setTimeout(() => m.unfreeze(), 1500); } } },
+      { pin: 2, ic: 'card', name: 'Fraudulent transaction', sensor: 'card', expect: '$389 online charge from a shop she never uses: declined and flagged.',
+        run: () => { act('sit'); card(38900, 'QuickShop Intl (online)', 'online');
+          engine.raise('warn', 'Fraudulent transaction blocked', '$389.00 online charge from QuickShop Intl, a shop Mom has never used. Declined by the card limit. Check her card statement.', 'fraud'); } },
       { ic: 'card', name: 'Care items on a one-time card', sensor: 'card', expect: 'A card for this one order at a medical shop; it closes itself after paying.',
         run: () => { const m = M(), C = window.VexoCatalog; if (!m || !C) return; const conds = (V.view().conditions || []).map(([k]) => k);
           const items = (conds.length ? C.forConditions(conds) : C.PRODUCTS).slice(0, 2); m.payOnceWith(items); } },
     ] },
     { key: 'physical', ic: 'body', name: 'Physical health', blurb: 'Movement, falls, pills, symptoms and the band', items: [
-      { ic: 'fall', name: 'Fall', sensor: 'motion', expect: 'Free-fall, impact, stillness. “Did you fall?” for 20 s, then urgent.',
+      { pin: 1, ic: 'fall', name: 'Fall', sensor: 'motion', expect: 'Free-fall, impact, stillness. “Did you fall?” for 20 s, then urgent.',
         run: async () => { await band(); day(); act('fall'); V.demoSignal('fall'); } },
-      { ic: 'hand', name: 'Hand tremor', sensor: 'motion', expect: 'Shaking score 0-4 from 3.5-7.5 Hz gyro power.',
+      { pin: 2, ic: 'hand', name: 'Tremor', sensor: 'motion', expect: 'Shaking score 0-4 from 3.5-7.5 Hz gyro power.',
         run: async () => { await band(); act('tremor'); V.demoSignal('tremor'); } },
       { ic: 'steps', name: 'Steady walk', sensor: 'motion', expect: 'Steps and cadence count up; balance measured on the walk.',
         run: async () => { await band(); day(); act('walk', { to: 'window' }); V.demoSignal('walk'); } },
@@ -127,6 +137,12 @@
         run: async () => { await band(); act('tap'); engine.ingest({ type: 'double-tap' }); } },
       { ic: 'watch', name: 'Band off her wrist', sensor: 'band', expect: 'Perfectly still for 2 h: “Band may be off Mom’s wrist”.',
         run: async () => { await band(); act('bandoff'); engine.state.offWrist = false; engine.state.stillSince = V.sceneNow() - (engine.cfg.notWornMin * 60000 + 1000); engine.tick(); } },
+      { pin: 3, ic: 'clock', name: 'Medication list', sensor: 'app', expect: 'Today’s medicines on her screen and in Lisa’s app.',
+        run: () => { act('walk', { to: 'table' }); const list = MEDS.map((m) => `${m[0]} ${m[1]}`).join(' · ');
+          H.banner = { kind: 'calm', title: 'Today’s medicines', body: list }; engine.note('💊', 'Medication list: ' + list, 'care'); V.engine.tick(); } },
+      { pin: 4, ic: 'pill', name: 'Medicine taken (told the band)', sensor: 'band', expect: 'She tells the band she took them; reminder clears; Lisa sees it.',
+        run: async () => { await band(); act('tap', {}, 'I took my morning pills.'); if (!Object.values(engine.state.meds).includes('due')) { pill(1); await wait(700); }
+          engine.userAction('done', 'told the band'); engine.note('💊', 'Mom told the band she took her morning medicines.', 'care'); } },
       { ic: 'battery', name: 'Low band battery', sensor: 'band', expect: 'Margaret and Lisa are reminded to charge it.',
         run: async () => { await band(); act('idle'); engine.state.lowBatteryFlagged = false; engine.ingest({ type: 'battery', percent: 12, state: 'discharging' }); } },
     ] },
@@ -160,9 +176,9 @@
   let playing = null, dayAt = -1, dayDone = false;
   function catalogHtml() {
     return CATS.map((c) => `<section class="sim-cat cat-${c.key}" aria-labelledby="cat-${c.key}">
-      <header><span class="cat-ic">${I(c.ic, 22)}</span><div><h3 id="cat-${c.key}">${esc(c.name)}</h3><p>${c.items.length} events</p></div>
+      <header><span class="cat-ic">${I(c.ic, 22)}</span><div><h3 id="cat-${c.key}">${CATS.indexOf(c) + 1}. ${esc(c.name)}</h3><p>${c.items.length} events</p></div>
         <button class="btn quiet" data-sim-cat="${c.key}">${I('play', 16)}<span>Run all</span></button></header>
-      <ul class="sim-list">${c.items.map((it) => `<li><button class="sim-ev" data-sim="${it.id}">
+      <ul class="sim-list">${[...c.items].sort((a, b) => (a.pin || 99) - (b.pin || 99)).map((it) => `<li><button class="sim-ev" data-sim="${it.id}">
         <span class="ev-ic">${I(it.ic, 20)}</span>
         <span class="ev-tx" title="${esc(it.expect)}"><b>${esc(it.name)}</b></span>
         <span class="ev-meta"><span class="chip">${I(SENSOR[it.sensor][0], 14)}${SENSOR[it.sensor][1]}</span><i class="ev-done" data-done="${it.id}"></i></span>

@@ -87,7 +87,17 @@ class Handler(SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header('Cache-Control', 'no-cache')
         self.send_header('X-Content-Type-Options', 'nosniff')
+        # CORS for the iOS app (its page is served from the app bundle at band39care://app, not from this server)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
         super().end_headers()
+
+    def do_OPTIONS(self):   # CORS preflight (JSON POSTs from the iOS app)
+        self.send_response(204)
+        self.send_header('Access-Control-Max-Age', '600')
+        self.send_header('Content-Length', '0')
+        self.end_headers()
 
     def send_json(self, code, obj):
         body = json.dumps(obj).encode()

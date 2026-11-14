@@ -20,6 +20,7 @@
   const { CONDITIONS, ELIG, forConditions } = window.VexoCatalog;
   const { INFO } = window.VexoInfo;
   const app = $('app');
+  if (new URL(location.href).searchParams.get('embed')) app.classList.add('embed'); if (new URL(location.href).searchParams.get('phone')) app.classList.add('in-phone');   // inside product.html: no outer chrome
   const medName = (t) => (Number(t.split(':')[0]) < 12 ? 'morning' : Number(t.split(':')[0]) < 17 ? 'afternoon' : 'evening');
   const PIP = document.getElementById('pipArt').innerHTML;
   $$('svg[data-pip]').forEach((s) => { s.innerHTML = PIP; });   // inline copies so moods can restyle them
