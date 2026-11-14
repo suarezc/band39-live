@@ -1,0 +1,1235 @@
+{
+  "updated": "2026-11-14",
+  "about": "Generic product types with typical US retail prices that are commonly HSA/FSA eligible and relevant to older adults living at home and their family caregivers, keyed to everyday needs. Eligibility is general guidance from IRS publications and administrator lists, not a guarantee: plans differ, so check with the plan administrator before buying.",
+  "eligibility_key": {
+    "eligible": "Generally HSA/FSA eligible without paperwork",
+    "lmn": "Usually eligible only with a Letter of Medical Necessity from a clinician",
+    "dual": "Dual-purpose: eligible only when bought to treat a medical condition; often needs a letter"
+  },
+  "needs": [
+    {
+      "id": "mobility",
+      "label": "Trouble walking, standing up, or unsteady on her feet",
+      "question": "Did the person say they had trouble walking, felt unsteady, struggled to get up from a chair, bed or toilet, or had trouble with stairs?",
+      "catalog_condition": "balance"
+    },
+    {
+      "id": "falls",
+      "label": "A fall, a near-fall, or fear of falling",
+      "question": "Did the person say they fell, nearly fell, tripped, slipped, or are afraid of falling?",
+      "catalog_condition": "fall"
+    },
+    {
+      "id": "pain",
+      "label": "Joint, back or muscle pain",
+      "question": "Did the person say they had pain or stiffness in their joints, back, hands, knees, hips or muscles?"
+    },
+    {
+      "id": "dizziness",
+      "label": "Dizzy or lightheaded",
+      "question": "Did the person say they felt dizzy, lightheaded, woozy, or that the room was spinning?"
+    },
+    {
+      "id": "nausea",
+      "label": "Nausea or upset stomach",
+      "question": "Did the person say they felt sick to their stomach, nauseous, queasy, had heartburn or indigestion, or had vomited?",
+      "catalog_condition": "nausea"
+    },
+    {
+      "id": "sleep",
+      "label": "Trouble sleeping or up in the night",
+      "question": "Did the person say they slept badly, could not fall or stay asleep, or were up and about during the night?",
+      "catalog_condition": "sleep"
+    },
+    {
+      "id": "meds",
+      "label": "Forgetting or mixing up medication",
+      "question": "Did the person say they forgot a pill, were unsure whether they had taken a medicine, took the wrong one, or found their pills confusing?",
+      "catalog_condition": "meds"
+    },
+    {
+      "id": "monitoring",
+      "label": "Blood pressure or blood sugar checks",
+      "question": "Did the person mention their blood pressure, blood sugar, diabetes, or needing to check or record either one?"
+    },
+    {
+      "id": "hearing",
+      "label": "Hard of hearing",
+      "question": "Did the person say they had trouble hearing people, the TV or the phone, or mention their hearing aids?"
+    },
+    {
+      "id": "vision",
+      "label": "Trouble seeing or reading",
+      "question": "Did the person say they had trouble seeing, reading small print, or that their eyes were dry, sore or blurry?"
+    },
+    {
+      "id": "bladder",
+      "label": "Bladder leaks or bathroom urgency",
+      "question": "Did the person say they had leaks or accidents, had to rush to the bathroom, or got up often at night to use the toilet?"
+    },
+    {
+      "id": "bathing",
+      "label": "Worried about bathing or showering safely",
+      "question": "Did the person say bathing or showering was hard, tiring or scary, or that they had trouble getting in or out of the tub or shower?"
+    },
+    {
+      "id": "skin_foot",
+      "label": "Dry or itchy skin, cuts, sores or foot problems",
+      "question": "Did the person mention dry or itchy skin, a cut, scrape, bruise or sore that is slow to heal, swollen legs or ankles, or problems with their feet?"
+    },
+    {
+      "id": "cold_flu",
+      "label": "Cold, flu, cough or breathing symptoms",
+      "question": "Did the person say they had a cold, cough, sore throat, stuffy nose, fever, or felt short of breath?"
+    },
+    {
+      "id": "hands_eating",
+      "label": "Shaky hands, or trouble eating or swallowing",
+      "question": "Did the person say their hands shake or tremble, that they had trouble holding a spoon, cup or pen, or that chewing or swallowing was hard or they choked or coughed when eating or drinking?",
+      "catalog_condition": "tremor"
+    },
+    {
+      "id": "seizure",
+      "label": "Shaking spells, seizures or blackouts",
+      "question": "Did the person say they had a seizure, a shaking or jerking spell they could not control, or lost awareness or blacked out?",
+      "catalog_condition": "seizure"
+    }
+  ],
+  "products": [
+    {
+      "id": "cane",
+      "name": "Quad-base cane",
+      "category": "Mobility",
+      "needs": [
+        "mobility"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        25,
+        60
+      ],
+      "why": "A cane with a four-point base that gives more support than a single tip when walking is unsteady.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "rollator",
+      "name": "Rollator walker with seat",
+      "category": "Mobility",
+      "needs": [
+        "mobility",
+        "falls"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        70,
+        200
+      ],
+      "why": "A four-wheeled walker with hand brakes and a seat for resting on longer walks.",
+      "note": "Listed as 'Walker' on administrator lists.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "folding-walker",
+      "name": "Folding walker (two-wheel or standard)",
+      "category": "Mobility",
+      "needs": [
+        "mobility"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        35,
+        90
+      ],
+      "why": "A lightweight frame to lean on for steady walking indoors.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "wheelchair",
+      "name": "Transport or manual wheelchair",
+      "category": "Mobility",
+      "needs": [
+        "mobility"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        120,
+        400
+      ],
+      "why": "A chair on wheels for trips and longer distances when walking is too tiring.",
+      "note": "IRS Pub 502 lists wheelchairs used for relief of sickness or disability, including upkeep.",
+      "source": "https://www.irs.gov/publications/p502"
+    },
+    {
+      "id": "knee-brace",
+      "name": "Knee brace or support",
+      "category": "Pain & Joints",
+      "needs": [
+        "pain",
+        "mobility"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        15,
+        60
+      ],
+      "why": "A sleeve or hinged brace that supports a sore or weak knee.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "back-brace",
+      "name": "Back brace or lumbar support belt",
+      "category": "Pain & Joints",
+      "needs": [
+        "pain"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        20,
+        70
+      ],
+      "why": "A belt that supports the lower back during daily tasks.",
+      "note": "Supportive cushions and pillows are a different item and usually need a letter.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "lift-chair",
+      "name": "Power lift recliner chair",
+      "category": "Mobility",
+      "needs": [
+        "mobility"
+      ],
+      "eligibility": "lmn",
+      "price_usd": [
+        600,
+        1500
+      ],
+      "why": "A recliner that tilts forward to help the person stand up.",
+      "note": "Cigna says a reclining chair is reimbursable only with a medical diagnosis; buyFSA lists recliner chairs as LMN required. Often only the lift mechanism, not the furniture, is reimbursed.",
+      "source": "https://www.cigna.com/individuals-families/member-guide/eligible-expenses"
+    },
+    {
+      "id": "stair-lift",
+      "name": "Stair lift (installed)",
+      "category": "Mobility",
+      "needs": [
+        "mobility",
+        "falls"
+      ],
+      "eligibility": "lmn",
+      "price_usd": [
+        2500,
+        8000
+      ],
+      "why": "A motorized seat on a rail that carries the person up and down stairs.",
+      "note": "Sources disagree: buyFSA lists stair lifts as eligible; IRS Pub 502 treats lifts as a capital expense that counts only to accommodate a disability (reasonable cost, minus any increase in home value), and administrator lists put home modifications in 'maybe' or LMN. Treat as needing a letter.",
+      "source": "https://www.irs.gov/publications/p502"
+    },
+    {
+      "id": "patient-lift",
+      "name": "Patient transfer lift",
+      "category": "Mobility",
+      "needs": [
+        "mobility"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        900,
+        3500
+      ],
+      "why": "A hoist that lets a caregiver move the person safely between bed, chair and toilet.",
+      "note": "Listed as eligible by buyFSA. Some plans may still ask for documentation of the disability.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "reacher",
+      "name": "Reacher / grabber tool",
+      "category": "Mobility",
+      "needs": [
+        "mobility",
+        "falls"
+      ],
+      "eligibility": "dual",
+      "price_usd": [
+        10,
+        30
+      ],
+      "why": "A long-handled grabber that picks things up without bending or stretching.",
+      "note": "Counts as adaptive equipment. Premera: adaptive equipment qualifies for help with activities of daily living, not for general comfort. Expect to need a letter on card-declined claims.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "hip",
+      "name": "Hip protector briefs",
+      "category": "Falls & Safety",
+      "needs": [
+        "falls"
+      ],
+      "eligibility": "lmn",
+      "price_usd": [
+        40,
+        90
+      ],
+      "why": "Padded underwear that cushions the hips in a fall.",
+      "note": "Not named on any administrator list checked. Some medical-supply retailers code them as FSA/HSA eligible, but that is not an administrator ruling. Treated cautiously as needing a letter.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "helmet",
+      "name": "Soft protective headgear",
+      "category": "Falls & Safety",
+      "needs": [
+        "falls",
+        "seizure"
+      ],
+      "eligibility": "lmn",
+      "price_usd": [
+        60,
+        150
+      ],
+      "why": "A padded cap that protects the head in a fall or seizure.",
+      "note": "Not named on administrator lists; falls under adaptive or medical equipment, which plans usually approve with a clinician's letter.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "alert-system",
+      "name": "Personal emergency response (medical alert) system",
+      "category": "Falls & Safety",
+      "needs": [
+        "falls",
+        "seizure"
+      ],
+      "eligibility": "lmn",
+      "price_usd": [
+        25,
+        50
+      ],
+      "why": "A wearable help button, some with fall detection, that calls for help. Price is per month of monitoring, plus any device fee.",
+      "note": "Sources disagree: buyFSA lists medical alert systems as eligible; Cigna says enrollment is reimbursable when accompanied by a medical diagnosis. Treat as needing a letter.",
+      "source": "https://www.cigna.com/individuals-families/member-guide/eligible-expenses"
+    },
+    {
+      "id": "alert-bracelet",
+      "name": "Medical ID bracelet or necklace",
+      "category": "Falls & Safety",
+      "needs": [
+        "falls",
+        "seizure",
+        "meds"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        15,
+        50
+      ],
+      "why": "Jewelry engraved with conditions and medicines, so responders know at a glance.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "bed-rail",
+      "name": "Bed assist rail",
+      "category": "Falls & Safety",
+      "needs": [
+        "mobility",
+        "falls"
+      ],
+      "eligibility": "lmn",
+      "price_usd": [
+        40,
+        120
+      ],
+      "why": "A handle that fits under the mattress to help with sitting up and getting out of bed.",
+      "note": "Not named on any administrator list checked; treated as adaptive equipment needing a letter. Bed rails carry entrapment risk, so follow fitting instructions.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "bedalarm",
+      "name": "Bed-exit alarm pad",
+      "category": "Falls & Safety",
+      "needs": [
+        "sleep",
+        "falls"
+      ],
+      "eligibility": "lmn",
+      "price_usd": [
+        40,
+        120
+      ],
+      "why": "A pressure pad that sounds a chime for a caregiver when the person gets out of bed.",
+      "note": "Covered only as a medical monitoring device; Workterra's list marks monitoring devices as needing a letter of medical necessity.",
+      "source": "https://clpccd.org/benefits/files/benefits/benefits_2023/2023_FSAEligibleItems.pdf"
+    },
+    {
+      "id": "seizmat",
+      "name": "Seizure-alert bed monitor",
+      "category": "Falls & Safety",
+      "needs": [
+        "seizure"
+      ],
+      "eligibility": "lmn",
+      "price_usd": [
+        150,
+        400
+      ],
+      "why": "A bed sensor that alerts a caregiver to prolonged rhythmic movement at night.",
+      "note": "Medical monitoring device; Workterra's list marks these as needing a letter of medical necessity.",
+      "source": "https://clpccd.org/benefits/files/benefits/benefits_2023/2023_FSAEligibleItems.pdf"
+    },
+    {
+      "id": "grab-bars",
+      "name": "Bathroom grab bars",
+      "category": "Bathroom & Bathing",
+      "needs": [
+        "bathing",
+        "falls",
+        "mobility"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        20,
+        70
+      ],
+      "why": "Fixed handholds by the toilet, tub or shower to hold onto when moving.",
+      "note": "IRS Pub 502 lists adding handrails or grab bars anywhere as a medical home modification; installation labor may need separate documentation.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "tub-rail",
+      "name": "Clamp-on bathtub safety rail",
+      "category": "Bathroom & Bathing",
+      "needs": [
+        "bathing",
+        "falls"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        30,
+        70
+      ],
+      "why": "A handle that clamps to the tub wall for stepping in and out.",
+      "note": "Premera lists 'Bathtub rails, grips, and safety items' as eligible.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "shower",
+      "name": "Shower chair with back",
+      "category": "Bathroom & Bathing",
+      "needs": [
+        "bathing",
+        "falls",
+        "mobility"
+      ],
+      "eligibility": "lmn",
+      "price_usd": [
+        35,
+        90
+      ],
+      "why": "A waterproof seat so the person can sit, not stand, while showering.",
+      "note": "Commonly misunderstood. Many pharmacies code shower chairs as FSA eligible, but Premera says 'Yes, if required on account of a disability' and Cigna requires a medical diagnosis. Keep a letter on file.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "transfer-bench",
+      "name": "Tub transfer bench",
+      "category": "Bathroom & Bathing",
+      "needs": [
+        "bathing",
+        "mobility"
+      ],
+      "eligibility": "lmn",
+      "price_usd": [
+        50,
+        130
+      ],
+      "why": "A bench that straddles the tub wall so the person can sit and slide in.",
+      "note": "Same treatment as shower chairs: Premera and Cigna tie eligibility to a disability or diagnosis.",
+      "source": "https://www.cigna.com/individuals-families/member-guide/eligible-expenses"
+    },
+    {
+      "id": "raised-toilet-seat",
+      "name": "Raised toilet seat",
+      "category": "Bathroom & Bathing",
+      "needs": [
+        "mobility",
+        "bladder"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        25,
+        70
+      ],
+      "why": "A seat riser that makes sitting down and standing up from the toilet easier.",
+      "note": "Listed by buyFSA as 'Elevated Toilet Seats: Eligible'.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "commode",
+      "name": "Bedside commode",
+      "category": "Bathroom & Bathing",
+      "needs": [
+        "bladder",
+        "mobility"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        40,
+        120
+      ],
+      "why": "A portable toilet chair for the bedside when the bathroom is too far at night.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "bidet",
+      "name": "Toilet bidet attachment",
+      "category": "Bathroom & Bathing",
+      "needs": [
+        "bladder",
+        "skin_foot"
+      ],
+      "eligibility": "lmn",
+      "price_usd": [
+        30,
+        150
+      ],
+      "why": "A spray seat or attachment for cleaning after using the toilet.",
+      "note": "Commonly misunderstood: buyFSA lists bidets as LMN required.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "briefs",
+      "name": "Adult incontinence briefs or pull-ups",
+      "category": "Incontinence",
+      "needs": [
+        "bladder"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        20,
+        50
+      ],
+      "why": "Absorbent underwear for bladder leaks. Price is per pack.",
+      "note": "Adult incontinence supplies are eligible; baby diapers and diaper services are not.",
+      "source": "https://www.umr.com/content/dam/umr/en/findform/forms/UM0075.pdf"
+    },
+    {
+      "id": "underpads",
+      "name": "Disposable or washable bed underpads",
+      "category": "Incontinence",
+      "needs": [
+        "bladder",
+        "sleep"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        15,
+        40
+      ],
+      "why": "Absorbent pads that protect the mattress or chair from leaks.",
+      "note": "Covered as incontinence supplies. Ordinary mattress protectors are listed as not eligible.",
+      "source": "https://www.umr.com/content/dam/umr/en/findform/forms/UM0075.pdf"
+    },
+    {
+      "id": "barrier-cream",
+      "name": "Skin barrier or rash cream",
+      "category": "Incontinence",
+      "needs": [
+        "bladder",
+        "skin_foot"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        6,
+        15
+      ],
+      "why": "An ointment that protects skin from moisture and irritation.",
+      "note": "Listed as diaper rash ointment/cream. Everyday moisturizers are not eligible.",
+      "source": "https://www.umr.com/content/dam/umr/en/findform/forms/UM0075.pdf"
+    },
+    {
+      "id": "pain-reliever",
+      "name": "Over-the-counter pain reliever",
+      "category": "Pain & Joints",
+      "needs": [
+        "pain"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        5,
+        20
+      ],
+      "why": "Standard pain and fever tablets from the pharmacy.",
+      "note": "Over-the-counter medicine is eligible without a prescription since the CARES Act (2020). Some older administrator guides still say 'with prescription'.",
+      "source": "https://www.irs.gov/publications/p969"
+    },
+    {
+      "id": "topical-pain",
+      "name": "Topical pain relief cream or patch",
+      "category": "Pain & Joints",
+      "needs": [
+        "pain"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        8,
+        20
+      ],
+      "why": "A cream, gel or patch applied to sore muscles or joints.",
+      "note": "Over-the-counter medicine is eligible without a prescription since the CARES Act (2020). Some older administrator guides still say 'with prescription'.",
+      "source": "https://www.irs.gov/publications/p969"
+    },
+    {
+      "id": "heating-pad",
+      "name": "Electric heating pad or wrap",
+      "category": "Pain & Joints",
+      "needs": [
+        "pain"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        20,
+        60
+      ],
+      "why": "Steady warmth for stiff or sore muscles and joints.",
+      "source": "https://www.umr.com/content/dam/umr/en/findform/forms/UM0075.pdf"
+    },
+    {
+      "id": "hot-cold-pack",
+      "name": "Reusable hot/cold gel pack",
+      "category": "Pain & Joints",
+      "needs": [
+        "pain"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        8,
+        25
+      ],
+      "why": "A gel pack that can be chilled or warmed for aches and swelling.",
+      "note": "Premera: eligible 'if sold as medical supplies'.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "tens-unit",
+      "name": "TENS unit",
+      "category": "Pain & Joints",
+      "needs": [
+        "pain"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        30,
+        80
+      ],
+      "why": "A small device that sends mild electrical pulses through skin pads to ease pain.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "arthritis-gloves",
+      "name": "Compression arthritis gloves",
+      "category": "Pain & Joints",
+      "needs": [
+        "pain",
+        "hands_eating"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        15,
+        35
+      ],
+      "why": "Snug gloves that support stiff or achy hands.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "massager",
+      "name": "Handheld percussion massager",
+      "category": "Pain & Joints",
+      "needs": [
+        "pain"
+      ],
+      "eligibility": "dual",
+      "price_usd": [
+        50,
+        200
+      ],
+      "why": "A handheld massager for sore muscles.",
+      "note": "Sources disagree: buyFSA lists massage guns as eligible but massage chairs and foot massagers as LMN required; Cigna allows massage chairs only to treat a medical condition. Treat as dual-purpose; keep a letter.",
+      "source": "https://www.cigna.com/individuals-families/member-guide/eligible-expenses"
+    },
+    {
+      "id": "motion-sickness",
+      "name": "Over-the-counter motion sickness tablets",
+      "category": "Stomach & Dizziness",
+      "needs": [
+        "dizziness",
+        "nausea"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        5,
+        15
+      ],
+      "why": "Pharmacy tablets for motion sickness and the queasy, spinning feeling that comes with it.",
+      "note": "Over-the-counter medicine is eligible without a prescription since the CARES Act (2020). Some older administrator guides still say 'with prescription'. Ask a clinician before use, since some cause drowsiness.",
+      "source": "https://www.irs.gov/publications/p969"
+    },
+    {
+      "id": "seaband",
+      "name": "Acupressure wristbands (nausea)",
+      "category": "Stomach & Dizziness",
+      "needs": [
+        "nausea",
+        "dizziness"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        8,
+        15
+      ],
+      "why": "Wristbands that press on a point on the inner wrist, used for nausea and motion sickness.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "nausea-relief",
+      "name": "Over-the-counter nausea and upset-stomach remedy",
+      "category": "Stomach & Dizziness",
+      "needs": [
+        "nausea"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        5,
+        15
+      ],
+      "why": "Pharmacy liquid or chewables for an upset stomach.",
+      "note": "Over-the-counter medicine is eligible without a prescription since the CARES Act (2020). Some older administrator guides still say 'with prescription'.",
+      "source": "https://www.irs.gov/publications/p969"
+    },
+    {
+      "id": "antacid",
+      "name": "Antacid or acid reducer",
+      "category": "Stomach & Dizziness",
+      "needs": [
+        "nausea"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        5,
+        20
+      ],
+      "why": "Tablets for heartburn and indigestion.",
+      "note": "Over-the-counter medicine is eligible without a prescription since the CARES Act (2020). Some older administrator guides still say 'with prescription'.",
+      "source": "https://www.irs.gov/publications/p969"
+    },
+    {
+      "id": "sleep-aid",
+      "name": "Over-the-counter sleep aid",
+      "category": "Sleep",
+      "needs": [
+        "sleep"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        6,
+        15
+      ],
+      "why": "A non-prescription medicine for occasional sleeplessness.",
+      "note": "Over-the-counter medicine is eligible without a prescription since the CARES Act (2020). Some older administrator guides still say 'with prescription'. Melatonin is different: it is a supplement and needs a letter.",
+      "source": "https://www.irs.gov/publications/p969"
+    },
+    {
+      "id": "melatonin",
+      "name": "Melatonin",
+      "category": "Sleep",
+      "needs": [
+        "sleep"
+      ],
+      "eligibility": "lmn",
+      "price_usd": [
+        5,
+        15
+      ],
+      "why": "A supplement some people take for sleep.",
+      "note": "Commonly misunderstood: buyFSA lists melatonin as LMN required because it is a supplement, not an OTC drug.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "light-therapy",
+      "name": "Light therapy lamp",
+      "category": "Sleep",
+      "needs": [
+        "sleep"
+      ],
+      "eligibility": "lmn",
+      "price_usd": [
+        30,
+        120
+      ],
+      "why": "A bright lamp used in the morning to help regulate the daily sleep-wake rhythm.",
+      "note": "Sources disagree: buyFSA lists light therapy lamps as eligible; Premera lists seasonal-affective-disorder lights as 'Yes, with prescription'. Treat as needing a letter.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "pillbox",
+      "name": "Alarm pill dispenser",
+      "category": "Medication",
+      "needs": [
+        "meds"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        40,
+        150
+      ],
+      "why": "A locked dispenser that beeps and opens the right compartment at pill time.",
+      "note": "Listed by buyFSA under 'Pill Boxes ... Pill Clocks and Pill Organizers'. Subscription-based connected dispensers may be billed differently.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "pill-organizer",
+      "name": "Weekly pill organizer",
+      "category": "Medication",
+      "needs": [
+        "meds"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        5,
+        20
+      ],
+      "why": "A box with day-and-time compartments to sort pills a week ahead.",
+      "note": "Cigna lists pill storage containers as eligible.",
+      "source": "https://www.cigna.com/individuals-families/member-guide/eligible-expenses"
+    },
+    {
+      "id": "pill-crusher",
+      "name": "Pill cutter or crusher",
+      "category": "Medication",
+      "needs": [
+        "meds",
+        "hands_eating"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        5,
+        15
+      ],
+      "why": "A tool for splitting or crushing tablets when they are hard to swallow (check with a pharmacist first).",
+      "note": "Cigna lists pill crushers and cutters as eligible.",
+      "source": "https://www.cigna.com/individuals-families/member-guide/eligible-expenses"
+    },
+    {
+      "id": "bp-monitor",
+      "name": "Upper-arm blood pressure monitor",
+      "category": "Monitoring",
+      "needs": [
+        "monitoring",
+        "dizziness"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        30,
+        80
+      ],
+      "why": "An automatic cuff for checking blood pressure at home.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "glucose-meter",
+      "name": "Blood glucose meter",
+      "category": "Monitoring",
+      "needs": [
+        "monitoring"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        15,
+        40
+      ],
+      "why": "A small meter for checking blood sugar from a fingertip drop.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "test-strips",
+      "name": "Glucose test strips and lancets",
+      "category": "Monitoring",
+      "needs": [
+        "monitoring"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        20,
+        60
+      ],
+      "why": "The single-use strips and lancets a glucose meter needs. Price is per box.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "pulse-ox",
+      "name": "Fingertip pulse oximeter",
+      "category": "Monitoring",
+      "needs": [
+        "monitoring",
+        "cold_flu"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        20,
+        50
+      ],
+      "why": "A clip that reads pulse and blood oxygen level.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "thermometer",
+      "name": "Digital thermometer",
+      "category": "Monitoring",
+      "needs": [
+        "cold_flu",
+        "monitoring"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        10,
+        40
+      ],
+      "why": "A quick read of body temperature.",
+      "source": "https://www.umr.com/content/dam/umr/en/findform/forms/UM0075.pdf"
+    },
+    {
+      "id": "hearing-aid",
+      "name": "Over-the-counter hearing aids",
+      "category": "Hearing",
+      "needs": [
+        "hearing"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        200,
+        1500
+      ],
+      "why": "FDA-regulated hearing aids for adults with perceived mild to moderate hearing loss, bought without an exam.",
+      "note": "IRS Pub 502 includes hearing aids plus batteries, repairs and maintenance. Personal sound amplifiers (PSAPs) are not hearing aids and are deliberately left out of this list.",
+      "source": "https://www.irs.gov/publications/p502"
+    },
+    {
+      "id": "hearing-batteries",
+      "name": "Hearing aid batteries",
+      "category": "Hearing",
+      "needs": [
+        "hearing"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        10,
+        30
+      ],
+      "why": "Replacement batteries for hearing aids. Price is per pack.",
+      "source": "https://www.irs.gov/publications/p502"
+    },
+    {
+      "id": "captioned-phone",
+      "name": "Amplified or captioned telephone",
+      "category": "Hearing",
+      "needs": [
+        "hearing"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        50,
+        200
+      ],
+      "why": "A phone with extra-loud sound or on-screen captions of what the caller says.",
+      "note": "IRS Pub 502 includes special telephone equipment for people who are hard of hearing. Some plans may ask for documentation; captioned phones may also be free through state or federal programs.",
+      "source": "https://www.irs.gov/publications/p502"
+    },
+    {
+      "id": "earwax-kit",
+      "name": "Earwax removal kit",
+      "category": "Hearing",
+      "needs": [
+        "hearing"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        5,
+        15
+      ],
+      "why": "Drops and a bulb syringe to soften and rinse out earwax.",
+      "note": "Over-the-counter medicine is eligible without a prescription since the CARES Act (2020). Some older administrator guides still say 'with prescription'.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "reading-glasses",
+      "name": "Non-prescription reading glasses",
+      "category": "Vision",
+      "needs": [
+        "vision"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        10,
+        30
+      ],
+      "why": "Magnifying glasses for close-up reading.",
+      "note": "Eligible without a prescription per buyFSA and Optum. Non-prescription sunglasses are not.",
+      "source": "https://cookcountyil.gov/sites/g/files/ywwepo161/files/documents/2021-09/ohc_of_fsa_eligible_expense_list_0.pdf"
+    },
+    {
+      "id": "magnifier",
+      "name": "Lighted handheld magnifier",
+      "category": "Vision",
+      "needs": [
+        "vision"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        15,
+        50
+      ],
+      "why": "A magnifying glass with a light for small print, labels and pill bottles.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "eye-drops",
+      "name": "Lubricating eye drops",
+      "category": "Vision",
+      "needs": [
+        "vision"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        6,
+        20
+      ],
+      "why": "Drops for dry or tired eyes.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "first-aid",
+      "name": "Bandages, gauze and first aid kit",
+      "category": "Skin & Foot",
+      "needs": [
+        "skin_foot",
+        "falls"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        10,
+        40
+      ],
+      "why": "Dressings and supplies for cuts and scrapes.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "antibiotic-ointment",
+      "name": "Antibiotic ointment",
+      "category": "Skin & Foot",
+      "needs": [
+        "skin_foot"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        5,
+        12
+      ],
+      "why": "An over-the-counter ointment for minor cuts and scrapes.",
+      "note": "Over-the-counter medicine is eligible without a prescription since the CARES Act (2020). Some older administrator guides still say 'with prescription'.",
+      "source": "https://www.irs.gov/publications/p969"
+    },
+    {
+      "id": "medicated-cream",
+      "name": "Medicated itch or eczema cream",
+      "category": "Skin & Foot",
+      "needs": [
+        "skin_foot"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        8,
+        20
+      ],
+      "why": "A medicated cream for itchy or irritated skin.",
+      "note": "Commonly misunderstood: medicated creams that treat a skin condition are eligible; everyday lotion and moisturizer are not.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "compression-socks",
+      "name": "Graduated compression socks",
+      "category": "Skin & Foot",
+      "needs": [
+        "skin_foot",
+        "mobility"
+      ],
+      "eligibility": "dual",
+      "price_usd": [
+        15,
+        50
+      ],
+      "why": "Snug socks that squeeze the lower leg, often worn for leg swelling.",
+      "note": "Sources disagree: buyFSA and Cigna list medical compression hosiery as eligible; Optum Financial lists compression hosiery/socks as eligible only with a letter of medical necessity. Athletic compression gear is not eligible.",
+      "source": "https://cookcountyil.gov/sites/g/files/ywwepo161/files/documents/2021-09/ohc_of_fsa_eligible_expense_list_0.pdf"
+    },
+    {
+      "id": "diabetic-socks",
+      "name": "Diabetic (non-binding) socks",
+      "category": "Skin & Foot",
+      "needs": [
+        "skin_foot"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        10,
+        30
+      ],
+      "why": "Loose-top, seamless socks that avoid pressure and rubbing on sensitive feet.",
+      "note": "Listed as eligible by buyFSA only; not named on the administrator guides checked.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "insoles",
+      "name": "Cushioned orthotic insoles",
+      "category": "Skin & Foot",
+      "needs": [
+        "skin_foot",
+        "pain",
+        "mobility"
+      ],
+      "eligibility": "dual",
+      "price_usd": [
+        15,
+        60
+      ],
+      "why": "Shoe inserts that cushion and support the arch and heel.",
+      "note": "Sources disagree: buyFSA lists shoe insoles as eligible; Optum Financial lists orthopedic shoes and inserts as dual-purpose needing a prescription or letter; Premera says arch and insole supports need a prescription.",
+      "source": "https://cms.illinois.gov/content/dam/soi/en/web/cms/benefits/stateemployee/documents/fsa/Optum-Financial-Reference-Guide.pdf"
+    },
+    {
+      "id": "cold-flu-med",
+      "name": "Cold, flu and cough medicine",
+      "category": "Cold & Respiratory",
+      "needs": [
+        "cold_flu"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        6,
+        20
+      ],
+      "why": "Pharmacy syrups, tablets, lozenges and rubs for cold and flu symptoms.",
+      "note": "Over-the-counter medicine is eligible without a prescription since the CARES Act (2020). Some older administrator guides still say 'with prescription'.",
+      "source": "https://www.irs.gov/publications/p969"
+    },
+    {
+      "id": "humidifier",
+      "name": "Cool-mist humidifier",
+      "category": "Cold & Respiratory",
+      "needs": [
+        "cold_flu",
+        "sleep"
+      ],
+      "eligibility": "lmn",
+      "price_usd": [
+        30,
+        80
+      ],
+      "why": "Adds moisture to dry room air.",
+      "note": "Sources disagree: Cigna lists humidifiers and air purifiers as eligible; Premera says 'Maybe', only if a provider recommends it for a specific condition; buyFSA says LMN required; an Optum Financial list puts humidifiers on its ineligible list. Treat as needing a letter. Air purifiers get the same treatment and are left out here.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "nebulizer",
+      "name": "Compressor nebulizer",
+      "category": "Cold & Respiratory",
+      "needs": [
+        "cold_flu"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        40,
+        100
+      ],
+      "why": "A machine that turns liquid medicine into a mist to breathe in.",
+      "note": "The machine is eligible as a medicine delivery device; the inhaled medicines themselves usually need a prescription.",
+      "source": "https://www.umr.com/content/dam/umr/en/findform/forms/UM0075.pdf"
+    },
+    {
+      "id": "spoon",
+      "name": "Tremor-stabilizing spoon",
+      "category": "Eating & Hands",
+      "needs": [
+        "hands_eating"
+      ],
+      "eligibility": "lmn",
+      "price_usd": [
+        150,
+        300
+      ],
+      "why": "An electronic handle that offsets hand shaking so food stays on the spoon.",
+      "note": "Not named on administrator lists. As adaptive equipment it qualifies for help with daily living (Premera), and plans usually ask for a clinician's letter.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "utensils",
+      "name": "Weighted or built-up handle utensils",
+      "category": "Eating & Hands",
+      "needs": [
+        "hands_eating"
+      ],
+      "eligibility": "dual",
+      "price_usd": [
+        20,
+        45
+      ],
+      "why": "Heavier or thicker-handled forks and spoons that are easier to hold steady.",
+      "note": "Adaptive equipment is listed as eligible by buyFSA, but Premera limits it to help with daily living due to disability. Ordinary cutlery is not eligible, so expect to need a letter.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    },
+    {
+      "id": "cuff",
+      "name": "Weighted wrist cuffs",
+      "category": "Eating & Hands",
+      "needs": [
+        "hands_eating"
+      ],
+      "eligibility": "dual",
+      "price_usd": [
+        15,
+        35
+      ],
+      "why": "Light wrist weights worn to steady the hand for tasks like eating or writing.",
+      "note": "Wrist weights are sold mostly as exercise equipment, which buyFSA lists as LMN required. Treat as dual-purpose.",
+      "source": "https://eligibility.buyfsa.com/fsa-hsa-eligibility"
+    },
+    {
+      "id": "thickener",
+      "name": "Food and drink thickener",
+      "category": "Eating & Hands",
+      "needs": [
+        "hands_eating"
+      ],
+      "eligibility": "lmn",
+      "price_usd": [
+        10,
+        40
+      ],
+      "why": "A powder or gel that thickens drinks and soups to a consistency some people find easier to swallow.",
+      "note": "Sources disagree: many medical-supply retailers code thickeners as FSA/HSA eligible, but IRS Pub 502 allows special food only when a physician substantiates the need, and only the cost above a normal diet. Treat as needing a letter.",
+      "source": "https://www.irs.gov/publications/p502"
+    },
+    {
+      "id": "denture-adhesive",
+      "name": "Denture adhesive",
+      "category": "Eating & Hands",
+      "needs": [
+        "hands_eating"
+      ],
+      "eligibility": "eligible",
+      "price_usd": [
+        5,
+        12
+      ],
+      "why": "Cream or strips that keep dentures in place while eating.",
+      "note": "Listed as eligible by Premera and Optum Financial. Denture cleaning supplies vary by plan.",
+      "source": "https://www.premera.com/documents/027062.pdf"
+    }
+  ]
+}
