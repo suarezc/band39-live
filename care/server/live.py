@@ -565,6 +565,8 @@ class Live:
         return 'unsure' if pid is None else 'main' if pid == main.id else 'other'
 
     def _phrase(self, s, words):
+        if time.time() < getattr(self, 'mute_until', 0):   # the laptop is speaking an answer (server/ask.py): do not transcribe our own voice
+            return
         text = ' '.join(w.get('punctuated_word') or w.get('word', '') for w in words).strip()
         if not text:
             return

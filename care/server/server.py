@@ -13,6 +13,7 @@
   POST /api/live/enroll {"ids": [...]} the person who said these is the main person; /api/live/forget; /api/live/stop
   POST /api/live/recluster  every stored phrase assigned to people again; /api/live/person {"id", "name"} or {"id", "merge_into"}
   GET  /api/digest[?date=YYYY-MM-DD]  the nightly summary;  POST /api/digest/run {"deep": false} builds it now
+  POST /api/ask {"question"} an answer from her own transcript;  POST /api/ask/arm: the next thing she says is a question
   POST /api/live/clip   {"seconds": 300} saves the last minutes of sound to a WAV file under experiments/data/live/clips/
 
 Keys come from environment variables (on Superserve they are stand-in tokens that the platform
@@ -108,8 +109,8 @@ class Handler(SimpleHTTPRequestHandler):
     def live(self):
         """The Live object, or None after answering 503 with the reason."""
         try:
-            import live, watch
-            return watch.attach(live.get())   # starts the scam / call-for-help watcher once
+            import live, watch, ask
+            return ask.attach(watch.attach(live.get()))   # starts the scam / call-for-help watcher and Ask Pip, once
         except Exception as e:   # the plain python3 has no numpy/av: say how to start the server instead
             self.send_json(503, {'error': 'Live transcript needs the project environment. Start the server with ../.venv/bin/python server/server.py (%s)' % type(e).__name__
                                  if isinstance(e, ImportError) else str(e)})
@@ -160,6 +161,14 @@ class Handler(SimpleHTTPRequestHandler):
         lv = self.live()
         if lv is None:
             return
+        if route == '/api/ask':                      # a typed question for Pip (server/ask.py); spoken ones come through the transcript
+            import ask
+            q = str(json.loads(self.body(4000) or b'{}').get('question', ''))
+            out = ask.ask(q, live=lv)
+            return self.send_json(400 if 'error' in out else 200, out)
+        if route == '/api/ask/arm':
+            import ask
+            return self.send_json(200, ask.arm(float(json.loads(self.body(2000) or b'{}').get('seconds', 12) or 12), live=lv))
         if route == '/api/live/audio':
             raw, packets, at = self.body(2_000_000), [], 0
             while at + 4 <= len(raw):
@@ -215,7 +224,7 @@ class Handler(SimpleHTTPRequestHandler):
     def do_POST(self):
         try:
             route = self.path.split('?')[0]
-            if route.startswith('/api/live/'):
+            if route.startswith('/api/live/') or route.startswith('/api/ask'):
                 return self.live_post(route)
             if route == '/api/digest/run':
                 import digest
