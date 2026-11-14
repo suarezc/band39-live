@@ -35,6 +35,19 @@
     "ask_again": "No clear answer from the wearer yet. Ask again on the band and the app, and keep the timer running.",
     "escalate": "The wearer asked for help, said they are not fine, or there are signs of distress such as groaning or no movement. Alert the family."
    }
+  },
+  "fall_happened": {
+   "type": "noul",
+   "instructions": "Considering the motion data and everything heard from any voice, did the wearer most likely really fall?"
+  },
+  "tell_family": {
+   "type": "choice",
+   "instructions": "What should the family be told? Another person's words can be evidence of what happened, but only the wearer's own voice or tap can say that she is fine.",
+   "criteria": {
+    "nothing": "No fall happened. Tell the family nothing.",
+    "inform": "A fall happened but the wearer is being helped or says she is fine. Tell the family calmly, not as an emergency.",
+    "emergency": "A fall happened and nobody is confirmed to be helping, or someone asked for urgent help. Alert the family now."
+   }
   }
  },
  "cases": [
@@ -210,6 +223,46 @@
     "wearer_ok_v2": "ask_again"
    },
    "input": "Possible fall detected at 2:14 pm. Band and app asked 'did you fall?'. Speech heard: I'm (0.91) not (0.38) fine (0.88). Voice match with the wearer's enrolled voice: 0.90 (her). No tap on band or app. Band motion: small movements."
+  },
+  {
+   "name": "bystander: are you OK",
+   "want": {
+    "fall_happened": true,
+    "tell_family": "inform"
+   },
+   "input": "Free-fall of 0.4 s then a 5 g impact at 2:14 pm; band horizontal afterwards. Band and app asked 'did you fall?'. No tap. Heard, voice not matching the wearer (0.12), close to the band: 'oh my god, are you OK? Don't move, let me help you up.' Wearer's voice (match 0.88): 'I think so... my hip hurts.'"
+  },
+  {
+   "name": "bystander: calls for help",
+   "want": {
+    "fall_happened": true,
+    "tell_family": "emergency"
+   },
+   "input": "Free-fall of 0.4 s then a 5 g impact at 2:14 pm; band horizontal afterwards. Band and app asked 'did you fall?'. No tap. Heard, voice not matching the wearer (0.10), close to the band: 'Margaret! Margaret, can you hear me? Somebody call an ambulance!' Nothing from the wearer's voice. Band motion: none."
+  },
+  {
+   "name": "bystander: she's fine, wearer silent",
+   "want": {
+    "fall_happened": true,
+    "tell_family": "inform"
+   },
+   "input": "Free-fall of 0.4 s then a 5 g impact at 2:14 pm; band horizontal afterwards. Band and app asked 'did you fall?'. No tap. Heard, voice not matching the wearer (0.15), close to the band: 'whoa, careful! You okay? Here, take my arm. She's fine, just slipped.' Nothing recognisable from the wearer's voice. Band motion: upright again after 40 seconds, slow walking."
+  },
+  {
+   "name": "TV drama, no fall",
+   "want": {
+    "fall_happened": false,
+    "tell_family": "nothing"
+   },
+   "input": "No free-fall and no impact; the band has been still on the wrist, wearer seated for 40 minutes. Heard, voice not matching the wearer (0.09), quiet and far from the band: 'oh my god, are you OK? Call an ambulance!' followed by music."
+  },
+  {
+   "name": "dropped band, 'oops'",
+   "want": {
+    "fall_happened": false,
+    "tell_family": "nothing"
+   },
+   "input": "Free-fall of 0.2 s then a 3 g impact at 9:02 am, two seconds after the band was taken off. Heard, wearer's voice (match 0.90), not distressed: 'oops, dropped it.' Band then picked up and put back on; normal walking."
   }
  ]
 }

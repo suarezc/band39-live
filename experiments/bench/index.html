@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Band 39 Test Bench</title>
+<style>
+  :root { --bg:#0f1117; --panel:#181b24; --line:#2a2f3d; --text:#e8eaf0; --muted:#8a90a2; --accent:#6ea8ff;
+          --good:#38c172; --bad:#ff6b6b; --warn:#ffb020; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif; padding:20px 16px; }
+  main { max-width:1180px; margin:0 auto; }
+  header { display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; margin-bottom:12px; }
+  h1 { font-size:21px; margin:0; } h1 span { color:var(--muted); font-weight:400; }
+  h2 { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:14px 0 6px; }
+  .buttons { display:flex; flex-wrap:wrap; gap:8px; margin-left:auto; }
+  button { background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:8px 13px; font:inherit; cursor:pointer; }
+  button:hover:not(:disabled) { border-color:var(--accent); } button:disabled { opacity:.4; cursor:default; }
+  button.primary { background:var(--accent); color:#0b1020; border-color:var(--accent); font-weight:600; }
+  #message { padding:9px 13px; border-radius:8px; background:var(--panel); border:1px solid var(--line); margin-bottom:14px; }
+  #message.error { border-color:var(--bad); color:var(--bad); }
+  .layout { display:grid; grid-template-columns:minmax(280px,380px) 1fr; gap:16px; align-items:start; }
+  @media (max-width:800px) { .layout { grid-template-columns:1fr; } }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px; }
+  #list { max-height:78vh; overflow:auto; }
+  .scn { display:flex; gap:8px; align-items:baseline; padding:7px 8px; border-radius:8px; cursor:pointer; border:1px solid transparent; }
+  .scn:hover { background:#1f2330; } .scn.current { border-color:var(--accent); background:#1f2330; }
+  .dot { flex:none; width:10px; height:10px; border-radius:50%; background:var(--line); position:relative; top:1px; }
+  .dot.pass { background:var(--good); } .dot.fail { background:var(--bad); }
+  .tag { flex:none; font-size:11px; padding:1px 6px; border-radius:99px; border:1px solid var(--line); color:var(--muted); }
+  .tag.ignore { border-color:#5a4a20; color:var(--warn); } .tag.night { border-color:#3a3f6a; color:#a9a3ff; }
+  #title { font-size:22px; font-weight:650; margin:0 0 4px; }
+  #do { margin:8px 0 12px; padding-left:20px; } #do li { margin:4px 0; font-size:17px; }
+  #stage { display:flex; align-items:center; gap:18px; margin:10px 0; flex-wrap:wrap; }
+  #clock { font-size:64px; font-weight:700; font-variant-numeric:tabular-nums; min-width:150px; }
+  #clock.ready { color:var(--warn); } #clock.go { color:var(--good); }
+  #phase { font-size:20px; color:var(--muted); }
+  #verdict { font-size:18px; padding:10px 12px; border-radius:8px; border:1px solid var(--line); margin:10px 0; }
+  #verdict.pass { border-color:var(--good); } #verdict.fail { border-color:var(--bad); }
+  table { border-collapse:collapse; width:100%; font-variant-numeric:tabular-nums; }
+  td { padding:3px 8px 3px 0; border-bottom:1px solid var(--line); vertical-align:top; } td:first-child { color:var(--muted); white-space:nowrap; width:1%; }
+  .muted { color:var(--muted); font-size:13px; }
+  textarea { width:100%; background:#12141c; color:var(--text); border:1px solid var(--line); border-radius:8px; padding:8px; font:inherit; min-height:54px; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:10px; }
+  #tally { font-size:14px; color:var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Band 39 Test Bench <span id="band-name">Vexo-HACK-39 · not connected</span></h1>
+    <div class="buttons">
+      <button id="connect-ble" class="primary">Connect (Bluetooth)</button>
+      <button id="connect-usb">USB cable</button>
+      <button id="connect-sim">Pretend band</button>
+      <button id="disconnect" disabled>Disconnect</button>
+    </div>
+  </header>
+  <p id="message">Close the care app, the dashboard and any other band page first (the band takes one connection). Then double-tap the band and press Connect.</p>
+  <script>
+    if (location.protocol === 'file:') document.getElementById('message').textContent = 'This page was opened by double-click, so it cannot load the library. In the vexohacks folder run:  python3 -m http.server 8000 --bind 127.0.0.1  Then open http://localhost:8000/experiments/bench/';
+  </script>
+
+  <div class="layout">
+    <section class="panel">
+      <div id="tally">No results yet.</div>
+      <div id="list"></div>
+      <div class="row">
+        <button id="export">Save results file</button>
+        <button id="clear">Clear results</button>
+      </div>
+      <p class="muted">Results stay in this browser until cleared. The results file also holds each run's raw motion, for tuning thresholds later.</p>
+    </section>
+
+    <section class="panel">
+      <div class="muted" id="feature"></div>
+      <h3 id="title">Pick a scenario</h3>
+      <div class="muted" id="want"></div>
+      <ol id="do"></ol>
+      <div id="stage">
+        <div id="clock">–</div>
+        <div>
+          <div id="phase">Not running</div>
+          <div class="row" style="margin-top:6px">
+            <button id="start" class="primary" disabled>Start</button>
+            <button id="stop" disabled>Stop</button>
+            <button id="next" disabled>Next scenario</button>
+          </div>
+        </div>
+      </div>
+      <div id="verdict" hidden></div>
+      <h2>What the motion lab sees (live)</h2>
+      <table id="live"></table>
+      <h2>Notes for this run</h2>
+      <textarea id="notes" placeholder="Who did it, anything odd (band slipped, started late, did it twice...)"></textarea>
+      <p class="muted">The band's light: blinking amber = get ready, green = go, off = done. Movements are acted: nobody falls for real.
+        With the pretend band each scenario plays a rough made-up version of the movement; that tests the bench, not the label.</p>
+    </section>
+  </div>
+</main>
+
+<script src="../../care/web/js/motion-lab.js"></script>
+<script type="module">
+import { Band, SimTransport } from '../../vexo-open-kit/js/src/index.js';
+import { SCENARIOS } from './scenarios.js';
+import { startRun, benchClock, offsetToHour } from './runner.js';
+
+const BAND = 39;                       // our band, Vexo-HACK-39. The only band this page connects to.
+const READY_SECONDS = 5;
+const STORE = 'band39-bench-results';
+const $ = (id) => document.getElementById(id);
+const VexoMotion = window.VexoMotion;
+
+let band = null, sim = null, linkKind = null;
+let current = null;                    // the selected scenario
+let active = null;                     // { run, rows, timer, endsAt, phase } while a scenario runs
+let results = {};
+try { results = JSON.parse(localStorage.getItem(STORE) || '{}'); } catch { results = {}; }
+
+function say(text, error = false) { $('message').textContent = text; $('message').classList.toggle('error', error); }
+function save() { try { localStorage.setItem(STORE, JSON.stringify(results)); } catch { say('Could not keep the results in this browser (storage is full). Save the results file now.', true); } }
+
+// ---- the list ------------------------------------------------------------------------------
+function renderList() {
+  const list = $('list'); list.textContent = '';
+  let feature = '';
+  for (const scn of SCENARIOS) {
+    if (scn.feature !== feature) { feature = scn.feature; const h = document.createElement('h2'); h.textContent = feature; list.append(h); }
+    const row = document.createElement('div'); row.className = 'scn' + (current === scn ? ' current' : '');
+    const dot = document.createElement('span'); const r = results[scn.id];
+    dot.className = 'dot' + (r ? (r.verdict.pass ? ' pass' : ' fail') : '');
+    const name = document.createElement('span'); name.textContent = scn.title; name.style.flex = '1';
+    row.append(dot, name);
+    if (scn.want === 'ignore') { const t = document.createElement('span'); t.className = 'tag ignore'; t.textContent = 'look-alike'; row.append(t); }
+    if (scn.night) { const t = document.createElement('span'); t.className = 'tag night'; t.textContent = '2 am'; row.append(t); }
+    row.onclick = () => { if (!active) select(scn); };
+    list.append(row);
+  }
+  const done = Object.values(results);
+  const pass = done.filter((r) => r.verdict.pass).length;
+  $('tally').textContent = done.length ? `${done.length} of ${SCENARIOS.length} run: ${pass} passed, ${done.length - pass} failed.` : 'No results yet.';
+}
+
+function select(scn) {
+  current = scn;
+  $('feature').textContent = scn.feature;
+  $('title').textContent = scn.title;
+  $('want').textContent = (scn.want === 'detect' ? 'The label should fire.' : 'A look-alike: the label should stay quiet.')
+    + ` ${scn.seconds} seconds.` + (scn.night ? ' The bench tells the lab it is 2 am.' : '')
+    + (linkKind === 'sim' && !scn.sim ? ' No pretend version: this one needs a person and the real band.' : '');
+  const ol = $('do'); ol.textContent = '';
+  for (const line of scn.do) { const li = document.createElement('li'); li.textContent = line; ol.append(li); }
+  $('clock').textContent = '–'; $('clock').className = ''; $('phase').textContent = 'Not running';
+  const r = results[scn.id];
+  showVerdict(r ? r.verdict : null, r ? `Last run ${new Date(r.at).toLocaleTimeString()} over ${r.link}: ` : '');
+  $('notes').value = r ? r.notes || '' : '';
+  showLive(r ? r.summary : null);
+  $('start').disabled = !band || (linkKind === 'sim' && !scn.sim);
+  $('next').disabled = false;
+  renderList();
+}
+
+function showVerdict(v, prefix = '') {
+  const box = $('verdict');
+  if (!v) { box.hidden = true; return; }
+  box.hidden = false; box.className = v.pass ? 'pass' : 'fail';
+  box.textContent = prefix + (v.pass ? 'PASS: ' : 'FAIL: ') + v.detail;
+}
+
+function showLive(s) {
+  const t = $('live'); t.textContent = '';
+  if (!s) return;
+  const rows = [
+    ['Fall', s.fall ? `score ${s.fall.score}, impact ${s.fall.impactG} g, free fall ${s.fall.freeFall}, still ${s.fall.still}, turned ${s.fall.turnedDeg}°` : `none (peak ${s.peakG} g)`],
+    ['Tremor', `highest score ${s.tremor.max}/4` + (s.tremor.hz ? ` at ${s.tremor.hz} Hz` : '') + `; now ${s.tremor.rms} °/s in band, share ${s.tremor.share}`],
+    ['Steps', `${s.steps.counted} counted; band says "${s.steps.state}", ${s.steps.cadence} a minute`],
+    ['Balance', s.balance.score == null ? `no score yet (sway ${s.balance.sway ?? '–'})` : `score ${s.balance.score}/100, regularity ${s.balance.regularity}, sway ${s.balance.sway ?? '–'}`],
+    ['Sleep', `${s.sleep.wakeEpochs} of ${s.sleep.epochs} half-minutes awake`],
+    ['Night wandering', `${s.wander.episodes} episode(s), ${s.wander.minutes} min walking`],
+    ['Seizure-like', `${s.seizure.count} flagged; rhythmic run ${s.seizure.longestRun} s` + (s.seizure.hz ? ` at ${s.seizure.hz} Hz` : '')],
+    ['Samples', String(s.samples)],
+  ];
+  for (const [k, v] of rows) { const tr = document.createElement('tr'); const a = document.createElement('td'); const b = document.createElement('td'); a.textContent = k; b.textContent = v; tr.append(a, b); t.append(tr); }
+}
+
+// ---- connecting ----------------------------------------------------------------------------
+function setButtons(connected, busy = false) {
+  for (const id of ['connect-ble', 'connect-usb', 'connect-sim']) $(id).disabled = connected || busy;
+  $('disconnect').disabled = !connected;
+  $('start').disabled = !connected || !current || !!active || (linkKind === 'sim' && current && !current.sim);
+}
+
+async function connect(kind) {
+  setButtons(false, true);
+  let transport = kind === 'usb' ? 'serial' : 'ble';
+  sim = null;
+  if (kind === 'sim') { sim = new SimTransport(BAND, { autoTap: false }); transport = sim; }
+  say(kind === 'ble' ? 'Connecting... pick Vexo-HACK-39 in the list.' : kind === 'usb' ? 'Connecting... pick "Vexo Open band" in the list of ports.' : 'Starting the pretend band...');
+  try {
+    const b = await Band.connect(BAND, { transport, autoReconnect: kind !== 'sim' });
+    band = b; linkKind = kind;
+    b.on('motion', (m) => { if (active && active.phase === 'go') { active.run.push({ t: m.t, ax: m.ax, ay: m.ay, az: m.az, gx: m.gx, gy: m.gy, gz: m.gz }); active.rows.push([m.t, m.ax, m.ay, m.az, m.gx, m.gy, m.gz]); } });
+    b.on('activity', (a) => { if (active && active.phase === 'go') active.run.activity(a); });
+    b.on('free-fall', () => { if (active && active.phase === 'go') active.run.event('free-fall'); });
+    b.on('link', (e) => { if (active && active.phase === 'go') active.run.link(e.rssi); });
+    b.on('stream-taken', (e) => say(e.message, true));
+    b.on('reconnecting', () => say('Lost the band. Trying to reconnect... the current run is not valid: stop it and run it again.', true));
+    b.on('reconnected', () => say(`Back with ${b.name}.`));
+    b.on('disconnect', (e) => {
+      if (band !== b) return;
+      if (active) finish(true);
+      band = sim = linkKind = null; setButtons(false);
+      $('band-name').textContent = 'Vexo-HACK-39 · not connected';
+      say(e.reason === 'closed' ? 'Disconnected.' : e.message ?? `Disconnected (${e.reason}). Double-tap the band and connect again.`, e.reason !== 'closed');
+    });
+    // The same settings as the care app: 50 samples a second, 8 g so an impact is not cut off.
+    await b.setMotion({ accelRange: 8 });
+    await b.configure({ motion: 50, events: true, activity: true, ...(kind === 'usb' ? {} : { link: true }) });
+    $('band-name').textContent = `${b.name} · ${kind === 'sim' ? 'pretend band' : kind === 'usb' ? 'USB cable' : 'Bluetooth'}`;
+    setButtons(true);
+    say(`Connected to ${b.name}. Pick a scenario and press Start.`);
+    if (current) select(current);
+  } catch (e) {
+    band = sim = linkKind = null; setButtons(false);
+    say(e.message, true);
+  }
+}
+
+// ---- running one scenario ------------------------------------------------------------------
+async function led(colour, options) { try { if (colour) await band.setLed(colour, options); else await band.ledOff(); } catch { /* the light is a nicety */ } }
+
+async function start() {
+  if (!band || !current || active) return;
+  const scn = current;
+  const clock = benchClock(scn.night ? offsetToHour(2) : 0);
+  active = { scn, run: startRun(VexoMotion, clock), rows: [], phase: 'ready', endsAt: Date.now() + READY_SECONDS * 1000, link: linkKind };
+  showVerdict(null);
+  $('start').disabled = true; $('stop').disabled = false; $('next').disabled = true;
+  $('clock').className = 'ready'; $('phase').textContent = 'Get ready...';
+  led('#ffb020', { pattern: 'blink', period: 800 });
+  active.timer = setInterval(tick, 200);
+  tick();
+}
+
+function tick() {
+  if (!active) return;
+  const left = Math.max(0, Math.ceil((active.endsAt - Date.now()) / 1000));
+  $('clock').textContent = left;
+  if (active.phase === 'go') showLive(active.run.summary());
+  if (Date.now() < active.endsAt) return;
+  if (active.phase === 'ready') {
+    active.phase = 'go'; active.endsAt = Date.now() + active.scn.seconds * 1000;
+    $('clock').className = 'go'; $('phase').textContent = 'Go!';
+    led('#38c172');
+    if (sim && active.scn.sim) {                       // the pretend band acts the movement
+      const play = active.scn.sim(VexoMotion.SIGNALS);
+      sim.stopMotion(); sim.playMotion(play.signal);
+      sim.setActivity(play.activity === 'walk' ? 'walk' : 'still', play.activity === 'walk' ? { cadence: play.cadence || 100 } : undefined);
+      if (play.walkSeconds) active.walkStop = setTimeout(() => { sim.stopMotion(); sim.playMotion({ ax: 0, ay: 0, az: 1 }); sim.setActivity('still'); }, play.walkSeconds * 1000);
+    }
+  } else finish(false);
+}
+
+function finish(cutShort) {
+  const a = active; if (!a) return;
+  clearInterval(a.timer); clearTimeout(a.walkStop); active = null;
+  if (sim) { sim.stopMotion(); sim.setActivity('still'); }
+  led(null);
+  $('stop').disabled = true; $('next').disabled = false; $('clock').className = '';
+  $('start').disabled = !band;
+  if (cutShort) { $('phase').textContent = 'Stopped: nothing saved'; $('clock').textContent = '–'; return; }
+  const summary = a.run.summary();
+  const verdict = summary.samples < 25
+    ? { pass: false, detail: 'almost no motion arrived from the band: check the connection and run it again' }
+    : a.scn.expect(summary, results);
+  results[a.scn.id] = { id: a.scn.id, feature: a.scn.feature, title: a.scn.title, want: a.scn.want, at: Date.now(), link: a.link,
+                        pretend: a.link === 'sim', verdict, summary, notes: $('notes').value, rows: a.rows };
+  save();
+  $('phase').textContent = 'Done'; $('clock').textContent = '✓';
+  showVerdict(verdict); showLive(summary); renderList();
+}
+
+$('connect-ble').onclick = () => connect('ble');
+$('connect-usb').onclick = () => connect('usb');
+$('connect-sim').onclick = () => connect('sim');
+$('disconnect').onclick = () => band && band.disconnect();
+$('start').onclick = start;
+$('stop').onclick = () => finish(true);
+$('next').onclick = () => { const i = SCENARIOS.indexOf(current); select(SCENARIOS[(i + 1) % SCENARIOS.length]); };
+$('notes').onchange = () => { if (current && results[current.id]) { results[current.id].notes = $('notes').value; save(); } };
+$('clear').onclick = () => { if ($('clear').dataset.sure) { results = {}; save(); delete $('clear').dataset.sure; $('clear').textContent = 'Clear results'; select(current || SCENARIOS[0]); } else { $('clear').dataset.sure = '1'; $('clear').textContent = 'Press again to clear'; setTimeout(() => { delete $('clear').dataset.sure; $('clear').textContent = 'Clear results'; }, 4000); } };
+$('export').onclick = () => {
+  const blob = new Blob([JSON.stringify({ band: BAND, saved: new Date().toISOString(), columns: ['t_ms', 'ax', 'ay', 'az', 'gx', 'gy', 'gz'], results }, null, 1)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `band39-bench-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-')}.json`; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+};
+
+select(SCENARIOS[0]);
+</script>
+</body>
+</html>

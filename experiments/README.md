@@ -15,6 +15,7 @@ plumbing, not the answer). Close the dashboard and other band pages first: one c
 | 3 | Can we measure standing balance above the noise? | yes | script ready, checked on made-up signals only |
 | 4 | How accurate is the transcript from the band's microphone? | yes | script ready, plumbing checked |
 | 5 | Does the decision model choose correctly, and does it know when it is unsure? | no | runs now: see results below |
+| 7 | Do the care app's seven motion labels fire on the right movements and stay quiet on look-alikes? | yes | bench ready; runs on the pretend band |
 | 6 | Is a reply the wearer's own voice, and close to the band? | for tuning | works on test recordings; one-second replies are too short: see below |
 
 ## 1. Sensor noise floor
@@ -119,6 +120,38 @@ So voice match can confirm a sentence, not a two-word reply. For the fall check:
 a short spoken "I'm fine" counts only if it is also loud (close to the band); otherwise ask her
 to say a full sentence or tap. Still to do on the real band: tune YES, NO and NEAR, and record a
 TV across the room to see how far apart "near" and "far" loudness really are.
+
+## 7. Live test bench for the care app's motion labels
+
+Open <http://localhost:8000/experiments/bench/> in Chrome or Edge (server: `python3 -m http.server 8000 --bind 127.0.0.1`
+in the project folder). Close the care app and the dashboard first: the band takes one connection.
+
+The bench connects to band 39, walks a person through 24 scenarios and feeds the band's motion into the
+care app's own code (`care/web/js/motion-lab.js`, same settings: 50 samples a second, 8 g). It says pass or
+fail for each, shows what the lab saw, and keeps the raw motion. The band's light blinks amber for "get
+ready" and turns green for "go". Nobody falls for real: falls are acted with the arm onto a bed.
+
+For each of the seven labels there is a movement that should fire it and look-alikes that should not:
+
+| Label | Should fire | Look-alikes that should stay quiet |
+|---|---|---|
+| Falling | arm drops onto a bed and lies still | one hard clap, the band dropped on a table, sitting down heavily |
+| Tremor | small fast hand shake | hand at rest, brushing teeth, typing |
+| Steps | 50 counted steps, 30 shuffling steps | swinging the arm while seated |
+| Balance | normal walk, uneven walk scores lower, standing eyes closed | |
+| Sleep movement | tossing and turning | lying still (the bench tells the lab it is 2 am) |
+| Night wandering | two minutes of walking at "2 am" | a one-minute trip, the same walk by day |
+| Seizure-like | large rhythmic arm jerking | applause, brushing teeth, waving, jogging on the spot |
+
+For the demo, the point is to learn which movements show each label reliably on stage, and which everyday
+movements to avoid while the judges watch.
+
+No band: press **Pretend band** (it plays a rough made-up version of each movement), or run all of them in
+a few seconds with `node experiments/bench/dry_run.mjs`. On those made-up signals every "should fire"
+scenario fires, and four look-alikes raise false alarms: a dropped band counts as a fall, brushing teeth as
+tremor, applause and waving as seizure-like. Those are predictions to check on the real band, not results.
+
+Scenarios live in `bench/scenarios.js`: add one by copying an entry.
 
 ## Self-test of the analysis
 
