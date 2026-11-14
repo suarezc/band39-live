@@ -153,6 +153,19 @@ tremor, applause and waving as seizure-like. Those are predictions to check on t
 
 Scenarios live in `bench/scenarios.js`: add one by copying an entry.
 
+## 8. Scam-safe cards (Stripe Issuing, test mode)
+
+    .venv/bin/python experiments/cards/card_demo.py
+
+Margaret gets a virtual card with limits ($50 a purchase, $200 a week, no wires or money orders); a scam
+alert from the band freezes it; Lisa unfreezes it; a care-shop item is paid with a one-time card.
+Pretend cards and pretend purchases only: the script refuses a live key.
+
+Status on 14 November: **not run end to end yet.** Issuing is switched on and the test cardholder exists,
+but Stripe's financial account that the cards draw on is still "pending", so no card could be created.
+The script says so and stops. Still unknown: how that account gets test funds, and whether purchases are
+approved without them.
+
 ## Self-test of the analysis
 
     .venv/bin/python experiments/analyze.py --selftest
