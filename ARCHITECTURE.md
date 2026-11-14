@@ -81,5 +81,6 @@ the light is locked solid blue, so listening is a short window, then the light s
 - [ ] Hub (band owner + websocket)
 - [ ] Voice pipeline (Pipecat + Deepgram + Hydrogen)
 - [ ] Backend (events, memory, Carbon jobs)
-- [ ] Gait recorder and metrics
+- [x] Test scaffold: recorder, first gait / balance / noise analysis, speech and decision tests (`experiments/README.md`)
+- [ ] Run the tests on the real band
 - [ ] Stripe test checkout with HSA-marked catalog

@@ -1,0 +1,14 @@
+[
+  {"id": "fine",      "kind": "safety",   "text": "I'm fine."},
+  {"id": "not-fine",  "kind": "safety",   "text": "I'm not fine."},
+  {"id": "help",      "kind": "safety",   "text": "I need help, please call Lisa."},
+  {"id": "fell",      "kind": "safety",   "text": "I fell down in the kitchen and I can't get up."},
+  {"id": "tuesday",   "kind": "reminder", "text": "I'll call the pharmacy on Tuesday at three."},
+  {"id": "thursday",  "kind": "reminder", "text": "The doctor wants to see me on Thursday the fifteenth."},
+  {"id": "saturday",  "kind": "reminder", "text": "Lisa is visiting on Saturday morning."},
+  {"id": "meds-1",    "kind": "names",    "text": "I take metformin with breakfast and lisinopril at night."},
+  {"id": "meds-2",    "kind": "names",    "text": "The doctor started me on ten milligrams of donepezil."},
+  {"id": "people",    "kind": "names",    "text": "Tell Lisa that Ethan scored a goal and I loved the photos."},
+  {"id": "question",  "kind": "question", "text": "What did the doctor say about my blood pressure?"},
+  {"id": "long",      "kind": "question", "text": "This morning I walked to the corner shop, bought some milk and bread, and talked with Margaret from next door about her garden."}
+]
