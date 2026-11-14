@@ -167,9 +167,9 @@ refuses to create a card. The script says so and stops.
 
 **Backup for the demo: the same rules simulated in our own code.** Open
 <http://localhost:8000/experiments/cards/> and press "Play the whole story", or use the buttons.
-`cards/card-rules.js` holds the rules (limit per purchase and per week, blocked kinds of shop, freeze and
+`care/web/js/card-rules.js` holds the rules (limit per purchase and per week, blocked kinds of shop, freeze and
 unfreeze, one-time cards); `node experiments/cards/test_card_rules.cjs` runs its 7 checks. The page says
-it is a simulation. The care app can load `card-rules.js` and call `freeze()` from its scam alert.
+it is a simulation. The care app uses the same file: its "Possible scam" alert freezes the card (`care/web/js/money.js`).
 
 ## Self-test of the analysis
 

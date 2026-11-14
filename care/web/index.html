@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#DDEFFF" />
 <title>Band 39 · Margaret & Lisa</title>
 <link rel="stylesheet" href="css/app.css" />
+<link rel="stylesheet" href="css/money.css" />
 </head>
 <body>
 <main class="app live" id="live" data-conn="none" data-tab="margaret">
@@ -82,6 +83,11 @@
 
         <div class="block"><div class="h">Alerts</div><ul class="cg-alerts" id="cgAlerts"></ul></div>
 
+        <div class="block money"><div class="h">Mom’s safe card <span class="muted">· limits, and a freeze when a scam is suspected</span></div>
+          <div class="block" id="moneyBody"></div>
+          <p class="fine">Simulated in this page: no real card and no real money. Stripe Issuing offers the same controls on real cards.</p>
+        </div>
+
         <div class="block"><div class="h">From Mom’s voice notes <span class="muted" id="insSource"></span></div>
           <div class="ins" id="insights"><p class="empty">When Mom talks to you through her band, Pip reads the transcript for scams, abuse, reminders, side effects, memory and language changes.</p></div>
         </div>
@@ -120,6 +126,11 @@
             <button data-note="My nephew yells at me and he took my bank card. I'm scared of him.">Worrying</button>
             <button id="voiceDemo">Spoken sample (band mic)</button>
           </div>
+          <div class="demo-row"><span>Card</span>
+            <button data-buy="1840|Corner Pharmacy|pharmacy">Pharmacy $18.40</button><button data-buy="3275|Fresh Market|grocery">Groceries $32.75</button>
+            <button data-buy="45000|Best Electronics (gift cards)|electronics">Gift cards $450</button><button data-buy="4500|Fresh Market (gift cards)|grocery">Gift cards $45</button>
+            <button data-buy="4000|QuickWire Money Transfer|wire">Wire transfer $40</button><button data-card="scam">Unknown voice asks for gift cards</button>
+          </div>
           <form class="cg-send" id="noteForm"><input id="noteText" maxlength="400" placeholder="Type what Margaret says…" /><button class="pill">Analyze</button></form>
         </details>
       </div>
@@ -132,5 +143,7 @@
 <script src="js/motion-lab.js"></script>
 <script src="js/catalog.js"></script>
 <script src="js/app.js"></script>
+<script src="js/card-rules.js"></script>
+<script src="js/money.js"></script>
 </body>
 </html>

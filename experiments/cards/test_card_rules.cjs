@@ -1,6 +1,6 @@
 // node experiments/cards/test_card_rules.cjs
 const assert = require('node:assert');
-const R = require('./card-rules.js');
+const R = require('../../care/web/js/card-rules.js');
 let n = 0; const ok = (name, fn) => { fn(); n++; console.log('  ✓ ' + name); };
 const T0 = Date.UTC(2026, 10, 14, 18);
 ok('ordinary purchases go through', () => { const c = R.everydayCard(); assert.ok(R.buy(c, { amount: 1840, shop: 'Pharmacy', category: 'pharmacy' }, T0).approved); });

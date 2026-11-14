@@ -1,7 +1,7 @@
 /* Scam-safe card rules, simulated in our own code (no Stripe call, no real money).
  * The same rules Stripe Issuing offers: a limit per purchase and per week, blocked kinds of shop,
  * freezing, and one-time cards. Runs in a page (window.CardRules) and in Node (module.exports).
- * The real Stripe version is card_demo.py; it is blocked until Stripe opens the financial account.
+ * Used by the care app (js/money.js) and the demo page in experiments/cards. The real Stripe version is experiments/cards/card_demo.py; it is blocked until Stripe opens the financial account.
  */
 (function (root) {
   'use strict';
