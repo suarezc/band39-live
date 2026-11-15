@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Band 39: demo deck</title>
-<meta name="description" content="Band 39 demo deck: why it matters, the solution, the live product and the simulator." />
+<title>Apotheosis: demo deck</title>
+<meta name="description" content="Apotheosis demo deck: why it matters, the solution, the live product and the simulator." />
 <link rel="stylesheet" href="fonts/fonts.css" />
 <script src="js/icons.js"></script>
 <style>
-/* Hallmark · custom (deck, by request) · genre: editorial · signature: the live product and simulator, running inside the deck · palette: the Band 39 app's warm paper + terracotta, area colours for mental / financial / physical */
+/* Hallmark · custom (deck, by request) · genre: editorial · signature: the live product and simulator, running inside the deck · palette: the Apotheosis app's warm paper + terracotta, area colours for mental / financial / physical */
 /* critique: one idea per slide, numbers set huge with a source line under each; live slides load only while shown */
 /* waive 44b, 12: a slide deck, not a page; each slide is its own 1600x900 screen */
 
@@ -18,6 +18,7 @@
   --mental: #6A4BD8; --mental-t: #EFEAFE; --fin: #8F5B12; --fin-t: #FBEFD9; --phys: #23704C; --phys-t: #DDF3E8;
   --band: #2A221D; --band-2: #43372F; --white: #FFFFFF; --shadow: rgba(60, 35, 20, .38);
   --pip-body: #FFC79E; --pip-belly: #FFE3CC; --pip-leaf: #7FCB8F; --pip-leaf-2: #66B97A; --pip-eye: #3A2E2A; --pip-blush: #FF9C9C;
+  --skin: #F4CBAE; --skin-2: #EDBE9C; --hair-g: #E4DED8; --hair-g2: #CBC2B9; --glass: #7A6152; --kid-hair: #6E4A35; --kid-top: #5E9E7E;
   --display: Fraunces, Georgia, serif; --ui: Figtree, ui-sans-serif, system-ui, sans-serif;
   --s: 1;
 }
@@ -70,10 +71,10 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
 
 /* 1 title */
 .s-title { justify-content: center; background: radial-gradient(900px 600px at 82% 40%, var(--terra-t) 0%, transparent 70%), var(--paper); }
-.s-title .h-xl { margin-bottom: 36px; }
+.s-title .h-xl { margin-bottom: 64px; }
 .s-title .who { margin-top: 56px; display: flex; gap: 14px; flex-wrap: wrap; }
 .tag { display: inline-flex; align-items: center; gap: 10px; height: 48px; padding: 0 20px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 20px; font-weight: 600; color: var(--ink-2); }
-.hero-art { position: absolute; right: 70px; top: 150px; width: 620px; height: 560px; }
+.hero-art { position: absolute; right: 40px; top: 200px; width: 540px; height: 488px; }
 
 /* 2 problem */
 .distance { margin: 74px 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 36px; }
@@ -157,6 +158,61 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
 .pipe li.end .ico { background: var(--terra-d); color: var(--white); }
 .pipe li.end small { color: var(--terra-t); }
 
+/* 6b three pillars: Grandma's band to Lisa's phone, animated while the slide is shown */
+.s-flow { padding-top: 72px; background: radial-gradient(700px 500px at 6% 30%, var(--terra-t) 0%, transparent 70%), var(--paper); }
+.flow { margin-top: auto; display: grid; grid-template-columns: 220px repeat(3, minmax(0, 1fr)); column-gap: 28px; grid-template-rows: 72px 30px 80px 26px 80px 26px 80px 30px 100px; }
+.flow .who { grid-column: 1; position: relative; justify-self: stretch; }
+.flow .who.gran { grid-row: 1 / 4; }
+.flow .who.kid { grid-row: 6 / 10; }
+.flow .who svg { display: block; position: absolute; }
+.flow .gran svg { width: 196px; height: 216px; right: 4px; top: -66px; }
+.flow .kid svg { width: 176px; height: 194px; right: 18px; bottom: -6px; }
+.flow .name { position: absolute; left: 0; display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 16px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font: 600 19px var(--ui); color: var(--ink); white-space: nowrap; box-shadow: 0 10px 24px -18px var(--shadow); }
+.flow .gran .name { bottom: -42px; } .flow .kid .name { top: 34px; z-index: 1; }
+.strap { grid-row: 1; grid-column: 2 / -1; position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 28px; align-items: center; padding: 12px 0; border-radius: 999px; background: var(--band); box-shadow: inset 0 0 0 4px var(--band-2); z-index: 1; }
+.strap::before { content: ''; position: absolute; left: -40px; top: 50%; width: 40px; border-top: 3px dotted var(--band-2); }
+.port { justify-self: center; display: inline-flex; align-items: center; gap: 10px; height: 46px; padding: 0 22px 0 8px; border-radius: 999px; background: var(--t); color: var(--c); font-size: 21px; font-weight: 700; }
+.port .ico { width: 34px; height: 34px; border-radius: 50%; background: var(--card); }
+.pillar { grid-row: 2 / 9; display: grid; grid-template-rows: subgrid; justify-items: center; background: var(--t); border-radius: 0 0 36px 36px; margin: -36px 0 -50px; padding: 36px 18px 50px; }
+.pillar > * { grid-column: 1; }
+.seg { position: relative; width: 4px; height: 100%; }
+.seg::before { content: ''; position: absolute; left: 0; top: 2px; bottom: 2px; border-left: 4px dotted var(--c); opacity: .4; }
+.seg svg { position: absolute; left: -11px; top: -13px; width: 26px; height: 26px; fill: var(--c); filter: drop-shadow(0 0 6px var(--c)); opacity: 0; overflow: visible; }
+.chip { width: 100%; display: flex; align-items: center; gap: 14px; padding: 12px 18px 12px 12px; border-radius: 26px; background: var(--card); border: 2px solid transparent; box-shadow: 0 10px 24px -20px var(--shadow); }
+.chip .ico { width: 54px; height: 54px; border-radius: 50%; background: var(--t); color: var(--c); }
+.chip b { display: block; font-size: 22px; font-weight: 700; line-height: 1.15; }
+.chip small { display: block; font-size: 16px; color: var(--muted); line-height: 1.2; }
+.lisa { grid-row: 9; grid-column: 2 / -1; position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 28px; align-items: center; padding: 0 12px; border-radius: 32px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 24px 50px -36px var(--shadow); z-index: 1; }
+.lisa::before { content: ''; position: absolute; left: -46px; top: 50%; width: 46px; border-top: 3px dotted var(--line); }
+.note { position: relative; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 22px; background: var(--paper); opacity: .4; }
+.note .ico { width: 46px; height: 46px; border-radius: 50%; background: var(--c); color: var(--white); }
+.note b { display: block; font-size: 20px; line-height: 1.15; }
+.note small { display: block; font-size: 15px; color: var(--muted); }
+.led-glow { fill: var(--terra); opacity: .45; }
+/* one 9 s loop; each pillar takes a 3 s turn (--p), each step 0.6 s later (--k) */
+.s-flow.on .port, .s-flow.on .seg svg, .s-flow.on .chip, .s-flow.on .note { animation: 9s linear infinite both; animation-delay: calc(var(--p) * 3s + var(--k) * .6s); }
+.s-flow.on .port { animation-name: flowPort; }
+.s-flow.on .seg svg { animation-name: flowDrop; animation-timing-function: ease-in-out; }
+.s-flow.on .chip { animation-name: flowLit; }
+.s-flow.on .note { animation-name: flowNote; }
+.s-flow.on .led-live, .s-flow.on .led-glow { animation: flowLed 9s steps(1, end) infinite; }
+.s-flow.on .led-glow { animation-name: flowLed, flowBlink; animation-duration: 9s, 1s; animation-timing-function: steps(1, end), ease-in-out; }
+.s-flow.on .who.gran svg { animation: flowBob 3s ease-in-out infinite; }
+.s-flow.on .who.kid svg { animation: flowHop 3s ease-in-out infinite; animation-delay: 2.4s; }
+.pillar.mental, .port.mental, .note.mental { --p: 0; } .pillar.fin, .port.fin, .note.fin { --p: 1; } .pillar.phys, .port.phys, .note.phys { --p: 2; }
+@keyframes flowPort { 0%, 100% { box-shadow: 0 0 0 0 transparent; transform: none; } 2%, 14% { box-shadow: 0 0 0 4px var(--c), 0 0 34px 8px var(--c); transform: scale(1.06); } 22% { box-shadow: 0 0 0 0 transparent; transform: none; } }
+@keyframes flowDrop { 0% { top: -13px; opacity: 0; transform: scale(.6); } 1% { opacity: 1; transform: scale(1); } 6% { top: calc(100% - 13px); opacity: 1; transform: scale(1); } 7%, 100% { top: calc(100% - 13px); opacity: 0; transform: scale(.6); } }
+@keyframes flowLit { 0%, 100% { border-color: transparent; transform: none; } 3%, 26% { border-color: var(--c); transform: translateY(-3px) scale(1.02); box-shadow: 0 16px 30px -16px var(--c); } 32% { border-color: transparent; transform: none; } }
+@keyframes flowNote { 0%, 100% { opacity: .4; transform: none; background: var(--paper); } 3%, 55% { opacity: 1; transform: translateY(-5px); background: var(--t); } 62% { opacity: .4; transform: none; background: var(--paper); } }
+@keyframes flowLed { 0% { fill: var(--mental); } 33.33% { fill: var(--fin); } 66.66% { fill: var(--phys); } }
+@keyframes flowBlink { 0%, 100% { opacity: .15; } 50% { opacity: .6; } }
+@keyframes flowBob { 0%, 100% { transform: none; } 50% { transform: translateY(-4px) rotate(-1deg); } }
+@keyframes flowHop { 0%, 70%, 100% { transform: none; } 80% { transform: translateY(-8px); } 90% { transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .s-flow.on .port, .s-flow.on .seg svg, .s-flow.on .chip, .s-flow.on .note, .s-flow.on .led-live, .s-flow.on .led-glow, .s-flow.on .who svg { animation: none; }
+  .s-flow .note { opacity: 1; background: var(--t); }
+}
+
 /* 8 one moment */
 .steps4 { margin-top: auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
 .st { position: relative; display: flex; flex-direction: column; gap: 16px; padding: 30px 28px; border-radius: 28px; background: var(--card); border: 1px solid var(--line); min-height: 460px; }
@@ -216,6 +272,16 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
 .s-close .pip-big { position: absolute; right: 140px; top: 170px; width: 300px; height: 300px; }
 .sig { margin-top: 56px; font: 500 30px var(--display); color: var(--ink-2); }
 
+/* characters: Grandma Margaret and Lisa, reused across slides */
+.person { align-items: flex-start; }
+.person.r { align-items: flex-end; }
+.person .face { width: 112px; height: 112px; border-radius: 50%; clip-path: circle(50%); background: var(--terra-t); margin-bottom: 10px; }
+.person.r .face { background: var(--phys-t); }
+.disc.face-disc { overflow: hidden; align-items: end; }
+.disc.face-disc svg { width: 128px; height: 152px; margin-top: 10px; }
+.s-close .duo { position: absolute; right: 60px; top: 150px; width: 420px; height: 360px; }
+.s-title .hero-art svg, .s-close .duo svg { overflow: visible; }
+
 @media (prefers-reduced-motion: reduce) {
   html.js .slide, html.js .slide.on, .progress { transition: none; }
 }
@@ -227,6 +293,8 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
   .slide + .slide { margin-top: 0; }
   .progress, .nav { display: none; }
   .frame iframe, .frame .wait { display: none; }
+  .s-flow * { animation: none !important; }
+  .s-flow .note { opacity: 1; background: var(--t); }
   .printonly { display: grid; position: absolute; inset: 0; place-items: center; text-align: center; padding: 40px; font-size: 26px; color: var(--ink-2); }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
@@ -243,13 +311,48 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
     <ellipse class="blush" cx="36" cy="78" rx="6" ry="3.5"/><ellipse class="blush" cx="84" cy="78" rx="6" ry="3.5"/>
     <path class="mouth" d="M50 80 q10 9 20 0"/>
   </g>
+
+  <g id="granArt">
+    <circle cx="100" cy="40" r="19" fill="var(--hair-g)"/>
+    <path d="M28 220 C28 168 58 146 100 146 C142 146 172 168 172 220Z" fill="var(--terra)"/>
+    <path d="M84 147 L100 174 L116 147Z" fill="var(--card)"/>
+    <circle cx="70" cy="190" r="5" fill="var(--terra-t)"/><circle cx="70" cy="208" r="5" fill="var(--terra-t)"/>
+    <path d="M148 172 C170 150 177 126 172 100" fill="none" stroke="var(--terra)" stroke-width="24" stroke-linecap="round"/>
+    <circle cx="172" cy="88" r="13" fill="var(--skin)"/>
+    <path d="M160 104 L185 102" stroke="var(--band)" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="172.5" cy="103" r="4.2" fill="var(--led, #FF8A5C)"/>
+    <rect x="90" y="126" width="20" height="24" rx="8" fill="var(--skin)"/>
+    <circle cx="100" cy="94" r="44" fill="var(--skin)"/>
+    <path d="M56 100 C50 62 74 46 100 46 C126 46 150 62 144 100 C138 82 128 72 116 69 C104 76 88 77 74 73 C66 79 60 89 56 100Z" fill="var(--hair-g)"/>
+    <circle cx="58" cy="98" r="11" fill="var(--hair-g)"/><circle cx="142" cy="98" r="11" fill="var(--hair-g)"/>
+    <path d="M78 56 C90 50 104 50 114 54" fill="none" stroke="var(--hair-g2)" stroke-width="3" stroke-linecap="round"/>
+    <g fill="none" stroke="var(--glass)" stroke-width="3"><circle cx="82" cy="100" r="12"/><circle cx="118" cy="100" r="12"/><path d="M94 99 h12"/></g>
+    <path d="M77 102 q5 -5 10 0 M113 102 q5 -5 10 0" fill="none" stroke="var(--pip-eye)" stroke-width="3" stroke-linecap="round"/>
+    <ellipse cx="70" cy="118" rx="7" ry="4" fill="var(--pip-blush)" opacity=".6"/><ellipse cx="130" cy="118" rx="7" ry="4" fill="var(--pip-blush)" opacity=".6"/>
+    <path d="M90 121 q10 9 20 0" fill="none" stroke="var(--pip-eye)" stroke-width="3.2" stroke-linecap="round"/>
+  </g>
+  <g id="kidArt">
+    <path d="M30 220 C30 170 60 148 100 148 C140 148 170 170 170 220Z" fill="var(--kid-top)"/>
+    <path d="M88 149 Q100 162 112 149" fill="none" stroke="var(--card)" stroke-width="5" stroke-linecap="round"/>
+    <rect x="90" y="126" width="20" height="26" rx="8" fill="var(--skin-2)"/>
+    <path d="M52 96 C50 56 74 44 100 44 C126 44 150 56 148 96 L150 136 C140 142 128 140 122 134 L78 134 C72 140 60 142 50 136Z" fill="var(--kid-hair)"/>
+    <circle cx="100" cy="94" r="42" fill="var(--skin-2)"/>
+    <path d="M58 94 C58 62 78 50 100 50 C124 50 142 62 142 92 C128 86 116 76 108 63 C98 78 80 88 58 94Z" fill="var(--kid-hair)"/>
+    <ellipse cx="84" cy="102" rx="4.6" ry="5.6" fill="var(--pip-eye)"/><ellipse cx="116" cy="102" rx="4.6" ry="5.6" fill="var(--pip-eye)"/>
+    <ellipse cx="72" cy="116" rx="7" ry="4" fill="var(--pip-blush)" opacity=".6"/><ellipse cx="128" cy="116" rx="7" ry="4" fill="var(--pip-blush)" opacity=".6"/>
+    <path d="M91 119 q9 8 18 0" fill="none" stroke="var(--pip-eye)" stroke-width="3.2" stroke-linecap="round"/>
+    <g transform="rotate(-8 100 190)"><rect x="80" y="160" width="40" height="64" rx="9" fill="var(--band)"/><rect x="85" y="166" width="30" height="46" rx="5" fill="var(--terra-t)"/>
+    <path d="M100 198 c-9 -6 -11 -11 -7 -15 c3 -3 7 -1 7 2 c0 -3 4 -5 7 -2 c4 4 2 9 -7 15Z" fill="var(--terra)"/></g>
+    <circle cx="78" cy="198" r="11" fill="var(--skin-2)"/><circle cx="122" cy="193" r="11" fill="var(--skin-2)"/>
+  </g>
+  <path id="heartP" d="M12 21 C3 15 0 10 3 6 C6 2 10 3 12 7 C14 3 18 2 21 6 C24 10 21 15 12 21Z"/>
 </defs></svg>
 
 <main class="stage" id="stage" aria-roledescription="slide deck">
 
   <!-- 1 -->
-  <section class="slide s-title" data-sec="Band 39" aria-label="Band 39">
-    <h1 class="h-xl">Band 39</h1>
+  <section class="slide s-title" data-sec="Apotheosis" aria-label="Apotheosis">
+    <h1 class="h-xl">Apotheosis</h1>
     <p class="lede">A wristband that notices, so Lisa doesn’t have to guess.</p>
     <div class="who">
       <span class="tag"><span class="ico" data-ico="watch" data-sz="22"></span>Vexo band 39</span>
@@ -257,32 +360,28 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
       <span class="tag"><span class="ico" data-ico="phone" data-sz="22"></span>Lisa’s app</span>
     </div>
     <svg class="hero-art" viewBox="0 0 620 560" aria-hidden="true">
-      <defs>
-        <radialGradient id="ledGlow"><stop offset="0" stop-color="var(--terra)" stop-opacity=".55"/><stop offset="1" stop-color="var(--terra)" stop-opacity="0"/></radialGradient>
-      </defs>
-      <ellipse cx="300" cy="420" rx="250" ry="70" fill="none" stroke="var(--band)" stroke-width="58"/>
-      <ellipse cx="300" cy="420" rx="250" ry="70" fill="none" stroke="var(--band-2)" stroke-width="4" stroke-dasharray="2 22" opacity=".8"/>
-      <rect x="236" y="448" width="128" height="62" rx="20" fill="var(--band)"/>
-      <circle cx="300" cy="479" r="58" fill="url(#ledGlow)"/>
-      <circle cx="300" cy="479" r="11" fill="var(--terra)"/>
-      <svg x="170" y="90" width="270" height="270" viewBox="0 0 120 120" class="pip"><use href="#pipArt"/></svg>
+      <path d="M190 210 C250 120 370 120 430 210" fill="none" stroke="var(--terra)" stroke-width="4" stroke-dasharray="2 14" stroke-linecap="round"/>
+      <svg x="270" y="96" width="80" height="80" viewBox="0 0 24 24"><use href="#heartP" fill="var(--terra)"/></svg>
+      <svg x="0" y="190" width="320" height="352" viewBox="0 0 200 220"><use href="#granArt"/></svg>
+      <svg x="330" y="222" width="290" height="319" viewBox="0 0 200 220"><use href="#kidArt"/></svg>
+      <svg x="240" y="400" width="140" height="140" viewBox="0 0 120 120" class="pip"><use href="#pipArt"/></svg>
     </svg>
-    <div class="bar"><span class="mark">Band 39</span><span class="sec">Demo deck</span><span class="n" data-n></span></div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">Demo deck</span><span class="n" data-n></span></div>
   </section>
 
   <!-- 2 -->
   <section class="slide" data-sec="1 Why this product" aria-label="The problem">
     <h2 class="h-l">Margaret, 78, lives alone. Lisa is 400 miles away.</h2>
     <div class="distance" aria-hidden="true">
-      <div class="person"><b>Margaret</b><span>Early memory changes</span></div>
+      <div class="person"><svg class="face" viewBox="30 30 140 140"><use href="#granArt"/></svg><b>Grandma Margaret</b><span>Early memory changes</span></div>
       <div class="miles"><span>400 miles</span><i>Is Mom OK today?</i></div>
-      <div class="person r"><b>Lisa</b><span>Her daughter, the caregiver</span></div>
+      <div class="person r"><svg class="face" viewBox="30 30 140 140"><use href="#kidArt"/></svg><b>Lisa</b><span>Her daughter, the caregiver</span></div>
     </div>
     <div class="pair">
       <div class="stat"><span class="num">~16M</span><p>Americans 65+ live alone (~28%).</p><span class="src">ACL, Profile of Older Americans</span></div>
       <div class="stat"><span class="num">63M</span><p>US family caregivers, ~1 in 4 adults.</p><span class="src">AARP and National Alliance for Caregiving, Caregiving in the US 2025</span></div>
     </div>
-    <div class="bar"><span class="mark">Band 39</span><span class="sec">1 Why this product</span><span class="n" data-n></span></div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">1 Why this product</span><span class="n" data-n></span></div>
   </section>
 
   <!-- 3 -->
@@ -311,7 +410,7 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
         <p class="also">~50% of chronic meds are NOT taken as prescribed.<br><span class="src">WHO 2003</span></p>
       </div>
     </div>
-    <div class="bar"><span class="mark">Band 39</span><span class="sec">1 Why this product</span><span class="n" data-n></span></div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">1 Why this product</span><span class="n" data-n></span></div>
   </section>
 
   <!-- 4 -->
@@ -334,7 +433,7 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
       </div>
       <span class="src">Our illustrative bottom-up model on ACL and HRS-HCAP counts, not a forecast. ~3x across high-income markets. Desk research; re-check sources before sharing.</span>
     </div>
-    <div class="bar"><span class="mark">Band 39</span><span class="sec">1 Why this product</span><span class="n" data-n></span></div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">1 Why this product</span><span class="n" data-n></span></div>
   </section>
 
   <!-- 5 -->
@@ -342,7 +441,7 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
     <h2 class="h-l">One band. One voice. One app.</h2>
     <div class="trio">
       <div class="part">
-        <div class="art"><span class="disc"><span class="ico" data-ico="watch" data-sz="60"></span></span></div>
+        <div class="art"><span class="disc face-disc"><svg viewBox="20 30 160 190"><use href="#granArt"/></svg></span></div>
         <h3>Band 39</h3><p>Feels her movement. Hears her day.</p>
       </div>
       <div class="part">
@@ -350,11 +449,11 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
         <h3>Pip</h3><p>Talks with Margaret, out loud.</p>
       </div>
       <div class="part">
-        <div class="art"><span class="disc"><span class="ico" data-ico="phone" data-sz="60"></span></span></div>
+        <div class="art"><span class="disc face-disc"><svg viewBox="20 30 160 190"><use href="#kidArt"/></svg></span></div>
         <h3>Lisa’s app</h3><p>Tells Lisa only what matters.</p>
       </div>
     </div>
-    <div class="bar"><span class="mark">Band 39</span><span class="sec">2 Our solution</span><span class="n" data-n></span></div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">2 Our solution</span><span class="n" data-n></span></div>
   </section>
 
   <!-- 6 -->
@@ -383,7 +482,36 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
         <li><span class="ico" data-ico="sos" data-sz="24"></span>SOS</li>
       </ul></div>
     </div>
-    <div class="bar"><span class="mark">Band 39</span><span class="sec">2 Our solution</span><span class="n" data-n></span></div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">2 Our solution</span><span class="n" data-n></span></div>
+  </section>
+
+  <!-- 6b -->
+  <section class="slide s-flow" data-sec="2 Our solution" aria-label="Three pillars: how Grandma's band data reaches Lisa">
+    <h2 class="h-m">Three pillars, from Grandma to Lisa.</h2>
+    <div class="flow">
+      <div class="who gran">
+        <svg viewBox="0 0 200 220" aria-hidden="true"><use href="#granArt"/><circle class="led-glow" cx="172.5" cy="103" r="12"/><circle class="led-live" cx="172.5" cy="103" r="4.6" fill="#FF8A5C"/></svg>
+        <span class="name">Grandma Margaret</span>
+      </div>
+      <div class="strap">
+        <span class="port mental" style="--k:0"><span class="ico" data-ico="brain" data-sz="20"></span>Mental</span>
+        <span class="port fin" style="--k:0"><span class="ico" data-ico="coin" data-sz="20"></span>Financial</span>
+        <span class="port phys" style="--k:0"><span class="ico" data-ico="body" data-sz="20"></span>Physical</span>
+      </div>
+      <div class="pillar mental" style="grid-column:2"><span class="seg" style="--k:0"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:1"><span class="ico" data-ico="mic" data-sz="26"></span><div><b>Voice + night steps</b><small>band mic, motion</small></div></div><span class="seg" style="--k:2"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:3"><span class="ico" data-ico="sparkle" data-sz="26"></span><div><b>Memory and mood</b><small>Deepgram + OpenAI</small></div></div><span class="seg" style="--k:4"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:5"><span class="ico" data-ico="repeat" data-sz="26"></span><div><b>Repeats, wandering</b><small>care engine</small></div></div><span class="seg" style="--k:6"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span></div>
+      <div class="pillar fin" style="grid-column:3"><span class="seg" style="--k:0"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:1"><span class="ico" data-ico="call" data-sz="26"></span><div><b>A call nearby</b><small>band mic</small></div></div><span class="seg" style="--k:2"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:3"><span class="ico" data-ico="sparkle" data-sz="26"></span><div><b>Sounds like a scam</b><small>OpenAI</small></div></div><span class="seg" style="--k:4"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:5"><span class="ico" data-ico="card" data-sz="26"></span><div><b>Her card rests</b><small>safe card, simulated</small></div></div><span class="seg" style="--k:6"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span></div>
+      <div class="pillar phys" style="grid-column:4"><span class="seg" style="--k:0"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:1"><span class="ico" data-ico="steps" data-sz="26"></span><div><b>How she moves</b><small>accel + gyro, 50 Hz</small></div></div><span class="seg" style="--k:2"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:3"><span class="ico" data-ico="balance" data-sz="26"></span><div><b>Motion lab</b><small>fall, tremor, steps</small></div></div><span class="seg" style="--k:4"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:5"><span class="ico" data-ico="fall" data-sz="26"></span><div><b>“Did you fall?”</b><small>20 s to answer</small></div></div><span class="seg" style="--k:6"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span></div>
+      <div class="who kid">
+        <span class="name">Lisa, her daughter</span>
+        <svg viewBox="0 0 200 220" aria-hidden="true"><use href="#kidArt"/></svg>
+      </div>
+      <div class="lisa">
+        <div class="note mental" style="--k:8"><span class="ico" data-ico="repeat" data-sz="22"></span><div><b>Mom asked twice today</b><small>Memory tab</small></div></div>
+        <div class="note fin" style="--k:8"><span class="ico" data-ico="shield" data-sz="22"></span><div><b>Possible scam call</b><small>Card frozen for her</small></div></div>
+        <div class="note phys" style="--k:8"><span class="ico" data-ico="fall" data-sz="22"></span><div><b>Mom may have fallen</b><small>Call Mom · Ruth · 911</small></div></div>
+      </div>
+    </div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">2 Our solution</span><span class="n" data-n></span></div>
   </section>
 
   <!-- 7 -->
@@ -414,7 +542,7 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
         <li class="end"><span class="ico" data-ico="user" data-sz="22"></span><div>Margaret</div></li>
       </ol></div>
     </div>
-    <div class="bar"><span class="mark">Band 39</span><span class="sec">2 Our solution</span><span class="n" data-n></span></div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">2 Our solution</span><span class="n" data-n></span></div>
   </section>
 
   <!-- 8 -->
@@ -426,7 +554,7 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
       <div class="st alert"><span class="k">3</span><h3>Lisa gets</h3><q>Possible scam call</q><span class="card"><span class="ico" data-ico="card" data-sz="20"></span>Mom’s card freezes</span></div>
       <div class="st"><span class="k">4</span><h3>Margaret sees</h3><q>Your card is taking a short rest. You did nothing wrong.</q></div>
     </div>
-    <div class="bar"><span class="mark">Band 39</span><span class="sec">2 Our solution</span><span class="n" data-n></span></div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">2 Our solution</span><span class="n" data-n></span></div>
   </section>
 
   <!-- 9 -->
@@ -442,10 +570,10 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
     </div>
     <div class="frame product">
       <span class="wait">Loading the live demo</span>
-      <iframe title="Band 39 product demo, live" data-live="product.html?autoplay=1" allow="autoplay"></iframe>
+      <iframe title="Apotheosis product demo, live" data-live="product.html?autoplay=1" allow="autoplay"></iframe>
       <div class="printonly">Live demo: localhost:8039/product.html?autoplay=1</div>
     </div>
-    <div class="bar"><span class="mark">Band 39</span><span class="sec">3 Product demo</span><span class="n" data-n></span></div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">3 Product demo</span><span class="n" data-n></span></div>
   </section>
 
   <!-- 10 -->
@@ -463,10 +591,10 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
     </div>
     <div class="frame sim">
       <span class="wait">Loading the simulator</span>
-      <iframe title="Band 39 simulator, live" data-live="/?embed=1"></iframe>
+      <iframe title="Apotheosis simulator, live" data-live="/?embed=1"></iframe>
       <div class="printonly">Live simulator: localhost:8039</div>
     </div>
-    <div class="bar"><span class="mark">Band 39</span><span class="sec">4 Simulator</span><span class="n" data-n></span></div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">4 Simulator</span><span class="n" data-n></span></div>
   </section>
 
   <!-- 11 -->
@@ -486,7 +614,7 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
         <li>Care shop checkout in demo mode</li>
       </ol></div>
     </div>
-    <div class="bar"><span class="mark">Band 39</span><span class="sec">Status</span><span class="n" data-n></span></div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">Status</span><span class="n" data-n></span></div>
   </section>
 
   <!-- 12 -->
@@ -498,8 +626,12 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
       <li>Finish Trends for Lisa</li>
     </ol>
     <p class="sig">Signals, not diagnoses.</p>
-    <svg class="pip pip-big" viewBox="0 0 120 120" aria-hidden="true"><use href="#pipArt"/></svg>
-    <div class="bar"><span class="mark">Band 39</span><span class="sec">Next</span><span class="n" data-n></span></div>
+    <svg class="duo" viewBox="0 0 420 360" aria-hidden="true">
+      <svg x="150" y="0" width="120" height="120" viewBox="0 0 24 24"><use href="#heartP" fill="var(--terra)"/></svg>
+      <svg x="0" y="80" width="250" height="275" viewBox="0 0 200 220"><use href="#granArt"/></svg>
+      <svg x="190" y="100" width="232" height="255" viewBox="0 0 200 220"><use href="#kidArt"/></svg>
+    </svg>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">Next</span><span class="n" data-n></span></div>
   </section>
 
   <div class="nav" aria-label="Slide controls">
