@@ -1,4 +1,4 @@
-# Vexo Companion
+# Apotheosis
 
 A wristband that looks after an older person's **physical, mental and financial health**, and keeps her
 family in the loop without hovering. Built in one day on a Vexo Open band (band 39) at the Vexo hackathon,
@@ -113,6 +113,7 @@ to be judged over a stretch of talk.
 | `care/server/watch.py` | Real-time scam and call-for-help alerts |
 | `care/server/digest.py` | The nightly summary |
 | `experiments/` | Tests and measurements: decision model, voice match, speech accuracy, a motion test bench, card rules |
+| `care/web/deck.html` | The slides (by Amy): open <http://localhost:8039/deck.html> with the server running |
 | `companion/` | The concept site: a day in Margaret's life, with and without the band |
 | `mockups/` | The financial screens as designed |
 | `index.html` | The first thing we built: a live band page with a tilt game |
@@ -124,6 +125,11 @@ to be judged over a stretch of talk.
 Vexo Open kit · Deepgram (streaming speech-to-text, Aura voices) · Google Gemini (`gemini-decision-1`,
 Gemini 4 for the summary) · Stripe (Checkout) · WeSpeaker CAM++ and all-MiniLM-L6-v2 (run locally with ONNX
 Runtime) · SQLite FTS5 · plain JavaScript, no build step.
+
+## Also in this repository
+
+The branch `amy/band39-care-v2` holds Amy's parallel version of the app: a 3D day simulator, trend charts, a product
+page and an iOS wrapper. It was not merged; `main` is the version described above.
 
 ## Team
 
