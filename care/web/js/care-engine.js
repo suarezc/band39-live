@@ -145,15 +145,14 @@
 
     function onTap(n) {
       const now = clock.scene(); const top = prompt();
+      // The impact of a fall also arrives as taps: for the first moments of a fall check a tap is not an answer.
+      if (top && top.kind === 'fall' && clock.real() - (top.since || 0) < 2500) return;
       if (top && (top.kind === 'fall' || top.kind === 'checkin' || top.kind === 'night' || top.kind === 'notworn')) { userAction('ok', n === 2 ? 'double-tap' : 'tap'); return; }
       if (top && top.kind === 'reminder') { userAction('done', 'tap'); return; }
       if (top && top.kind === 'message') { userAction('read', 'tap'); return; }
       moved(now);
-      if (n === 2) {
-        s.messages.push({ id: ++seq, from: 'Margaret', text: 'Double-tapped her band: "please call me"', at: now, read: false, viaBand: true });
-        alert('info', 'Mom would like a call', 'She double-tapped her band. That is her "call me" signal.', 'callme');
-        log(now, '👆', 'Margaret double-tapped: "call me"', 'family');
-      }
+      // A double-tap with nothing to answer used to mean "call me". Removed: the jolt of a fall reads as a double-tap,
+      // so the fall check and a "Mom would like a call" message appeared together.
     }
 
     function onFall(now) {
