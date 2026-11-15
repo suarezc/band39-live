@@ -1,6 +1,6 @@
 # What we found
 
-Results from one day of building on band 39 (Vexo-HACK-39), 14 November 2026. Each section says what was
+Results from one day of building on a Vexo Open band, 14 November 2026. Each section says what was
 measured and on what, because most of it is small: a handful of written cases, synthetic clips, or one real
 recording. Details and scripts are in `experiments/`.
 
@@ -45,7 +45,7 @@ a speaker library, documented for uploaded files only.
 |---|---|---|
 | Clean recordings of 3 people (the model project's test set) | 0.68 to 0.95 | 0.57 and below |
 | Text-to-speech voices, 3 to 6 second sentences | about 0.7 | about 0.3 |
-| **Band 39, real room, two real people** | **0.21 to 0.74** | **0.03 to 0.15** |
+| **The Vexo band, real room, two real people** | **0.21 to 0.74** | **0.03 to 0.15** |
 
 - Thresholds set on clean audio (yes at 0.65) labelled most of the wearer's own phrases "not sure" on the band.
   On this recording, yes at 0.40 and no below 0.18 would have labelled every scripted line correctly.

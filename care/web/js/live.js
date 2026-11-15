@@ -54,7 +54,7 @@
   const left = el('div', 'lt-title'); left.append(title, state);
   head.append(left, toggle);
   const always = el('p', 'fine lt-always', 'Always on: listening starts by itself whenever the band is connected.');
-  const hint = el('p', 'fine lt-hint', 'Connect band 39 (or the pretend band) first');
+  const hint = el('p', 'fine lt-hint', 'Connect the Vexo band (or the pretend band) first');
   const notice = el('p', 'lt-notice', 'Listening. Everything the band’s microphone hears is sent to Deepgram to be written down. Tell the people near the band.');
   notice.hidden = true;
   const counts = el('p', 'fine lt-counts'); counts.hidden = true;

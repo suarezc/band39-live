@@ -1,7 +1,7 @@
 # Apotheosis
 
 A wristband that looks after an older person's **physical, mental and financial health**, and keeps her
-family in the loop without hovering. Built in one day on a Vexo Open band (band 39) at the Vexo hackathon,
+family in the loop without hovering. Built in one day on a Vexo Open band at the Vexo hackathon,
 14 November 2026.
 
 Margaret is 78, has early memory problems and lives alone. Her daughter Lisa lives 400 miles away. Margaret
@@ -19,7 +19,7 @@ hears her reminders hears the scam call.
 ## How it works
 
 ```
- Band 39  (motion sensor, microphone)
+ Vexo band  (motion sensor, microphone)
     │ Bluetooth, straight into the browser (Web Bluetooth, the Vexo Open kit)
  The page  http://localhost:8039   Margaret's screen  |  Lisa's app
     │ motion → fall, steps, balance, sleep labels (in the page)
@@ -69,7 +69,7 @@ Download the two small models (about 120 MB, commands in [experiments/README.md]
 
 Open <http://localhost:8039> in Chrome or Edge.
 
-- **With a Vexo Open band:** double-tap it (it blinks blue), press **Connect band 39**, then **Start listening**
+- **With a Vexo Open band:** double-tap it (it blinks blue), press **Connect Vexo**, then **Start listening**
   in Lisa's column. The band number is set in one place, `BAND` in `care/web/js/app.js`.
 - **With no band:** press **Pretend band**. It plays a recorded sample voice through the same path.
 - **A whole fictional day, no band:** load it into a separate folder and browse it on another port.
@@ -85,7 +85,7 @@ Tell the people near the band.
 
 | Piece | State |
 |---|---|
-| Live transcript from the band, voice labels, search | Real, running on band 39 |
+| Live transcript from the band, voice labels, search | Real, running on the Vexo band |
 | Scam and call-for-help alerts from the live transcript | Real (Gemini decision model on the transcript) |
 | Fall, steps, balance, sleep and wandering labels from motion | Real code on real motion; thresholds tested on made-up signals only |
 | Nightly summary and product suggestions | Real, from the stored transcript |

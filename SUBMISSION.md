@@ -55,7 +55,7 @@ Full write-up: `FINDINGS.md` in the repository.
 
 **What is real and what is simulated**
 
-Real on band 39: the live transcript, voice attribution, search, scam and call-for-help alerts, motion labels,
+Real on the Vexo band: the live transcript, voice attribution, search, scam and call-for-help alerts, motion labels,
 the nightly summary, Stripe Checkout (test mode). Simulated: the limited spending card (Stripe Issuing has the
 same controls, but our sandbox account never opened), and the history in the score charts (only today is live).
 Margaret, Lisa and the demo day are fictional. Not a medical device.

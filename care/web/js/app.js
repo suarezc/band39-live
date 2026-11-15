@@ -109,7 +109,7 @@
   let recording = null;
   async function talk() {
     if (recording) return stopTalk();
-    if (!band) return note('Connect band 39 (or the pretend band) first, then press Talk.');
+    if (!band) return note('Connect the Vexo band (or the pretend band) first, then press Talk.');
     const k = await loadKit();
     if (!(await k.canDecodeAudio())) return note('This browser can’t decode the band’s sound. Use Chrome or Edge.');
     const chunks = [];
@@ -200,7 +200,7 @@
     for (const a of insightsLog.slice(0, 3)) if (a.medical && a.medical.doctor_notes) lines.push('• From voice note: ' + a.medical.doctor_notes);
     const dem = insightsLog[0] && insightsLog[0].dementia;
     if (dem) lines.push(`• Latest voice note concern (0-100): cognitive ${dem.cognitive.concern}, memory ${dem.memory.concern}, language ${dem.language.concern}`);
-    return lines.length ? `Margaret (78), via Vexo band 39 and voice notes:\n${lines.join('\n')}\nSignals for review, not diagnoses.` : '';
+    return lines.length ? `Margaret (78), via her Vexo band and voice notes:\n${lines.join('\n')}\nSignals for review, not diagnoses.` : '';
   }
   async function sendDoctor() {
     const summary = doctorSummary(); if (!summary) return;
