@@ -114,9 +114,9 @@ lv, a, clock = fresh()
 a.heard({'type': 'final', 'id': 10, 'text': 'Pip, when is', 'voice': 'main'})
 clock.t += 0.8
 a.heard({'type': 'final', 'id': 11, 'text': 'Lisa coming?', 'voice': 'main'})
-clock.t += 1.0
+clock.t += 0.7
 a.tick()
-check('not answered before 1.3 s of quiet', not answers(lv) and not a.busy)
+check('not answered before the quiet gap has passed', not answers(lv) and not a.busy)
 clock.t += 0.4
 a.tick(); settle(a)
 got = answers(lv)

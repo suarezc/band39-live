@@ -28,9 +28,9 @@ from datetime import datetime, timedelta
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, '..', '..'))
 API = 'https://generativelanguage.googleapis.com/v1beta'
-MODEL = 'gemini-4-hydrogen'
+MODEL = 'gemini-3.5-flash-lite'   # measured on the demo day: about 0.8 s an answer, against 2 to 3.6 s for gemini-4-hydrogen, with answers as good
 
-QUIET_SECONDS = 1.3       # a question ends after this long with no new phrase
+QUIET_SECONDS = 1.0       # a question ends after this long with no new phrase
 MAX_COLLECT_SECONDS = 6.0
 ARM_SECONDS = 12
 WAKE_ALONE_ARM = 8
@@ -123,8 +123,9 @@ def gemini(prompt):
     key = api_key()
     if not key:
         raise RuntimeError('no GEMINI_API_KEY')
-    cfg = {'responseMimeType': 'application/json', 'responseSchema': SCHEMA, 'temperature': 0.2,
-           'thinkingConfig': {'thinkingLevel': 'low'}}
+    cfg = {'responseMimeType': 'application/json', 'responseSchema': SCHEMA, 'temperature': 0.2}
+    if 'gemini-4' in MODEL:
+        cfg['thinkingConfig'] = {'thinkingLevel': 'low'}
     body = json.dumps({'contents': [{'role': 'user', 'parts': [{'text': prompt}]}], 'generationConfig': cfg}).encode()
     req = urllib.request.Request('%s/models/%s:generateContent' % (API, MODEL), data=body, method='POST',
                                  headers={'Content-Type': 'application/json', 'x-goog-api-key': key})

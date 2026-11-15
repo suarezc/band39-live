@@ -30,7 +30,7 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'web')
 VOICE = os.environ.get('ELEVENLABS_VOICE_ID', 'EXAVITQu4vr4xnSDxMaL')   # "Sarah - Mature, Reassuring"
 
 
-DG_VOICE = os.environ.get('DEEPGRAM_VOICE', 'aura-2-vesta-en')            # Deepgram Aura voice, used when there is no ElevenLabs key
+DG_VOICE = os.environ.get('DEEPGRAM_VOICE', 'aura-hera-en')   # measured: 0.3 s for a sentence; the aura-2 voices took 2 to 4 s            # Deepgram Aura voice, used when there is no ElevenLabs key
 
 
 def load_keys():
