@@ -118,7 +118,7 @@ def unit_tests():
     clock.t += 3
     settle(w)
     check('debounce: pending phrases are judged after 3 s', len(d.calls) == n + 1 and "Mom: b" in d.calls[-1][0])
-    check('scam not asked when only Mom spoke', all('scam' not in q for _, q in d.calls))
+    check('scam is asked even when only Mom spoke (the caller may be inaudible)', all('scam' in q for _, q in d.calls))
     w.stop()
 
     # labels, scam asked when someone else spoke, thresholds, alert shape

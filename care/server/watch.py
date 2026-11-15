@@ -41,14 +41,17 @@ PREAMBLE = ('This is a live transcript from a microphone worn by an older woman,
             'oldest first, labelled with who a voice detector thinks spoke; the labels can be wrong, and speech '
             'recognition makes mistakes. Phrases may also come from the other end of a phone call.')
 QUESTIONS = {
-    'scam': 'Is a voice other than Mom asking her for money, gift cards, a card number, bank or account details, '
-            'or pressing her to act urgently or to keep it secret, as in a scam call?',
+    'scam': 'Is someone asking Mom for money, gift cards, a card number, bank or account details, or pressing her to act '
+            'urgently or to keep it secret, as in a scam call? Judge from another voice if one was heard. On a phone call '
+            'only Mom may be audible: then judge from her side alone, for example when she repeats or agrees to such a '
+            'request ("you want my card number?", "buy gift cards to pay the bill?"). Her own ordinary plans to shop, pay a '
+            'bill or buy a present, with nobody asking her to, are not a scam.',
     'help': 'Does anyone in this transcript say they have fallen, are hurt, cannot get up, or call for help?',
     'alarm': 'Does someone react with alarm to a person being hurt or having fallen (for example "oh my god, are you okay?")?',
     'fine': 'Does Mom herself clearly say that she is fine or all right?',
 }
 TITLES = {'scam': 'Possible scam call', 'help': 'Possible fall or call for help heard'}
-TEXTS = {'scam': 'A voice other than Mom’s asked her for money or account details and pressed her to act; call her before she pays or tells anyone anything.',
+TEXTS = {'scam': 'Someone appears to be asking Mom for money, gift cards or account details; call her before she pays or tells anyone anything.',
          'help': 'Someone near Mom’s band said they had fallen or called for help; check on her now.'}
 SCAM_WORDS = re.compile(r'gift|card|bank|account|money|pay|wire|transfer|numbers?|social security|password|pin\b|urgent|right now|today|'
                         r'immediately|don.t tell|secret|compromised|security|police|arrest|refund|bitcoin', re.I)
@@ -175,9 +178,7 @@ class Watcher:
     def _evaluate(self, window):
         try:
             text = PREAMBLE + '\n\n' + '\n'.join('%s: %s' % (who(p), (p.get('text') or '').strip()) for p in window)
-            questions = dict(QUESTIONS)
-            if all(p.get('voice') == 'main' for p in window):
-                del questions['scam']
+            questions = dict(QUESTIONS)     # scam is asked even when only Mom was heard: on a phone call the caller is inaudible
             started = time.time()
             self.stats['calls'] += 1
             try:
@@ -204,7 +205,8 @@ class Watcher:
         p = lambda k: probs.get(k) or 0.0
         if p('scam') >= SCAM_AT:
             others = [x for x in window if x.get('voice') != 'main']
-            fired += self._alert('scam', p('scam'), probs, *pick_quote(others, SCAM_WORDS))
+            telling = [x for x in others if SCAM_WORDS.search(x.get('text') or '')]
+            fired += self._alert('scam', p('scam'), probs, *pick_quote(telling or window, SCAM_WORDS))   # the caller's words if heard, else Mom's side
         if p('help') >= HELP_AT or p('alarm') >= ALARM_AT:
             fired += self._alert('help', max(p('help'), p('alarm')), probs, *pick_quote(window, HELP_WORDS))
         return fired
