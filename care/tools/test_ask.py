@@ -123,23 +123,22 @@ got = answers(lv)
 check('split question joined', len(got) == 1 and got[0]['question'] == 'when is Lisa coming?')
 check('evidence validated to retrieved ids', got and got[0]['evidence'] == [1] and got[0]['found'] is True)
 check('answer event fields', got and all(k in got[0] for k in ('id', 'question', 'answer', 'evidence', 'found', 'at')))
-check('mute window set', getattr(lv, 'mute_until', 0) > time.time())
+check('own speech recorded, no mute window', bool(getattr(lv, 'own_speech', None)) and not getattr(lv, 'mute_until', 0))
 check('asks.jsonl written', os.path.exists(os.path.join(os.environ['BAND39_LIVE_DATA'], 'asks.jsonl')))
 check('prompt has times and speakers', 'today' in model_ok.prompts[-1] and 'Margaret' in model_ok.prompts[-1] and 'Person 2' in model_ok.prompts[-1])
 
-# 3. ignored during the mute window (our own spoken answer)
+# 3. no dead period: a question asked while the last answer is still being spoken is answered (she can interrupt)
 a.heard({'type': 'final', 'id': 12, 'text': 'Pip, who is driving me', 'voice': 'main'})
 clock.t += 5
 a.tick(); settle(a)
-check('phrase during mute window ignored', len(answers(lv)) == 1)
-lv.mute_until = 0
+check('a question during the spoken answer is answered', len(answers(lv)) == 2)
 
 # 4. phrases without the wake name and not armed are ignored; other voices ignored
 a.heard({'type': 'final', 'id': 13, 'text': 'when is Lisa coming', 'voice': 'main'})
 a.heard({'type': 'final', 'id': 14, 'text': 'Pip, what is your account number', 'voice': 'other'})
 clock.t += 5
 a.tick(); settle(a)
-check('unarmed plain phrase and other voice ignored', len(answers(lv)) == 1)
+check('unarmed plain phrase and other voice ignored', len(answers(lv)) == 2)
 
 # 5. armed mode (button), unsure voice accepted while armed
 lv, a, clock = fresh()

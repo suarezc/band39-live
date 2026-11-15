@@ -183,7 +183,7 @@ class Asker:
             self.thread.join(timeout=2)
 
     def muted(self):
-        return time.time() < float(getattr(self.live, 'mute_until', 0) or 0)
+        return False   # there is no mute window any more: see own_speech in live.py
 
     # -- listening
     def _run(self):
@@ -364,7 +364,11 @@ class Asker:
         self.stats['latencies'].append(latency)
         if publish:
             try:
-                self.live.mute_until = time.time() + len(ans) / SPEAK_RATE + SPEAK_PAD
+                # No dead period: the band keeps listening while the laptop speaks, so she can interrupt. live.py
+                # recognises the answer's own words coming back through the microphone and leaves them out.
+                now_ = time.time()
+                self.live.own_speech = {'from': now_, 'until': now_ + len(ans) / 9.0 + 8.0,
+                                        'words': set(''.join(c.lower() if c.isalnum() else ' ' for c in ans).split())}
             except Exception:
                 pass
             self.live.tell(result)

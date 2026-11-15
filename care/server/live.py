@@ -530,12 +530,27 @@ class Live:
                 self.stop()
 
     # -- text back
+    def is_own_speech(self, text, at=None):
+        """True when `text` is the laptop's own voice coming back through the band's microphone: it was heard while
+        (or just after) an answer was being spoken (server/ask.py sets self.own_speech) and most of its words are in
+        that answer. Nothing is muted: anything else said in that time, such as an interruption, is kept."""
+        own = getattr(self, 'own_speech', None)
+        now = time.time() if at is None else at
+        if not own or not (own['from'] - 1 <= now <= own['until']):
+            return False
+        words = [w for w in ''.join(c.lower() if c.isalnum() else ' ' for c in text).split()]
+        if not words:
+            return False
+        distinct = set(words)
+        hits = len(distinct & own['words'])
+        return hits == len(distinct) if len(distinct) <= 3 else hits >= 0.6 * len(distinct)
+
     def _result(self, s, m):
         if m.get('type') != 'Results':
             return
         alt = (m.get('channel', {}).get('alternatives') or [{}])[0]
         if not m.get('is_final'):
-            if alt.get('transcript') and time.time() >= getattr(self, 'mute_until', 0):   # not while the laptop speaks an answer
+            if alt.get('transcript') and not self.is_own_speech(alt['transcript']):   # not the laptop's own answer
                 self.tell({'type': 'interim', 'text': alt['transcript']})
             return
         group = []
@@ -565,13 +580,11 @@ class Live:
         return 'unsure' if pid is None else 'main' if pid == main.id else 'other'
 
     def _phrase(self, s, words):
-        if time.time() < getattr(self, 'mute_until', 0):   # the laptop is speaking an answer (server/ask.py): do not transcribe our own voice
-            return
         text = ' '.join(w.get('punctuated_word') or w.get('word', '') for w in words).strip()
         if not text:
             return
         t0, t1 = float(words[0]['start']), float(words[-1]['end'])
-        if s['started'] + t0 < getattr(self, 'mute_until', 0):   # it began while the laptop was still speaking: the tail of an answer
+        if self.is_own_speech(text, s['started'] + t0):   # the laptop's own answer, heard by the band: not part of her day
             return
         a = max(0, int((t0 - 0.1) * RATE) - s['base'])
         b = max(a, int((t1 + 0.1) * RATE) - s['base'])
