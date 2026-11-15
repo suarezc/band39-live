@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Apotheosis: demo deck</title>
+<meta name="description" content="Apotheosis demo deck: why it matters, the solution, the live demo and a whole day condensed." />
+<link rel="stylesheet" href="fonts/fonts.css" />
+<script src="js/icons.js"></script>
+<style>
+/* Hallmark · custom (deck, by request) · genre: editorial · signature: the live product and simulator, running inside the deck · palette: the Apotheosis app's warm paper + terracotta, area colours for mental / financial / physical */
+/* critique: one idea per slide, numbers set huge with a source line under each; live slides load only while shown */
+/* waive 44b, 12: a slide deck, not a page; each slide is its own 1600x900 screen */
+
+:root {
+  --paper: #F5EEE5; --paper-2: #EDE2D5; --card: #FFFDFA; --ink: #2E241E; --ink-2: #5C4C42; --muted: #745F51; --line: #E3D6C7;
+  --terra: #B0532F; --terra-d: #8E3F20; --terra-t: #F8E3D8; --glow: rgba(176, 83, 47, .30);
+  --mental: #6A4BD8; --mental-t: #EFEAFE; --fin: #8F5B12; --fin-t: #FBEFD9; --phys: #23704C; --phys-t: #DDF3E8;
+  --band: #2A221D; --band-2: #43372F; --white: #FFFFFF; --shadow: rgba(60, 35, 20, .38);
+  --pip-body: #FFC79E; --pip-belly: #FFE3CC; --pip-leaf: #7FCB8F; --pip-leaf-2: #66B97A; --pip-eye: #3A2E2A; --pip-blush: #FF9C9C;
+  --skin: #F4CBAE; --skin-2: #EDBE9C; --hair-g: #E4DED8; --hair-g2: #CBC2B9; --glass: #7A6152; --kid-hair: #6E4A35; --kid-top: #5E9E7E;
+  --display: Fraunces, Georgia, serif; --ui: Figtree, ui-sans-serif, system-ui, sans-serif;
+  --s: 1;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; overflow-x: clip; }
+body { background: var(--paper-2); color: var(--ink); font: 400 22px/1.4 var(--ui); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, p, ol, ul { margin: 0; }
+h1, h2 { text-wrap: balance; font-family: var(--display); font-weight: 500; letter-spacing: -.02em; overflow-wrap: break-word; min-width: 0; }
+a { color: var(--terra-d); }
+:focus-visible { outline: 3px solid var(--terra); outline-offset: 3px; }
+
+/* ---------- the stage: a 1600x900 canvas, scaled to fit (deck mode needs JS; without it the slides stack) ---------- */
+.slide { position: relative; width: 1600px; height: 900px; overflow: hidden; background: var(--paper); padding: 96px 112px 112px; display: flex; flex-direction: column; }
+.slide + .slide { margin-top: 24px; }
+html.js body { overflow: hidden; height: 100vh; }
+html.js .stage { -webkit-user-select: none; user-select: none; }
+html.js .stage { position: fixed; left: 50%; top: 50%; width: 1600px; height: 900px; transform: translate(-50%, -50%) scale(var(--s)); transform-origin: center; box-shadow: 0 30px 80px -40px var(--shadow); }
+html.js .slide { position: absolute; inset: 0; margin: 0; opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s linear .35s; }
+html.js .slide.on { opacity: 1; visibility: visible; transition: opacity .35s ease, visibility 0s; }
+
+/* chrome */
+.bar { position: absolute; left: 112px; right: 112px; bottom: 40px; display: flex; align-items: center; gap: 20px; font-size: 17px; color: var(--muted); }
+.bar .mark { font: 600 19px var(--display); color: var(--ink); letter-spacing: -.01em; }
+.bar .sec { padding-left: 20px; border-left: 1px solid var(--line); }
+.bar .n { margin-left: auto; margin-right: 112px; font-variant-numeric: tabular-nums; }
+.progress { position: fixed; left: 0; top: 0; height: 4px; width: 100%; background: var(--terra); transform-origin: left; transform: scaleX(0); transition: transform .35s ease; z-index: 5; }
+html:not(.js) .progress, html:not(.js) .nav { display: none; }
+.nav { position: absolute; right: 104px; bottom: 30px; display: flex; gap: 8px; z-index: 6; }
+.nav button { width: 44px; height: 44px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); display: grid; place-items: center; cursor: pointer; opacity: .75; }
+.nav button:hover { opacity: 1; border-color: var(--terra); color: var(--terra-d); }
+.nav button:active { transform: scale(.94); }
+.nav button:focus-visible { opacity: 1; }
+.nav button:disabled { opacity: .3; cursor: default; }
+
+/* type */
+.h-xl { font-size: 168px; line-height: .92; letter-spacing: -.035em; }
+.h-l { font-size: 84px; line-height: 1.02; max-width: 1240px; }
+.h-m { font-size: 64px; line-height: 1.05; max-width: 1300px; }
+.lede { font-size: 34px; line-height: 1.3; color: var(--ink-2); max-width: 900px; }
+.src { font-size: 16px; line-height: 1.35; color: var(--muted); }
+.num { font: 500 132px/0.95 var(--display); letter-spacing: -.035em; font-variant-numeric: lining-nums; }
+.mental { --c: var(--mental); --t: var(--mental-t); } .fin { --c: var(--fin); --t: var(--fin-t); } .phys { --c: var(--phys); --t: var(--phys-t); }
+.ico { display: inline-grid; place-items: center; flex: none; }
+.ico svg { display: block; }
+
+/* Pip */
+.pip .body { fill: var(--pip-body); } .pip .belly { fill: var(--pip-belly); } .pip .leaf { fill: var(--pip-leaf); } .pip .l2 { fill: var(--pip-leaf-2); }
+.pip .eyes ellipse { fill: var(--pip-eye); } .pip .mouth { fill: none; stroke: var(--pip-eye); stroke-width: 3.2; stroke-linecap: round; }
+.pip .blush { fill: var(--pip-blush); opacity: .55; }
+
+/* 1 title */
+.s-title { justify-content: center; background: radial-gradient(900px 600px at 82% 40%, var(--terra-t) 0%, transparent 70%), var(--paper); }
+.s-title .h-xl { margin-bottom: 64px; }
+.s-title .who { margin-top: 56px; display: flex; gap: 14px; flex-wrap: wrap; }
+.tag { display: inline-flex; align-items: center; gap: 10px; height: 48px; padding: 0 20px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 20px; font-weight: 600; color: var(--ink-2); }
+.hero-art { position: absolute; right: 40px; top: 200px; width: 540px; height: 488px; }
+
+/* 2 problem */
+.distance { margin: 74px 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 36px; }
+.person { display: flex; flex-direction: column; gap: 6px; }
+.person b { font: 500 52px/1 var(--display); letter-spacing: -.02em; }
+.person span { font-size: 22px; color: var(--ink-2); }
+.person.r { text-align: right; }
+.miles { position: relative; height: 2px; border-top: 3px dashed var(--terra); }
+.miles span { position: absolute; left: 50%; top: -58px; transform: translateX(-50%); font: 500 34px var(--display); color: var(--terra-d); white-space: nowrap; }
+.miles i { position: absolute; left: 50%; top: 18px; transform: translateX(-50%); font-style: normal; font-size: 22px; color: var(--muted); white-space: nowrap; }
+.pair { margin-top: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 64px; }
+.stat { display: flex; flex-direction: column; gap: 10px; }
+.stat .num { font-size: 112px; }
+.stat p { font-size: 24px; color: var(--ink-2); max-width: 560px; }
+
+/* 3 pain */
+.three { margin-top: auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; }
+.three > div { padding: 0 44px; border-left: 1px solid var(--line); display: flex; flex-direction: column; gap: 14px; }
+.three > div:first-child { padding-left: 0; border-left: 0; }
+.area { display: inline-flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 700; color: var(--c); }
+.area .ico { width: 40px; height: 40px; border-radius: 12px; background: var(--t); }
+.three .num { color: var(--c); margin-top: 18px; }
+.three p { font-size: 24px; color: var(--ink); }
+.three .also { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 20px; color: var(--ink-2); }
+.foot { position: absolute; left: 112px; bottom: 84px; font-size: 15px; color: var(--muted); }
+
+/* 4 market */
+.s-market { flex-direction: row; gap: 72px; align-items: center; }
+.rings { position: relative; flex: none; width: 600px; height: 600px; }
+.rings div { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); border-radius: 50%; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.rings .tam { width: 600px; height: 600px; background: var(--terra-t); padding-top: 70px; }
+.rings .sam { width: 380px; height: 380px; background: var(--card); border: 1px solid var(--line); padding-top: 54px; }
+.rings .som { width: 160px; height: 160px; background: var(--terra); color: var(--white); justify-content: center; }
+.rings b { font: 500 64px/1 var(--display); letter-spacing: -.03em; }
+.rings .sam b { font-size: 50px; } .rings .som b { font-size: 34px; }
+.rings small { font-size: 18px; font-weight: 600; color: var(--ink-2); margin-top: 6px; }
+.rings .som small { color: var(--white); font-size: 15px; margin-top: 2px; }
+.mk { display: flex; flex-direction: column; gap: 30px; min-width: 0; }
+.mk .h-m { font-size: 72px; }
+.legend { list-style: none; padding: 0; display: grid; gap: 16px; }
+.legend li { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 18px; align-items: baseline; font-size: 23px; color: var(--ink-2); }
+.legend li b { font: 600 26px var(--display); color: var(--ink); }
+.tail { padding-top: 24px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; }
+.tail p { font-size: 24px; } .tail p b { font: 600 30px var(--display); color: var(--terra-d); }
+
+/* 5 solution */
+.trio { margin-top: auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.part { background: var(--card); border: 1px solid var(--line); border-radius: 32px; padding: 40px 40px 44px; display: flex; flex-direction: column; gap: 14px; min-height: 440px; }
+.part .art { height: 150px; display: flex; align-items: center; }
+.part h3 { font: 500 40px/1.05 var(--display); letter-spacing: -.02em; }
+.part p { font-size: 24px; color: var(--ink-2); }
+.disc { width: 128px; height: 128px; border-radius: 50%; display: grid; place-items: center; background: var(--terra-t); color: var(--terra-d); }
+
+/* 6 areas */
+.cols { margin-top: auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.col { border-radius: 32px; background: var(--t); padding: 36px 36px 30px; display: flex; flex-direction: column; gap: 22px; }
+.col h3 { font: 500 44px/1 var(--display); color: var(--c); letter-spacing: -.02em; }
+.col ul { list-style: none; padding: 0; display: grid; gap: 14px; }
+.col li { display: flex; align-items: center; gap: 14px; font-size: 25px; font-weight: 600; color: var(--ink); }
+.col li .ico { width: 44px; height: 44px; border-radius: 14px; background: var(--card); color: var(--c); }
+.col li small { font-size: 17px; font-weight: 600; color: var(--c); margin-left: 4px; }
+
+/* 7 how it works */
+.lanes3 { margin-top: 52px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 64px; }
+.who3 { position: relative; display: flex; align-items: center; gap: 18px; padding: 22px 26px; border-radius: 24px; background: var(--card); border: 1px solid var(--line); }
+.who3 .ico { width: 56px; height: 56px; border-radius: 16px; background: var(--terra-t); color: var(--terra-d); }
+.who3 b { font: 500 32px/1 var(--display); display: block; letter-spacing: -.01em; }
+.who3 span { font-size: 19px; color: var(--ink-2); }
+.who3:not(:last-child)::after { content: ''; position: absolute; right: -50px; top: 50%; width: 36px; height: 3px; background: var(--terra); }
+.who3:not(:last-child)::before { content: ''; position: absolute; right: -52px; top: calc(50% - 6px); width: 12px; height: 12px; border-top: 3px solid var(--terra); border-right: 3px solid var(--terra); transform: rotate(45deg); }
+.pipes { margin-top: auto; display: grid; gap: 26px; }
+.pipe { display: grid; grid-template-columns: 150px minmax(0, 1fr); align-items: center; gap: 24px; }
+.pipe > span { font-size: 22px; font-weight: 700; color: var(--muted); }
+.pipe ol { list-style: none; padding: 0; display: flex; align-items: center; gap: 44px; }
+.pipe li { position: relative; display: flex; align-items: center; gap: 12px; height: 76px; padding: 0 24px 0 16px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 22px; font-weight: 600; white-space: nowrap; }
+.pipe li .ico { width: 46px; height: 46px; border-radius: 50%; background: var(--paper); color: var(--terra-d); }
+.pipe li small { display: block; font-size: 16px; font-weight: 500; color: var(--muted); line-height: 1.1; }
+.pipe li:not(:last-child)::after { content: ''; position: absolute; right: -36px; top: 50%; width: 26px; height: 2px; background: var(--terra); }
+.pipe li:not(:last-child)::before { content: ''; position: absolute; right: -37px; top: calc(50% - 5px); width: 9px; height: 9px; border-top: 2px solid var(--terra); border-right: 2px solid var(--terra); transform: rotate(45deg); }
+.pipe li.end { background: var(--terra); border-color: var(--terra); color: var(--white); }
+.pipe li.end .ico { background: var(--terra-d); color: var(--white); }
+.pipe li.end small { color: var(--terra-t); }
+
+/* 6b three pillars: Grandma's band to Lisa's phone, animated while the slide is shown */
+.s-flow { padding-top: 72px; background: radial-gradient(700px 500px at 6% 30%, var(--terra-t) 0%, transparent 70%), var(--paper); }
+.flow { margin-top: auto; display: grid; grid-template-columns: 220px repeat(3, minmax(0, 1fr)); column-gap: 28px; grid-template-rows: 72px 30px 80px 26px 80px 26px 80px 30px 100px; }
+.flow .who { grid-column: 1; position: relative; justify-self: stretch; }
+.flow .who.gran { grid-row: 1 / 4; }
+.flow .who.kid { grid-row: 6 / 10; }
+.flow .who svg { display: block; position: absolute; }
+.flow .gran svg { width: 196px; height: 216px; right: 4px; top: -66px; }
+.flow .kid svg { width: 176px; height: 194px; right: 18px; bottom: -6px; }
+.flow .name { position: absolute; left: 0; display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 16px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font: 600 19px var(--ui); color: var(--ink); white-space: nowrap; box-shadow: 0 10px 24px -18px var(--shadow); }
+.flow .gran .name { bottom: -42px; } .flow .kid .name { top: 34px; z-index: 1; }
+.strap { grid-row: 1; grid-column: 2 / -1; position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 28px; align-items: center; padding: 12px 0; border-radius: 999px; background: var(--band); box-shadow: inset 0 0 0 4px var(--band-2); z-index: 1; }
+.strap::before { content: ''; position: absolute; left: -40px; top: 50%; width: 40px; border-top: 3px dotted var(--band-2); }
+.port { justify-self: center; display: inline-flex; align-items: center; gap: 10px; height: 46px; padding: 0 22px 0 8px; border-radius: 999px; background: var(--t); color: var(--c); font-size: 21px; font-weight: 700; }
+.port .ico { width: 34px; height: 34px; border-radius: 50%; background: var(--card); }
+.pillar { grid-row: 2 / 9; display: grid; grid-template-rows: subgrid; justify-items: center; background: var(--t); border-radius: 0 0 36px 36px; margin: -36px 0 -50px; padding: 36px 18px 50px; }
+.pillar > * { grid-column: 1; }
+.seg { position: relative; width: 4px; height: 100%; }
+.seg::before { content: ''; position: absolute; left: 0; top: 2px; bottom: 2px; border-left: 4px dotted var(--c); opacity: .4; }
+.seg svg { position: absolute; left: -11px; top: -13px; width: 26px; height: 26px; fill: var(--c); filter: drop-shadow(0 0 6px var(--c)); opacity: 0; overflow: visible; }
+.chip { width: 100%; display: flex; align-items: center; gap: 14px; padding: 12px 18px 12px 12px; border-radius: 26px; background: var(--card); border: 2px solid transparent; box-shadow: 0 10px 24px -20px var(--shadow); }
+.chip .ico { width: 54px; height: 54px; border-radius: 50%; background: var(--t); color: var(--c); }
+.chip b { display: block; font-size: 22px; font-weight: 700; line-height: 1.15; }
+.chip small { display: block; font-size: 16px; color: var(--muted); line-height: 1.2; }
+.lisa { grid-row: 9; grid-column: 2 / -1; position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 28px; align-items: center; padding: 0 12px; border-radius: 32px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 24px 50px -36px var(--shadow); z-index: 1; }
+.lisa::before { content: ''; position: absolute; left: -46px; top: 50%; width: 46px; border-top: 3px dotted var(--line); }
+.note { position: relative; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 22px; background: var(--paper); opacity: .4; }
+.note .ico { width: 46px; height: 46px; border-radius: 50%; background: var(--c); color: var(--white); }
+.note b { display: block; font-size: 20px; line-height: 1.15; }
+.note small { display: block; font-size: 15px; color: var(--muted); }
+.led-glow { fill: var(--terra); opacity: .45; }
+/* one 9 s loop; each pillar takes a 3 s turn (--p), each step 0.6 s later (--k) */
+.s-flow.on .port, .s-flow.on .seg svg, .s-flow.on .chip, .s-flow.on .note { animation: 9s linear infinite both; animation-delay: calc(var(--p) * 3s + var(--k) * .6s); }
+.s-flow.on .port { animation-name: flowPort; }
+.s-flow.on .seg svg { animation-name: flowDrop; animation-timing-function: ease-in-out; }
+.s-flow.on .chip { animation-name: flowLit; }
+.s-flow.on .note { animation-name: flowNote; }
+.s-flow.on .led-live, .s-flow.on .led-glow { animation: flowLed 9s steps(1, end) infinite; }
+.s-flow.on .led-glow { animation-name: flowLed, flowBlink; animation-duration: 9s, 1s; animation-timing-function: steps(1, end), ease-in-out; }
+.s-flow.on .who.gran svg { animation: flowBob 3s ease-in-out infinite; }
+.s-flow.on .who.kid svg { animation: flowHop 3s ease-in-out infinite; animation-delay: 2.4s; }
+.pillar.mental, .port.mental, .note.mental { --p: 0; } .pillar.fin, .port.fin, .note.fin { --p: 1; } .pillar.phys, .port.phys, .note.phys { --p: 2; }
+@keyframes flowPort { 0%, 100% { box-shadow: 0 0 0 0 transparent; transform: none; } 2%, 14% { box-shadow: 0 0 0 4px var(--c), 0 0 34px 8px var(--c); transform: scale(1.06); } 22% { box-shadow: 0 0 0 0 transparent; transform: none; } }
+@keyframes flowDrop { 0% { top: -13px; opacity: 0; transform: scale(.6); } 1% { opacity: 1; transform: scale(1); } 6% { top: calc(100% - 13px); opacity: 1; transform: scale(1); } 7%, 100% { top: calc(100% - 13px); opacity: 0; transform: scale(.6); } }
+@keyframes flowLit { 0%, 100% { border-color: transparent; transform: none; } 3%, 26% { border-color: var(--c); transform: translateY(-3px) scale(1.02); box-shadow: 0 16px 30px -16px var(--c); } 32% { border-color: transparent; transform: none; } }
+@keyframes flowNote { 0%, 100% { opacity: .4; transform: none; background: var(--paper); } 3%, 55% { opacity: 1; transform: translateY(-5px); background: var(--t); } 62% { opacity: .4; transform: none; background: var(--paper); } }
+@keyframes flowLed { 0% { fill: var(--mental); } 33.33% { fill: var(--fin); } 66.66% { fill: var(--phys); } }
+@keyframes flowBlink { 0%, 100% { opacity: .15; } 50% { opacity: .6; } }
+@keyframes flowBob { 0%, 100% { transform: none; } 50% { transform: translateY(-4px) rotate(-1deg); } }
+@keyframes flowHop { 0%, 70%, 100% { transform: none; } 80% { transform: translateY(-8px); } 90% { transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .s-flow.on .port, .s-flow.on .seg svg, .s-flow.on .chip, .s-flow.on .note, .s-flow.on .led-live, .s-flow.on .led-glow, .s-flow.on .who svg { animation: none; }
+  .s-flow .note { opacity: 1; background: var(--t); }
+}
+
+/* 8 one moment */
+.steps4 { margin-top: auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+.st { position: relative; display: flex; flex-direction: column; gap: 16px; padding: 30px 28px; border-radius: 28px; background: var(--card); border: 1px solid var(--line); min-height: 460px; }
+.st .k { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); font-weight: 700; font-size: 19px; color: var(--ink-2); }
+.st h3 { font: 600 20px var(--ui); color: var(--muted); }
+.st q { font: 500 31px/1.18 var(--display); letter-spacing: -.01em; quotes: '\201C' '\201D'; }
+.st p { font-size: 22px; color: var(--ink-2); }
+.st.alert { background: var(--terra-t); border-color: var(--terra-t); }
+.st.alert q { color: var(--terra-d); }
+.st .card { margin-top: auto; display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; background: var(--paper); font-size: 19px; font-weight: 600; color: var(--ink-2); }
+.st.alert .card { background: var(--card); color: var(--terra-d); }
+.st .ico.big { width: 56px; height: 56px; border-radius: 16px; background: var(--fin-t); color: var(--fin); }
+
+/* 9, 10 live */
+.s-live { flex-direction: row; gap: 40px; padding: 72px 72px 104px 112px; align-items: stretch; }
+.side { width: 280px; flex: none; display: flex; flex-direction: column; gap: 22px; padding-top: 10px; }
+.side .h-m { font-size: 54px; }
+.side p { font-size: 23px; color: var(--ink-2); }
+.links { display: grid; gap: 10px; margin-top: 6px; }
+.btn { display: flex; align-items: center; gap: 12px; height: 56px; padding: 0 20px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); color: var(--ink); font-size: 19px; font-weight: 600; text-decoration: none; }
+.btn .ico { color: var(--terra-d); }
+.btn:hover { border-color: var(--terra); color: var(--terra-d); }
+.btn:active { transform: translateY(1px); }
+.btn.primary { background: var(--terra); border-color: var(--terra); color: var(--white); }
+.btn.primary .ico { color: var(--white); }
+.btn.primary:hover { background: var(--terra-d); color: var(--white); }
+.facts { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 18px; }
+.facts b { display: block; font: 500 58px/1 var(--display); letter-spacing: -.03em; color: var(--terra-d); }
+.facts span { font-size: 18px; color: var(--ink-2); }
+.frame { position: relative; flex: none; border-radius: 22px; overflow: hidden; background: var(--card); border: 1px solid var(--line); box-shadow: 0 30px 60px -36px var(--shadow); }
+.frame .wait { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: 22px; }
+.frame iframe { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; background: transparent; }
+.frame.product { width: 1096px; height: 699px; }
+.frame.product iframe { width: 1600px; height: 1020px; transform: scale(.685); }
+.frame.sim { width: 1096px; height: 711px; }
+.frame.sim iframe { width: 1150px; height: 746px; transform: scale(.9531); }
+.printonly { display: none; }
+.s-demo .go-live, .s-day .day { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 28px; }
+.s-demo .go-live { align-items: center; border-radius: 32px; background: var(--card); border: 1px solid var(--line); }
+.btn.big { height: 104px; padding: 0 48px; font-size: 40px; border-radius: 28px; gap: 18px; box-shadow: 0 24px 48px -28px var(--glow); }
+.s-demo .addr { font: 500 32px var(--display); color: var(--ink-2); }
+.s-day .side { width: 360px; }
+.s-day .facts { gap: 36px 40px; }
+.s-day .facts b { font-size: 110px; }
+.s-day .facts span { font-size: 24px; }
+.s-day .quote { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; padding: 28px 36px; border-radius: 24px; background: var(--card); border: 1px solid var(--line); }
+.s-day .quote q { font: 500 34px/1.2 var(--display); color: var(--ink); }
+.s-day .quote .to { display: flex; align-items: center; gap: 12px; font-size: 28px; font-weight: 600; color: var(--terra-d); }
+
+/* 11 real vs simulated */
+.rv { margin-top: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; }
+.rv > div { min-height: 440px; border-radius: 32px; padding: 44px 48px; display: flex; flex-direction: column; gap: 22px; }
+.rv .real { background: var(--card); border: 1px solid var(--line); }
+.rv .sim { background: var(--paper-2); }
+.rv h3 { font: 500 40px/1 var(--display); letter-spacing: -.02em; }
+.rv ol { padding: 0; list-style: none; display: grid; gap: 16px; counter-reset: k; }
+.rv li { display: flex; gap: 16px; align-items: baseline; font-size: 28px; color: var(--ink); counter-increment: k; }
+.rv li::before { content: counter(k); flex: none; width: 34px; height: 34px; border-radius: 50%; display: inline-grid; place-items: center; background: var(--paper); font-size: 17px; font-weight: 700; color: var(--ink-2); transform: translateY(-3px); }
+.rv .sim li::before { background: var(--card); }
+.rv li small { font-size: 18px; color: var(--muted); }
+
+/* 12 close */
+.s-close { justify-content: center; background: radial-gradient(800px 560px at 88% 70%, var(--terra-t) 0%, transparent 70%), var(--paper); }
+.s-close .h-l { font-size: 96px; max-width: 1080px; }
+.next { margin-top: 60px; display: grid; grid-template-columns: repeat(3, minmax(0, 300px)); gap: 28px; list-style: none; padding: 0; counter-reset: k; }
+.next li { counter-increment: k; display: flex; flex-direction: column; gap: 10px; padding-top: 18px; border-top: 2px solid var(--terra); font-size: 24px; color: var(--ink); }
+.next li::before { content: counter(k); font: 500 30px var(--display); color: var(--terra-d); }
+.s-close .pip-big { position: absolute; right: 140px; top: 170px; width: 300px; height: 300px; }
+.sig { margin-top: 56px; font: 500 30px var(--display); color: var(--ink-2); }
+
+/* characters: Grandma Margaret and Lisa, reused across slides */
+.person { align-items: flex-start; }
+.person.r { align-items: flex-end; }
+.person .face { width: 112px; height: 112px; border-radius: 50%; clip-path: circle(50%); background: var(--terra-t); margin-bottom: 10px; }
+.person.r .face { background: var(--phys-t); }
+.disc.face-disc { overflow: hidden; align-items: end; }
+.disc.face-disc svg { width: 128px; height: 152px; margin-top: 10px; }
+.s-close .duo { position: absolute; right: 60px; top: 150px; width: 420px; height: 360px; }
+.s-title .hero-art svg, .s-close .duo svg { overflow: visible; }
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .slide, html.js .slide.on, .progress { transition: none; }
+}
+@media print {
+  @page { size: 1600px 900px; margin: 0; }
+  html, body, html.js body { background: var(--paper); height: auto; overflow: visible; }
+  html.js .stage { position: static; transform: none; box-shadow: none; width: 1600px; height: auto; }
+  html.js .slide, .slide { position: relative; inset: auto; opacity: 1; visibility: visible; margin: 0; break-after: page; page-break-after: always; transition: none; }
+  .slide + .slide { margin-top: 0; }
+  .progress, .nav { display: none; }
+  .frame iframe, .frame .wait { display: none; }
+  .s-flow * { animation: none !important; }
+  .s-flow .note { opacity: 1; background: var(--t); }
+  .printonly { display: grid; position: absolute; inset: 0; place-items: center; text-align: center; padding: 40px; font-size: 26px; color: var(--ink-2); }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js');</script>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<svg class="pip" width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <g id="pipArt">
+    <path class="leaf l1" d="M60 26 C50 6 30 8 30 8 C34 24 48 28 60 26Z"/><path class="leaf l2" d="M60 26 C70 4 92 6 92 6 C88 24 72 30 60 26Z"/>
+    <ellipse class="body" cx="60" cy="72" rx="42" ry="38"/><ellipse class="belly" cx="60" cy="82" rx="26" ry="20"/>
+    <g class="eyes"><ellipse cx="45" cy="66" rx="5" ry="6"/><ellipse cx="75" cy="66" rx="5" ry="6"/></g>
+    <ellipse class="blush" cx="36" cy="78" rx="6" ry="3.5"/><ellipse class="blush" cx="84" cy="78" rx="6" ry="3.5"/>
+    <path class="mouth" d="M50 80 q10 9 20 0"/>
+  </g>
+
+  <g id="granArt">
+    <circle cx="100" cy="40" r="19" fill="var(--hair-g)"/>
+    <path d="M28 220 C28 168 58 146 100 146 C142 146 172 168 172 220Z" fill="var(--terra)"/>
+    <path d="M84 147 L100 174 L116 147Z" fill="var(--card)"/>
+    <circle cx="70" cy="190" r="5" fill="var(--terra-t)"/><circle cx="70" cy="208" r="5" fill="var(--terra-t)"/>
+    <path d="M148 172 C170 150 177 126 172 100" fill="none" stroke="var(--terra)" stroke-width="24" stroke-linecap="round"/>
+    <circle cx="172" cy="88" r="13" fill="var(--skin)"/>
+    <path d="M160 104 L185 102" stroke="var(--band)" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="172.5" cy="103" r="4.2" fill="var(--led, #FF8A5C)"/>
+    <rect x="90" y="126" width="20" height="24" rx="8" fill="var(--skin)"/>
+    <circle cx="100" cy="94" r="44" fill="var(--skin)"/>
+    <path d="M56 100 C50 62 74 46 100 46 C126 46 150 62 144 100 C138 82 128 72 116 69 C104 76 88 77 74 73 C66 79 60 89 56 100Z" fill="var(--hair-g)"/>
+    <circle cx="58" cy="98" r="11" fill="var(--hair-g)"/><circle cx="142" cy="98" r="11" fill="var(--hair-g)"/>
+    <path d="M78 56 C90 50 104 50 114 54" fill="none" stroke="var(--hair-g2)" stroke-width="3" stroke-linecap="round"/>
+    <g fill="none" stroke="var(--glass)" stroke-width="3"><circle cx="82" cy="100" r="12"/><circle cx="118" cy="100" r="12"/><path d="M94 99 h12"/></g>
+    <path d="M77 102 q5 -5 10 0 M113 102 q5 -5 10 0" fill="none" stroke="var(--pip-eye)" stroke-width="3" stroke-linecap="round"/>
+    <ellipse cx="70" cy="118" rx="7" ry="4" fill="var(--pip-blush)" opacity=".6"/><ellipse cx="130" cy="118" rx="7" ry="4" fill="var(--pip-blush)" opacity=".6"/>
+    <path d="M90 121 q10 9 20 0" fill="none" stroke="var(--pip-eye)" stroke-width="3.2" stroke-linecap="round"/>
+  </g>
+  <g id="kidArt">
+    <path d="M30 220 C30 170 60 148 100 148 C140 148 170 170 170 220Z" fill="var(--kid-top)"/>
+    <path d="M88 149 Q100 162 112 149" fill="none" stroke="var(--card)" stroke-width="5" stroke-linecap="round"/>
+    <rect x="90" y="126" width="20" height="26" rx="8" fill="var(--skin-2)"/>
+    <path d="M52 96 C50 56 74 44 100 44 C126 44 150 56 148 96 L150 136 C140 142 128 140 122 134 L78 134 C72 140 60 142 50 136Z" fill="var(--kid-hair)"/>
+    <circle cx="100" cy="94" r="42" fill="var(--skin-2)"/>
+    <path d="M58 94 C58 62 78 50 100 50 C124 50 142 62 142 92 C128 86 116 76 108 63 C98 78 80 88 58 94Z" fill="var(--kid-hair)"/>
+    <ellipse cx="84" cy="102" rx="4.6" ry="5.6" fill="var(--pip-eye)"/><ellipse cx="116" cy="102" rx="4.6" ry="5.6" fill="var(--pip-eye)"/>
+    <ellipse cx="72" cy="116" rx="7" ry="4" fill="var(--pip-blush)" opacity=".6"/><ellipse cx="128" cy="116" rx="7" ry="4" fill="var(--pip-blush)" opacity=".6"/>
+    <path d="M91 119 q9 8 18 0" fill="none" stroke="var(--pip-eye)" stroke-width="3.2" stroke-linecap="round"/>
+    <g transform="rotate(-8 100 190)"><rect x="80" y="160" width="40" height="64" rx="9" fill="var(--band)"/><rect x="85" y="166" width="30" height="46" rx="5" fill="var(--terra-t)"/>
+    <path d="M100 198 c-9 -6 -11 -11 -7 -15 c3 -3 7 -1 7 2 c0 -3 4 -5 7 -2 c4 4 2 9 -7 15Z" fill="var(--terra)"/></g>
+    <circle cx="78" cy="198" r="11" fill="var(--skin-2)"/><circle cx="122" cy="193" r="11" fill="var(--skin-2)"/>
+  </g>
+  <path id="heartP" d="M12 21 C3 15 0 10 3 6 C6 2 10 3 12 7 C14 3 18 2 21 6 C24 10 21 15 12 21Z"/>
+</defs></svg>
+
+<main class="stage" id="stage" aria-roledescription="slide deck">
+
+  <!-- 1 -->
+  <section class="slide s-title" data-sec="Apotheosis" aria-label="Apotheosis">
+    <h1 class="h-xl">Apotheosis</h1>
+    <p class="lede">A wristband that notices, so Lisa doesn’t have to guess.</p>
+    <div class="who">
+      <span class="tag"><span class="ico" data-ico="watch" data-sz="22"></span>Vexo band 39</span>
+      <span class="tag"><span class="ico" data-ico="chat" data-sz="22"></span>Pip, the voice companion</span>
+      <span class="tag"><span class="ico" data-ico="phone" data-sz="22"></span>Lisa’s app</span>
+    </div>
+    <svg class="hero-art" viewBox="0 0 620 560" aria-hidden="true">
+      <path d="M190 210 C250 120 370 120 430 210" fill="none" stroke="var(--terra)" stroke-width="4" stroke-dasharray="2 14" stroke-linecap="round"/>
+      <svg x="270" y="96" width="80" height="80" viewBox="0 0 24 24"><use href="#heartP" fill="var(--terra)"/></svg>
+      <svg x="0" y="190" width="320" height="352" viewBox="0 0 200 220"><use href="#granArt"/></svg>
+      <svg x="330" y="222" width="290" height="319" viewBox="0 0 200 220"><use href="#kidArt"/></svg>
+      <svg x="240" y="400" width="140" height="140" viewBox="0 0 120 120" class="pip"><use href="#pipArt"/></svg>
+    </svg>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">Demo deck</span><span class="n" data-n></span></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide" data-sec="1 Why this product" aria-label="The problem">
+    <h2 class="h-l">Margaret, 78, lives alone. Lisa is 400 miles away.</h2>
+    <div class="distance" aria-hidden="true">
+      <div class="person"><svg class="face" viewBox="30 30 140 140"><use href="#granArt"/></svg><b>Grandma Margaret</b><span>Early memory changes</span></div>
+      <div class="miles"><span>400 miles</span><i>Is Mom OK today?</i></div>
+      <div class="person r"><svg class="face" viewBox="30 30 140 140"><use href="#kidArt"/></svg><b>Lisa</b><span>Her daughter, the caregiver</span></div>
+    </div>
+    <div class="pair">
+      <div class="stat"><span class="num">~16M</span><p>Americans 65+ live alone (~28%).</p><span class="src">ACL, Profile of Older Americans</span></div>
+      <div class="stat"><span class="num">63M</span><p>US family caregivers, ~1 in 4 adults.</p><span class="src">AARP and National Alliance for Caregiving, Caregiving in the US 2025</span></div>
+    </div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">1 Why this product</span><span class="n" data-n></span></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide" data-sec="1 Why this product" aria-label="Pain points">
+    <h2 class="h-l">Three things go wrong quietly.</h2>
+    <div class="three">
+      <div class="mental">
+        <span class="area"><span class="ico" data-ico="brain" data-sz="24"></span>Mental</span>
+        <span class="num">~1 in 3</span>
+        <p>Americans 65+ have MCI or dementia.</p>
+        <span class="src">HRS-HCAP, Manly et al., JAMA Neurology 2022</span>
+        <p class="also">~6 in 10 people with dementia wander at least once.<br><span class="src">Alzheimer’s Association</span></p>
+      </div>
+      <div class="fin">
+        <span class="area"><span class="ico" data-ico="coin" data-sz="24"></span>Financial</span>
+        <span class="num">$4.9B</span>
+        <p>reported lost to elder fraud by 60+ in 2024.</p>
+        <span class="src">FBI IC3, Elder Fraud Report 2024</span>
+        <p class="also">Up from $3.4B in 2023.<br><span class="src">FBI IC3</span></p>
+      </div>
+      <div class="phys">
+        <span class="area"><span class="ico" data-ico="body" data-sz="24"></span>Physical</span>
+        <span class="num">1 in 4</span>
+        <p>adults 65+ fall each year.</p>
+        <span class="src">CDC STEADI</span>
+        <p class="also">~50% of chronic meds are NOT taken as prescribed.<br><span class="src">WHO 2003</span></p>
+      </div>
+    </div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">1 Why this product</span><span class="n" data-n></span></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide s-market" data-sec="1 Why this product" aria-label="Market size">
+    <div class="rings" aria-hidden="true">
+      <div class="tam"><b>~$9B</b><small>TAM per year</small></div>
+      <div class="sam"><b>~$3.6B</b><small>SAM</small></div>
+      <div class="som"><b>~$90M</b><small>SOM ARR</small></div>
+    </div>
+    <div class="mk">
+      <h2 class="h-m">~$9B a year, US alone.</h2>
+      <ul class="legend">
+        <li><b>TAM</b><span>~25M US households with memory changes or living alone, at $30 a month</span></li>
+        <li><b>SAM</b><span>~10M with a phone and an engaged caregiver</span></li>
+        <li><b>SOM</b><span>1% of TAM by year 3</span></li>
+      </ul>
+      <div class="tail">
+        <p><b>6.7M to 14.4M</b> Americans 85+, 2020 to 2040</p>
+        <span class="src">ACL, Profile of Older Americans</span>
+      </div>
+      <span class="src">Our illustrative bottom-up model on ACL and HRS-HCAP counts, not a forecast. ~3x across high-income markets. Desk research; re-check sources before sharing.</span>
+    </div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">1 Why this product</span><span class="n" data-n></span></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide" data-sec="2 Our solution" aria-label="Our solution">
+    <h2 class="h-l">One band. One voice. One app.</h2>
+    <div class="trio">
+      <div class="part">
+        <div class="art"><span class="disc face-disc"><svg viewBox="20 30 160 190"><use href="#granArt"/></svg></span></div>
+        <h3>Band 39</h3><p>Feels her movement. Hears her day.</p>
+      </div>
+      <div class="part">
+        <div class="art"><svg class="pip" width="150" height="150" viewBox="0 0 120 120" aria-hidden="true"><use href="#pipArt"/></svg></div>
+        <h3>Pip</h3><p>Talks with Margaret, out loud.</p>
+      </div>
+      <div class="part">
+        <div class="art"><span class="disc face-disc"><svg viewBox="20 30 160 190"><use href="#kidArt"/></svg></span></div>
+        <h3>Lisa’s app</h3><p>Tells Lisa only what matters.</p>
+      </div>
+    </div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">2 Our solution</span><span class="n" data-n></span></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide" data-sec="2 Our solution" aria-label="Three areas">
+    <h2 class="h-l">Three areas, one band.</h2>
+    <div class="cols">
+      <div class="col mental"><h3>Mental</h3><ul>
+        <li><span class="ico" data-ico="repeat" data-sz="24"></span>Memory decline</li>
+        <li><span class="ico" data-ico="chat" data-sz="24"></span>Speech changes</li>
+        <li><span class="ico" data-ico="user" data-sz="24"></span>Social isolation</li>
+        <li><span class="ico" data-ico="shield" data-sz="24"></span>Abuse</li>
+        <li><span class="ico" data-ico="compass" data-sz="24"></span>Wandering</li>
+        <li><span class="ico" data-ico="moon" data-sz="24"></span>Sleep</li>
+      </ul></div>
+      <div class="col fin"><h3>Financial</h3><ul>
+        <li><span class="ico" data-ico="call" data-sz="24"></span>Scam calls</li>
+        <li><span class="ico" data-ico="receipt" data-sz="24"></span>Fraudulent charges</li>
+        <li><span class="ico" data-ico="clock" data-sz="24"></span>Missed bills</li>
+        <li><span class="ico" data-ico="card" data-sz="24"></span>Mom’s safe card<small>simulated</small></li>
+      </ul></div>
+      <div class="col phys"><h3>Physical</h3><ul>
+        <li><span class="ico" data-ico="fall" data-sz="24"></span>Falls</li>
+        <li><span class="ico" data-ico="hand" data-sz="24"></span>Tremor</li>
+        <li><span class="ico" data-ico="pill" data-sz="24"></span>Medicine taken</li>
+        <li><span class="ico" data-ico="zap" data-sz="24"></span>Seizure-like movement</li>
+        <li><span class="ico" data-ico="sos" data-sz="24"></span>SOS</li>
+      </ul></div>
+    </div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">2 Our solution</span><span class="n" data-n></span></div>
+  </section>
+
+  <!-- 6b -->
+  <section class="slide s-flow" data-sec="2 Our solution" aria-label="Three pillars: how Grandma's band data reaches Lisa">
+    <h2 class="h-m">Three pillars, from Grandma to Lisa.</h2>
+    <div class="flow">
+      <div class="who gran">
+        <svg viewBox="0 0 200 220" aria-hidden="true"><use href="#granArt"/><circle class="led-glow" cx="172.5" cy="103" r="12"/><circle class="led-live" cx="172.5" cy="103" r="4.6" fill="#FF8A5C"/></svg>
+        <span class="name">Grandma Margaret</span>
+      </div>
+      <div class="strap">
+        <span class="port mental" style="--k:0"><span class="ico" data-ico="brain" data-sz="20"></span>Mental</span>
+        <span class="port fin" style="--k:0"><span class="ico" data-ico="coin" data-sz="20"></span>Financial</span>
+        <span class="port phys" style="--k:0"><span class="ico" data-ico="body" data-sz="20"></span>Physical</span>
+      </div>
+      <div class="pillar mental" style="grid-column:2"><span class="seg" style="--k:0"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:1"><span class="ico" data-ico="mic" data-sz="26"></span><div><b>Voice + night steps</b><small>band mic, motion</small></div></div><span class="seg" style="--k:2"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:3"><span class="ico" data-ico="sparkle" data-sz="26"></span><div><b>Memory and mood</b><small>Deepgram + Gemini</small></div></div><span class="seg" style="--k:4"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:5"><span class="ico" data-ico="repeat" data-sz="26"></span><div><b>Repeats, wandering</b><small>care engine</small></div></div><span class="seg" style="--k:6"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span></div>
+      <div class="pillar fin" style="grid-column:3"><span class="seg" style="--k:0"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:1"><span class="ico" data-ico="call" data-sz="26"></span><div><b>A call nearby</b><small>band mic</small></div></div><span class="seg" style="--k:2"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:3"><span class="ico" data-ico="sparkle" data-sz="26"></span><div><b>Sounds like a scam</b><small>Gemini decision model</small></div></div><span class="seg" style="--k:4"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:5"><span class="ico" data-ico="card" data-sz="26"></span><div><b>Her card rests</b><small>safe card, simulated</small></div></div><span class="seg" style="--k:6"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span></div>
+      <div class="pillar phys" style="grid-column:4"><span class="seg" style="--k:0"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:1"><span class="ico" data-ico="steps" data-sz="26"></span><div><b>How she moves</b><small>accel + gyro, 50 Hz</small></div></div><span class="seg" style="--k:2"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:3"><span class="ico" data-ico="balance" data-sz="26"></span><div><b>Motion lab</b><small>fall, tremor, steps</small></div></div><span class="seg" style="--k:4"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span><div class="chip" style="--k:5"><span class="ico" data-ico="fall" data-sz="26"></span><div><b>“Did you fall?”</b><small>20 s to answer</small></div></div><span class="seg" style="--k:6"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heartP"/></svg></span></div>
+      <div class="who kid">
+        <span class="name">Lisa, her daughter</span>
+        <svg viewBox="0 0 200 220" aria-hidden="true"><use href="#kidArt"/></svg>
+      </div>
+      <div class="lisa">
+        <div class="note mental" style="--k:8"><span class="ico" data-ico="repeat" data-sz="22"></span><div><b>Mom asked twice today</b><small>Memory tab</small></div></div>
+        <div class="note fin" style="--k:8"><span class="ico" data-ico="shield" data-sz="22"></span><div><b>Possible scam call</b><small>Card frozen for her</small></div></div>
+        <div class="note phys" style="--k:8"><span class="ico" data-ico="fall" data-sz="22"></span><div><b>Mom may have fallen</b><small>Call Mom · Ruth · 911</small></div></div>
+      </div>
+    </div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">2 Our solution</span><span class="n" data-n></span></div>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide" data-sec="2 Our solution" aria-label="How it works">
+    <h2 class="h-m">From her wrist to Lisa’s phone.</h2>
+    <div class="lanes3">
+      <div class="who3"><span class="ico" data-ico="user" data-sz="30"></span><div><b>Margaret</b><span>Lives her day</span></div></div>
+      <div class="who3"><span class="ico" data-ico="watch" data-sz="30"></span><div><b>Band 39</b><span>Senses</span></div></div>
+      <div class="who3"><span class="ico" data-ico="phone" data-sz="30"></span><div><b>Lisa’s portal</b><span>Knows what matters</span></div></div>
+    </div>
+    <div class="pipes">
+      <div class="pipe"><span>Voice</span><ol>
+        <li><span class="ico" data-ico="mic" data-sz="22"></span><div>Band mic</div></li>
+        <li><span class="ico" data-ico="wave" data-sz="22"></span><div>Deepgram<small>speech to text</small></div></li>
+        <li><span class="ico" data-ico="sparkle" data-sz="22"></span><div>Gemini<small>decision model</small></div></li>
+        <li><span class="ico" data-ico="sprout" data-sz="22"></span><div>Care engine</div></li>
+        <li class="end"><span class="ico" data-ico="phone" data-sz="22"></span><div>Lisa</div></li>
+      </ol></div>
+      <div class="pipe"><span>Motion</span><ol>
+        <li><span class="ico" data-ico="steps" data-sz="22"></span><div>50 Hz<small>accel + gyro</small></div></li>
+        <li><span class="ico" data-ico="balance" data-sz="22"></span><div>Motion lab<small>fall, tremor, steps</small></div></li>
+        <li><span class="ico" data-ico="sprout" data-sz="22"></span><div>Care engine</div></li>
+        <li class="end"><span class="ico" data-ico="phone" data-sz="22"></span><div>Lisa</div></li>
+      </ol></div>
+      <div class="pipe"><span>Reply</span><ol>
+        <li><span class="ico" data-ico="chat" data-sz="22"></span><div>Pip<small>answers when called</small></div></li>
+        <li><span class="ico" data-ico="speaker" data-sz="22"></span><div>Deepgram<small>voice</small></div></li>
+        <li class="end"><span class="ico" data-ico="user" data-sz="22"></span><div>Margaret</div></li>
+      </ol></div>
+    </div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">2 Our solution</span><span class="n" data-n></span></div>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide" data-sec="2 Our solution" aria-label="A scam call, end to end">
+    <h2 class="h-l">A scam call, end to end.</h2>
+    <div class="steps4">
+      <div class="st"><span class="k">1</span><h3>Margaret hears</h3><q>Grandma, I’m in jail. Buy gift cards.</q></div>
+      <div class="st"><span class="k">2</span><h3>Band 39 listens</h3><p>The Gemini decision model reads it as a possible scam.</p><p>Pip stays quiet.</p><span class="card"><span class="ico" data-ico="mic" data-sz="20"></span>Heard nearby</span></div>
+      <div class="st alert"><span class="k">3</span><h3>Lisa gets</h3><q>Possible scam call</q><span class="card"><span class="ico" data-ico="card" data-sz="20"></span>Mom’s card freezes</span></div>
+      <div class="st"><span class="k">4</span><h3>Margaret sees</h3><q>Your card is taking a short rest. You did nothing wrong. Lisa will call you.</q></div>
+    </div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">2 Our solution</span><span class="n" data-n></span></div>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide s-live s-demo" data-sec="3 Live demo" aria-label="Live demo">
+    <div class="side">
+      <h2 class="h-m">Live demo</h2>
+      <p>Band 39 on a real wrist: live transcript, scam alert, Pip.</p>
+    </div>
+    <div class="go-live">
+      <a class="btn primary big" href="/"><span class="ico" data-ico="play" data-sz="30"></span>Open the live demo</a>
+      <span class="addr">localhost:8040</span>
+    </div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">3 Live demo</span><span class="n" data-n></span></div>
+  </section>
+
+  <!-- 10 -->
+  <section class="slide s-live s-day" data-sec="4 A whole day" aria-label="A whole day, condensed">
+    <div class="side">
+      <h2 class="h-m">A whole day, condensed</h2>
+      <p>One day of Margaret’s life, turned into tonight’s summary for Lisa.</p>
+      <div class="links"><a class="btn" href="/"><span class="ico" data-ico="play" data-sz="20"></span>Open the day</a></div>
+    </div>
+    <div class="day">
+      <ul class="facts">
+        <li><b>383</b><span>phrases heard</span></li>
+        <li><b>3</b><span>flags: scam call, near-fall, unsure about evening pills</span></li>
+        <li><b>6</b><span>reminders</span></li>
+        <li><b>5</b><span>suggestions in her own words</span></li>
+      </ul>
+      <div class="quote"><q>this knee hurts going up the stairs</q><span class="to"><span class="ico" data-ico="arrow" data-sz="26"></span>knee brace</span></div>
+    </div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">4 A whole day</span><span class="n" data-n></span></div>
+  </section>
+
+  <!-- 11 -->
+  <section class="slide" data-sec="Status" aria-label="What is real and what is simulated">
+    <h2 class="h-l">What’s real, what’s simulated.</h2>
+    <div class="rv">
+      <div class="real"><h3>Runs today</h3><ol>
+        <li>Live transcript on band 39, by voice</li>
+        <li>Scam alert froze the card, live</li>
+        <li>Hey Pip answers out loud</li>
+        <li>Deepgram, Gemini, Stripe wired in</li>
+        <li>Motion labels, 11 checks passing</li>
+      </ol></div>
+      <div class="sim"><h3>Simulated, or not yet</h3><ol>
+        <li>Mom’s safe card: no real money moves</li>
+        <li>Past days are sample history</li>
+        <li>Motion labels not yet on a real wrist</li>
+        <li>Distress from audio: measured, not wired in</li>
+      </ol></div>
+    </div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">Status</span><span class="n" data-n></span></div>
+  </section>
+
+  <!-- 12 -->
+  <section class="slide s-close" data-sec="Next" aria-label="Next">
+    <h2 class="h-l">Margaret stays home. Lisa stays close.</h2>
+    <ol class="next">
+      <li>Hear distress, not just words</li>
+      <li>Real card limits through Stripe Issuing</li>
+      <li>Tune it on real wearers</li>
+    </ol>
+    <p class="sig">Signals, not diagnoses.</p>
+    <svg class="duo" viewBox="0 0 420 360" aria-hidden="true">
+      <svg x="150" y="0" width="120" height="120" viewBox="0 0 24 24"><use href="#heartP" fill="var(--terra)"/></svg>
+      <svg x="0" y="80" width="250" height="275" viewBox="0 0 200 220"><use href="#granArt"/></svg>
+      <svg x="190" y="100" width="232" height="255" viewBox="0 0 200 220"><use href="#kidArt"/></svg>
+    </svg>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">Next</span><span class="n" data-n></span></div>
+  </section>
+
+  <div class="nav" aria-label="Slide controls">
+  <button type="button" id="prev" aria-label="Previous slide"><span class="ico" data-ico="back" data-sz="20"></span></button>
+  <button type="button" id="next" aria-label="Next slide"><span class="ico" data-ico="arrow" data-sz="20"></span></button>
+</div>
+</main>
+
+
+
+<script>
+(function () {
+  'use strict';
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const N = slides.length;
+  const stage = document.getElementById('stage');
+  const bar = document.getElementById('progress');
+  const prevB = document.getElementById('prev'), nextB = document.getElementById('next');
+
+  // icons
+  document.querySelectorAll('[data-ico]').forEach((el) => {
+    if (window.VexoIcons) el.innerHTML = VexoIcons.svg(el.dataset.ico, +(el.dataset.sz || 20));
+  });
+  slides.forEach((s, i) => { const n = s.querySelector('[data-n]'); if (n) n.textContent = (i + 1) + ' / ' + N; });
+
+  // fit the 1600x900 canvas to the window
+  function fit() { document.documentElement.style.setProperty('--s', Math.min(innerWidth / 1600, innerHeight / 900)); }
+  addEventListener('resize', fit); fit();
+
+  // live slides: load only while shown, unload on leave (no off-screen audio or animation)
+  function live(slide, on) {
+    slide.querySelectorAll('iframe[data-live]').forEach((f) => {
+      if (on) { if (!f.getAttribute('src') || f.getAttribute('src') === 'about:blank') f.src = f.dataset.live; }
+      else if (f.getAttribute('src') && f.getAttribute('src') !== 'about:blank') f.src = 'about:blank';
+    });
+  }
+
+  let cur = -1;
+  function go(i, fromHash) {
+    i = Math.max(0, Math.min(N - 1, i));
+    if (i === cur) return;
+    if (cur >= 0) { slides[cur].classList.remove('on'); slides[cur].setAttribute('aria-hidden', 'true'); live(slides[cur], false); }
+    cur = i;
+    slides.forEach((s, k) => { if (k !== i) s.setAttribute('aria-hidden', 'true'); s.inert = k !== i; });
+    slides[i].classList.add('on'); slides[i].removeAttribute('aria-hidden');
+    live(slides[i], true);
+    bar.style.transform = 'scaleX(' + ((i + 1) / N) + ')';
+    prevB.disabled = i === 0; nextB.disabled = i === N - 1;
+    if (!fromHash) history.replaceState(null, '', '#' + (i + 1));
+  }
+  const fromHash = () => { const n = parseInt(location.hash.slice(1), 10); return Number.isFinite(n) ? n - 1 : 0; };
+  addEventListener('hashchange', () => go(fromHash(), true));
+  go(fromHash(), true);
+
+  addEventListener('keydown', (e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || (k === ' ' && !e.target.closest('a,button'))) { e.preventDefault(); go(cur + 1); }
+    else if (k === 'ArrowLeft' || k === 'PageUp') { e.preventDefault(); go(cur - 1); }
+    else if (k === 'Home') { e.preventDefault(); go(0); }
+    else if (k === 'End') { e.preventDefault(); go(N - 1); }
+  });
+  // click or tap: left third goes back, the rest advances (links, buttons and live frames keep their own clicks)
+  stage.addEventListener('click', (e) => {
+    if (e.target.closest('a, button, iframe, .frame')) return;
+    if (getSelection && String(getSelection())) return;
+    go(e.clientX < innerWidth / 3 ? cur - 1 : cur + 1);
+  });
+  prevB.addEventListener('click', () => go(cur - 1));
+  nextB.addEventListener('click', () => go(cur + 1));
+  // print: every slide on its own page, live frames swapped for their link
+  addEventListener('beforeprint', () => { slides.forEach((s) => { s.inert = false; s.removeAttribute('aria-hidden'); live(s, false); }); });
+  addEventListener('afterprint', () => { const i = cur; cur = -1; go(i, true); });
+})();
+</script>
+</body>
+</html>
