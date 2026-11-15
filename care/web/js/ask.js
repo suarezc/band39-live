@@ -91,6 +91,7 @@
       .then((blob) => {
         const a = new Audio(URL.createObjectURL(blob));
         state.audio = a;
+        state.spokeAt = Date.now();
         const p = a.play();
         if (p && p.catch) p.catch(() => speakFallback(text));
       })
@@ -104,12 +105,22 @@
     speak(d.answer);
   }
 
+  // Barge-in: the band keeps listening while Pip speaks (the server leaves Pip's own words out), so when a phrase
+  // from Mom arrives during an answer, stop the voice. Not in the first moment: the tail of her question can
+  // still be arriving then.
+  function hush() {
+    if (EMBED || !state.spokeAt || Date.now() - state.spokeAt < 1200) return;
+    try { if (state.audio && !state.audio.paused && !state.audio.ended) state.audio.pause(); } catch (e) { /* ignore */ }
+    try { if (window.speechSynthesis && window.speechSynthesis.speaking) window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+  }
+
   // ---- live events -----------------------------------------------------------------------------
   try {
     const es = new EventSource('api/live/events');
     es.onmessage = (m) => {
       let d;
       try { d = JSON.parse(m.data); } catch (e) { return; }
+      if (d && d.type === 'final' && d.voice === 'main') { hush(); return; }   // she talks over Pip: Pip goes quiet
       if (!d || d.type !== 'ask') return;
       if (d.state === 'listening') listening();
       else if (d.state === 'answer') onAnswer(d);
