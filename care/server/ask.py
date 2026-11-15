@@ -69,8 +69,18 @@ def api_key():
 
 
 def wake(text):
-    """None if the phrase does not start with the wake name, else the rest of the phrase ('' if the name was said alone)."""
-    m = WAKE.match(text or '')
+    """None if the phrase has no wake name at the start of a sentence, else the rest of the phrase ('' if the name was
+    said alone). Speech-to-text often glues the end of the previous sentence on ("allow. Okay. Hey, Pip. What is..."),
+    so every sentence start inside the phrase is tried, not only the first."""
+    text = text or ''
+    m = WAKE.match(text)
+    if not m:
+        for cut in re.finditer(r'[.!?]\s+', text):
+            m = WAKE.match(text[cut.end():])
+            if m and (m.group('hey') or m.group('name').lower() in STRONG):
+                text = text[cut.end():]
+                break
+            m = None
     if not m:
         return None
     name, rest = m.group('name').lower(), m.group('rest').strip()

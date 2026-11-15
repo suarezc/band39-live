@@ -120,7 +120,14 @@
     es.onmessage = (m) => {
       let d;
       try { d = JSON.parse(m.data); } catch (e) { return; }
-      if (d && d.type === 'final' && d.voice === 'main') { hush(); return; }   // she talks over Pip: Pip goes quiet
+      if (d && d.type === 'final' && d.voice === 'main') {                      // she talks over Pip: Pip goes quiet
+        // ...but not for a stray word or Pip's own voice coming back through the band (it once cut itself off on "Your")
+        const words = String(d.text || '').toLowerCase().match(/[a-z0-9']+/g) || [];
+        const said = new Set(String((state.last && state.last.answer) || '').toLowerCase().match(/[a-z0-9']+/g) || []);
+        const own = words.filter((w) => said.has(w)).length;
+        if (words.length >= 3 && own < 0.6 * words.length) hush();
+        return;
+      }
       if (!d || d.type !== 'ask') return;
       if (d.state === 'listening') listening();
       else if (d.state === 'answer') onAnswer(d);

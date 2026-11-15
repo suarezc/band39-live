@@ -536,7 +536,7 @@ class Live:
         that answer. Nothing is muted: anything else said in that time, such as an interruption, is kept."""
         own = getattr(self, 'own_speech', None)
         now = time.time() if at is None else at
-        if not own or not (own['from'] - 1 <= now <= own['until']):
+        if not own or not (own['from'] - 4 <= now <= own['until']):
             return False
         words = [w for w in ''.join(c.lower() if c.isalnum() else ' ' for c in text).split()]
         if not words:
@@ -584,7 +584,9 @@ class Live:
         if not text:
             return
         t0, t1 = float(words[0]['start']), float(words[-1]['end'])
-        if self.is_own_speech(text, s['started'] + t0):   # the laptop's own answer, heard by the band: not part of her day
+        # the laptop's own answer, heard by the band: not part of her day. Checked against the clock now and against the
+        # phrase's own time: the audio's timeline can run a few seconds behind the clock.
+        if self.is_own_speech(text) or self.is_own_speech(text, s['started'] + t0):
             return
         a = max(0, int((t0 - 0.1) * RATE) - s['base'])
         b = max(a, int((t1 + 0.1) * RATE) - s['base'])
