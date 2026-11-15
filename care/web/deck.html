@@ -527,6 +527,8 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
         <li><b>6</b><span>reminders</span></li>
         <li><b>5</b><span>suggestions</span></li>
       </ul>
+      <div class="links"><a class="btn primary" href="#" id="buyBtn" role="button"><span class="ico" data-ico="play" data-sz="20"></span>Buy the knee brace with Stripe</a></div>
+      <span class="addr-s" id="buyNote">“this knee hurts going up the stairs”</span>
     </div>
     <div class="frame shot">
       <img src="img/day-summary.png" alt="Lisa’s app for the fictional day: Today’s summary of Margaret’s day beside her Physical health and Mental health score charts">
@@ -690,6 +692,28 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
   // print: every slide on its own page, live frames swapped for their link
   addEventListener('beforeprint', () => { slides.forEach((s) => { s.inert = false; s.removeAttribute('aria-hidden'); live(s, false); }); });
   addEventListener('afterprint', () => { const i = cur; cur = -1; go(i, true); });
+})();
+</script>
+<script>
+// Slide 6: a real purchase. Opens Stripe Checkout (test mode) in a new tab for one suggested product, through the
+// same server route the care page uses (POST api/checkout). The deck stays where it is.
+(function () {
+  const btn = document.getElementById('buyBtn'), note = document.getElementById('buyNote');
+  if (!btn) return;
+  btn.addEventListener('click', (e) => {
+    e.preventDefault(); e.stopPropagation();
+    const tab = window.open('about:blank', '_blank');            // opened now, inside the click, so it is not blocked
+    if (note) note.textContent = 'Opening Stripe…';
+    fetch('api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: [{ id: 'knee-brace', name: 'Knee brace or support', price: 15, qty: 1 }], origin: location.origin + '/deck.html#' }) })
+      .then((r) => r.json())
+      .then((j) => {
+        if (j && j.url) { if (tab) tab.location = j.url; else location.href = j.url; if (note) note.textContent = 'Stripe Checkout opened in a new tab (test mode).'; }
+        else { if (tab) tab.close(); if (note) note.textContent = (j && (j.message || j.error)) || 'Checkout is not available.'; }
+      })
+      .catch(() => { if (tab) tab.close(); if (note) note.textContent = 'Checkout is not available right now.'; });
+  });
+  btn.addEventListener('keydown', (e) => e.stopPropagation());
 })();
 </script>
 </body>
