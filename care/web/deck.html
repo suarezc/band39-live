@@ -250,6 +250,12 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
 .frame.sim { width: 1096px; height: 711px; }
 .frame.sim iframe { width: 1150px; height: 746px; transform: scale(.9531); }
 .printonly { display: none; }
+.side .addr-s { font-size: 17px; color: var(--muted); }
+.frame.shot { width: 1016px; background: #F7F5FD; max-height: 724px; align-self: center; display: flex; }
+.s-day .facts.mini { gap: 18px 24px; margin-top: 8px; }
+.s-day .facts.mini b { font-size: 52px; }
+.s-day .facts.mini span { font-size: 18px; }
+.frame.shot img { display: block; width: 100%; height: auto; max-height: 724px; object-fit: contain; }
 .s-demo .go-live, .s-day .day { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 28px; }
 .s-demo .go-live { align-items: center; border-radius: 32px; background: var(--card); border: 1px solid var(--line); }
 .btn.big { height: 104px; padding: 0 48px; font-size: 40px; border-radius: 28px; gap: 18px; box-shadow: 0 24px 48px -28px var(--glow); }
@@ -573,10 +579,13 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
     <div class="side">
       <h2 class="h-m">Live demo</h2>
       <p>Band 39 on a real wrist: live transcript, scam alert, Pip.</p>
+      <div class="links"><a class="btn primary" href="/"><span class="ico" data-ico="play" data-sz="20"></span>Open the live demo</a></div>
+      <span class="addr-s">localhost:8040</span>
     </div>
-    <div class="go-live">
-      <a class="btn primary big" href="/"><span class="ico" data-ico="play" data-sz="30"></span>Open the live demo</a>
-      <span class="addr">localhost:8040</span>
+    <div class="frame product">
+      <span class="wait">Loading the live page</span>
+      <iframe title="Band 39 care page, live: Margaret’s screen and Lisa’s app" data-live="/?embed=1" tabindex="-1"></iframe>
+      <div class="printonly">Live demo: localhost:8040</div>
     </div>
     <div class="bar"><span class="mark">Apotheosis</span><span class="sec">3 Live demo</span><span class="n" data-n></span></div>
   </section>
@@ -587,15 +596,15 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
       <h2 class="h-m">A whole day, condensed</h2>
       <p>One day of Margaret’s life, turned into tonight’s summary for Lisa.</p>
       <div class="links"><a class="btn" href="/"><span class="ico" data-ico="play" data-sz="20"></span>Open the day</a></div>
-    </div>
-    <div class="day">
-      <ul class="facts">
+      <ul class="facts mini">
         <li><b>383</b><span>phrases heard</span></li>
-        <li><b>3</b><span>flags: scam call, near-fall, unsure about evening pills</span></li>
+        <li><b>3</b><span>flags</span></li>
         <li><b>6</b><span>reminders</span></li>
-        <li><b>5</b><span>suggestions in her own words</span></li>
+        <li><b>5</b><span>suggestions</span></li>
       </ul>
-      <div class="quote"><q>this knee hurts going up the stairs</q><span class="to"><span class="ico" data-ico="arrow" data-sz="26"></span>knee brace</span></div>
+    </div>
+    <div class="frame shot">
+      <img src="img/day-summary.png" alt="Lisa’s app for the fictional day: Today’s summary of Margaret’s day beside her Physical health and Mental health score charts">
     </div>
     <div class="bar"><span class="mark">Apotheosis</span><span class="sec">4 A whole day</span><span class="n" data-n></span></div>
   </section>

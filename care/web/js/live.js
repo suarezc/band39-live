@@ -22,9 +22,13 @@
 
   // "Always on" preference. Storage can be missing or throw (private window, blocked site data):
   // then the preference lives only as long as the page.
+  // Embed mode (?embed=1, the deck's frame): never listens, never touches the band or the preference;
+  // the transcript, voices and alerts still arrive over api/live/events.
+  const EMBED = /[?&]embed=1(?:&|$)/.test(root.location ? root.location.search : '');
   let alwaysOn = false;
-  try { alwaysOn = root.localStorage.getItem(PREF_KEY) === '1'; } catch (_) { /* no storage */ }
+  if (!EMBED) { try { alwaysOn = root.localStorage.getItem(PREF_KEY) === '1'; } catch (_) { /* no storage */ } }
   function setAlwaysOn(on) {
+    if (EMBED) { alwaysOn = false; return; }
     alwaysOn = !!on;
     try { if (alwaysOn) root.localStorage.setItem(PREF_KEY, '1'); else root.localStorage.removeItem(PREF_KEY); } catch (_) { /* no storage */ }
   }
@@ -118,6 +122,7 @@
     toggle.disabled = !(canStart || armed);
     toggle.textContent = armed ? 'Stop' : 'Start listening';
     toggle.classList.toggle('violet', !armed); toggle.classList.toggle('dark', armed);
+    if (EMBED) { toggle.disabled = true; toggle.hidden = true; }
     always.hidden = !alwaysOn || !!unavailable;
     hint.hidden = listening || !!band || !!unavailable || alwaysOn;
     notice.hidden = !listening;
@@ -360,7 +365,7 @@
   // the server says the feature is unavailable). A failed start is retried at most every RETRY_MS.
   let autoBusy = false;
   async function autoTick() {
-    if (!alwaysOn || listening || unavailable || !statusKnown || stopping || autoBusy || !getBand()) return;
+    if (EMBED || !alwaysOn || listening || unavailable || !statusKnown || stopping || autoBusy || !getBand()) return;
     if (Date.now() < autoNextAt) return;
     autoBusy = true;
     try {
@@ -371,6 +376,7 @@
   }
 
   toggle.onclick = () => {
+    if (EMBED) return undefined;
     if (listening || alwaysOn) { setAlwaysOn(false); autoFailed = false; autoNextAt = 0; sendError = ''; render(); return stop(); }
     setAlwaysOn(true); autoNextAt = Date.now() + RETRY_MS;   // the poll must not race this click
     return start().then((ok) => { if (ok) autoNextAt = 0; else if (alwaysOn) autoFailed = true; render(); return ok; });

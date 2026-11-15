@@ -5,6 +5,8 @@
  */
 (function () {
   'use strict';
+  // Embed mode (?embed=1, the deck's frame): css/trim.css hides the header, connection card and footnote.
+  if (/[?&]embed=1(?:&|$)/.test(location.search)) document.body.classList.add('embed');
   const card = document.querySelector('.carer .l-card');
   if (!card) return;
   const head = card.querySelector('.cg-head');

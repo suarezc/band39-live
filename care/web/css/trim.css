@@ -61,3 +61,12 @@
 /* a more compact safe card so the transcript sits higher */
 .demo-trim .money .paycard:not(.once) { min-height: 0; }
 .demo-trim .money .paycard .num { margin: 10px 0 4px; }
+
+/* ---- embed mode (?embed=1, the deck's frame; js/layout.js): no header, band card or footnote ---- */
+body.embed header.top > :not(.lt-top), body.embed .conn, body.embed .foot { display: none !important; }
+body.embed header.top { display: block; min-height: 0; padding-top: 0; padding-bottom: 0; }
+body.embed header.top > .lt-top { width: 100%; }
+body.embed .lt-toggle { display: none !important; }
+/* the deck frame scales this page down: no scrollbar inside the frame (wheel scrolling still works) */
+html:has(body.embed) { scrollbar-width: none; }
+body.embed::-webkit-scrollbar, html:has(body.embed)::-webkit-scrollbar { display: none; }

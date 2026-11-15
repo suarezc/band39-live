@@ -7,6 +7,8 @@
  */
 (function () {
   'use strict';
+  // Embed mode (?embed=1, the deck's frame): show answers, never speak (the presenter's main tab speaks).
+  const EMBED = /[?&]embed=1(?:&|$)/.test(location.search);
   const say = document.getElementById('pipSay');
   const col = say ? say.closest('.col') : document.querySelector('.col.margaret');
   if (!col) return;
@@ -72,6 +74,7 @@
 
   // ---- answers ---------------------------------------------------------------------------------
   function speakFallback(text) {
+    if (EMBED) return;
     try {
       if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
       const u = new window.SpeechSynthesisUtterance(text);
@@ -81,6 +84,7 @@
     } catch (e) { /* no voice: the words are on screen */ }
   }
   function speak(text) {
+    if (EMBED) return;
     if (state.audio) { try { state.audio.pause(); } catch (e) { /* ignore */ } }
     post('api/tts', { text })
       .then((r) => { if (!r.ok) throw new Error('tts ' + r.status); return r.blob(); })
