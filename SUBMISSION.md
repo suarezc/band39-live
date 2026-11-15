@@ -5,7 +5,7 @@ Deadline: **6:00 PM Pacific, 14 November 2026.** Repo must be public before then
 
 ## Devpost: project description
 
-**Apotheosis: a wristband that looks after an older person's physical, mental and financial health.**
+**Pip: a wristband that looks after an older person's physical, mental and financial health.**
 
 Margaret is 78, has early memory problems and lives alone. Her daughter Lisa is 400 miles away. Margaret wears
 a Vexo Open band: a motion sensor and a microphone on her wrist, nothing to press and no screen.

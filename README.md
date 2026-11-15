@@ -1,4 +1,4 @@
-# Apotheosis
+# Pip
 
 A wristband that looks after an older person's **physical, mental and financial health**, and keeps her
 family in the loop without hovering. Built in one day on a Vexo Open band at the Vexo hackathon,
