@@ -323,6 +323,10 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
 .next li::before { content: counter(k); font: 700 30px var(--display); color: var(--terra-d); }
 .s-close .pip-big { position: absolute; right: 140px; top: 170px; width: 300px; height: 300px; }
 .sig { margin-top: 56px; font: 600 30px var(--display); color: var(--ink-2); }
+.s-close .qa-sub { margin-top: 28px; font-size: 40px; color: var(--ink); }
+.qa { margin-top: 56px; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; max-width: 900px; }
+.qa .tag { height: 60px; padding: 0 26px; font-size: 24px; color: var(--ink); }
+.repo { margin-top: 48px; font-size: 18px; color: var(--muted); letter-spacing: .02em; }
 
 /* characters: Grandma Margaret and Lisa, reused across slides */
 .person { align-items: flex-start; }
@@ -503,8 +507,6 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
     <div class="side">
       <h2 class="h-m">Live demo</h2>
       <ol class="beats"><li><span>1</span>A fall</li><li><span>2</span>“Hey Pip, did I take my pills?”</li><li><span>3</span>A scam call freezes her card</li></ol>
-      <div class="links"><a class="btn primary" href="/"><span class="ico" data-ico="play" data-sz="20"></span>Open the live demo</a></div>
-      <span class="addr-s">localhost:8040</span>
     </div>
     <div class="frame product">
       <span class="wait">Loading the live page</span>
@@ -519,7 +521,6 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
     <div class="side">
       <h2 class="h-m">Health over time. Help she can buy.</h2>
       <p>Every night: her day in a few lines, trends for Lisa and her doctor, and HSA/FSA-eligible products paid through Stripe.</p>
-      <div class="links"><a class="btn" href="/"><span class="ico" data-ico="play" data-sz="20"></span>Open the day</a></div>
       <ul class="facts mini">
         <li><b>383</b><span>phrases heard</span></li>
         <li><b>3</b><span>flags</span></li>
@@ -533,8 +534,27 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
     <div class="bar"><span class="mark">Apotheosis</span><span class="sec">3 Live demo</span><span class="n" data-n></span></div>
   </section>
 
-  <!-- 11 -->
-  <section class="slide" data-sec="Status" aria-label="What is real and what is simulated">
+  <!-- 7 Q&A -->
+  <section class="slide s-close" data-sec="Q&amp;A" aria-label="Questions">
+    <h2 class="h-l">Questions?</h2>
+    <p class="sig qa-sub">Margaret stays home. Lisa stays close.</p>
+    <div class="qa">
+      <span class="tag"><span class="ico" data-ico="shield" data-sz="22"></span>How it tells a scam from a chat</span>
+      <span class="tag"><span class="ico" data-ico="sparkle" data-sz="22"></span>What’s real today, what’s simulated</span>
+      <span class="tag"><span class="ico" data-ico="mic" data-sz="22"></span>Privacy: what it hears, what it keeps</span>
+    </div>
+    <p class="repo">github.com/suarezc/band39-live</p>
+    <svg class="duo" viewBox="0 0 420 360" aria-hidden="true">
+      <svg x="150" y="0" width="120" height="120" viewBox="0 0 24 24"><use href="#heartP" fill="var(--terra)"/></svg>
+      <svg x="0" y="80" width="250" height="275" viewBox="0 0 200 220"><use href="#granArt"/></svg>
+      <svg x="190" y="100" width="232" height="255" viewBox="0 0 200 220"><use href="#kidArt"/></svg>
+    </svg>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">Q&amp;A</span><span class="n" data-n></span></div>
+  </section>
+
+  <!-- appendix: for questions -->
+  <!-- A1 -->
+  <section data-appendix class="slide" data-sec="Appendix" aria-label="What is real and what is simulated">
     <h2 class="h-l">What’s real, what’s simulated.</h2>
     <div class="rv">
       <div class="real"><h3>Runs today</h3><ol>
@@ -551,27 +571,9 @@ html:not(.js) .progress, html:not(.js) .nav { display: none; }
         <li>Distress from audio: measured, not wired in</li>
       </ol></div>
     </div>
-    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">Status</span><span class="n" data-n></span></div>
+    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">Appendix</span><span class="n" data-n></span></div>
   </section>
 
-  <!-- 12 -->
-  <section class="slide s-close" data-sec="Next" aria-label="Next">
-    <h2 class="h-l">Margaret stays home. Lisa stays close.</h2>
-    <ol class="next">
-      <li>Hear distress, not just words</li>
-      <li>Real card limits through Stripe Issuing</li>
-      <li>Tune it on real wearers</li>
-    </ol>
-    <p class="sig">Signals, not diagnoses.</p>
-    <svg class="duo" viewBox="0 0 420 360" aria-hidden="true">
-      <svg x="150" y="0" width="120" height="120" viewBox="0 0 24 24"><use href="#heartP" fill="var(--terra)"/></svg>
-      <svg x="0" y="80" width="250" height="275" viewBox="0 0 200 220"><use href="#granArt"/></svg>
-      <svg x="190" y="100" width="232" height="255" viewBox="0 0 200 220"><use href="#kidArt"/></svg>
-    </svg>
-    <div class="bar"><span class="mark">Apotheosis</span><span class="sec">Next</span><span class="n" data-n></span></div>
-  </section>
-
-  <!-- appendix: for questions -->
   <!-- 8 -->
   <section data-appendix class="slide" data-sec="Appendix" aria-label="A scam call, end to end">
     <h2 class="h-l">A scam call, end to end.</h2>
