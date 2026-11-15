@@ -31,6 +31,28 @@
     let ev;
     try { ev = JSON.parse(m.data); } catch (e) { return; }
     if (ev && ev.type === 'alert') onAlert(ev);
+    else if (ev && ev.type === 'final') onSpoken(ev);
   };
+
+  // A spoken answer to "did you fall?". A fixed rule on the wearer's own matched voice, not a model's judgement:
+  // only a clear "I'm okay / I'm fine / I didn't fall" from Mom's voice closes the check; "help", "I can't get up"
+  // or "I'm not okay" from her escalates at once. Other voices, and phrases the voice model is unsure about, change nothing.
+  const NOT_OK = /\bnot\s+(?:okay|ok|fine|all ?right|alright|good)\b|\bcan(?:'|’)?t\s+get\s+up\b|\bi(?:'|’)?m\s+hurt\b|\bcall\s+(?:lisa|an ambulance|911|for help)\b/i;
+  const NO_HELP = /\b(?:don(?:'|’)?t|do not|no)\s+(?:need\s+)?(?:any\s+)?help\b|\bdon(?:'|’)?t\s+call\b/i;
+  const OK = /\b(?:i(?:'|’)?m|i am)\s+(?:okay|ok|fine|all ?right|alright|good|alive)\b|\bi\s+didn(?:'|’)?t\s+fall\b|\bnothing\s+hurts\b|\bdon(?:'|’)?t\s+call\b/i;
+  function onSpoken(ev) {
+    if (ev.voice !== 'main' || !ev.text) return;
+    const active = care.engine.state.active || {};
+    if (!active.fall && !active.help && !active.checkin) return;
+    const text = String(ev.text);
+    const wantsHelp = NOT_OK.test(text) || (/\bhelp\b/i.test(text) && !NO_HELP.test(text));
+    if (wantsHelp) { if (active.fall || active.checkin) care.engine.userAction('help', 'she said so'); return; }
+    if (OK.test(text)) {
+      care.engine.userAction('ok', 'by voice');
+      const heard = care.engine.state.alerts.find((x) => x.key === 'heard-help' && !x.ack);
+      if (heard) { care.engine.ack(heard.id); care.engine.note('💚', 'Mom then said she is OK (by voice). Worth a call to check.', 'good'); }
+    }
+  }
   state.handle = onAlert;
+  state.spoken = onSpoken;
 })();
