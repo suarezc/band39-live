@@ -1,0 +1,63 @@
+/* Demo trim: less visible text, same behaviour. Everything here is presentation only.
+ * The one switch is the class "demo-trim" on <body>; layout order comes from js/layout.js. */
+
+/* ---- "More" at the bottom of Lisa's column (js/layout.js) ---- */
+.cg-more { background: #F7F5FD; border-radius: 22px; padding: 12px 14px; }
+.cg-more > summary { cursor: pointer; font-weight: 800; }
+.cg-more-body { display: flex; flex-direction: column; gap: 18px; margin-top: 12px; }
+
+/* ---- two charts side by side when the column is wide enough ---- */
+.carer .l-card { container-type: inline-size; }
+@container (min-width: 560px) {
+  .scores { grid-template-columns: 1fr 1fr; align-items: start; }
+  .scores > .scores-bar { grid-column: 1 / -1; }
+  .score-num { font-size: 36px; }
+}
+
+/* ---- Live transcript rows: chip, text, time; actions on hover/focus ---- */
+.lt-row { position: relative; }
+.lt-row .lt-side { position: absolute; top: 4px; right: 4px; max-width: 60%; background: rgba(255, 255, 255, .96); border-radius: 12px; padding: 4px; box-shadow: 0 2px 10px rgba(70, 60, 140, .14);
+  opacity: 0; pointer-events: none; transition: opacity .12s; }
+.lt-row:hover .lt-side, .lt-row:focus-within .lt-side, .lt-row .lt-side:has(.lt-rowerr:not([hidden])) { opacity: 1; pointer-events: auto; }
+@media (max-width: 700px), (hover: none) {
+  .lt-row { flex-wrap: wrap; }
+  .lt-row .lt-side { position: static; opacity: 1; pointer-events: auto; box-shadow: none; background: none; padding: 0; max-width: 100%; flex-direction: row; flex-wrap: wrap; justify-content: flex-end; width: 100%; }
+}
+.demo-trim .lt-counts { display: none; }
+.lt-always, .lt-always.fine { font-size: 11.5px; }
+.lt-voice { gap: 6px; }
+.lt-voice .fine { font-size: 11.5px; }
+.lt-voice .lt-small { padding: 2px 8px; font-size: 11.5px; border: 0; background: none; color: var(--ink2); text-decoration: underline; box-shadow: none; }
+.lt-voice .lt-small:disabled { opacity: .45; text-decoration: none; }
+
+/* ---- Today's summary: folded sections and flag chips (js/digest.js) ---- */
+.dg-fold > summary { cursor: pointer; }
+.dg-fold[open] > summary { margin-bottom: 4px; }
+.dg-flags { list-style: none; padding: 0; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+.dg-flags .dg-flag { background: #FCE4E7; border-radius: 999px; padding: 3px 10px; font-size: 12.5px; cursor: help; }
+.dg-flags .dg-flag[data-kind="medication"] { background: #F1EEFA; }
+
+/* ---- Ask Pip: typing tucked behind a small link (js/ask.js) ---- */
+.ask-more > summary { cursor: pointer; font-size: 14px; font-weight: 700; color: #7A6F63; text-decoration: underline; list-style: none; width: max-content; }
+.ask-more > summary::-webkit-details-marker { display: none; }
+.ask-more[open] > summary { margin-bottom: 8px; }
+
+/* ---- the "simulated" note on the safe card, as a small chip ---- */
+.sim-chip, .fine.sim-chip { align-self: flex-start; margin: 0; background: #F1EEFA; color: var(--ink2); border-radius: 999px; padding: 2px 10px; font-size: 11.5px; font-weight: 700; }
+
+/* ---- fine print hidden for the demo (simulated notes and the privacy notice stay) ---- */
+.demo-trim .fine.trim,
+.demo-trim .demo > p.fine,
+.demo-trim .dg-meta,
+.demo-trim .dg-elignote,
+.demo-trim .dg-quote { display: none; }
+.foot { overflow-wrap: anywhere; }
+.demo-trim .dg-head .h .muted { display: none; }
+/* the transcript lines right under the title; voices, voice line and search after them */
+.demo-trim .live-tx > .lt-people { order: 2; }
+.demo-trim .live-tx > .lt-voice { order: 3; }
+.demo-trim .live-tx > .lt-search { order: 4; }
+.demo-trim .live-tx .lt-list { max-height: 260px; }
+/* a more compact safe card so the transcript sits higher */
+.demo-trim .money .paycard:not(.once) { min-height: 0; }
+.demo-trim .money .paycard .num { margin: 10px 0 4px; }

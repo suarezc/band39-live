@@ -45,6 +45,12 @@
     return s;
   }
   const li = (text, cls) => el('li', cls || '', text);
+  // a section folded behind its name and count (closed)
+  function folded(sec, label) {
+    const d = el('details', 'dg-sec dg-fold'); const s = el('summary', 'dg-name', label);
+    const name = sec.querySelector('.dg-name'); if (name) name.remove();
+    d.append(s, ...sec.childNodes); return d;
+  }
 
   function render() {
     body.textContent = '';
@@ -58,7 +64,7 @@
     const when = d.generated_at ? new Date(d.generated_at).toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit' }) : '';
     body.append(el('p', 'dg-headline', d.for_caregiver.headline));
 
-    if (d.for_caregiver.points.length) body.append(section('For you', d.for_caregiver.points.map((p) => li(p.text))));
+    if (d.for_caregiver.points.length) body.append(folded(section('For you', d.for_caregiver.points.map((p) => li(p.text))), 'For you · ' + d.for_caregiver.points.length));
 
     const doc = section('For Dr. Patel', d.for_doctor.points.length ? d.for_doctor.points.map((p) => li(p.text)) : [li('Nothing of health relevance today.', 'muted')]);
     doc.append(el('p', 'fine', d.for_doctor.caveat));
@@ -71,16 +77,17 @@
     const pre = el('pre', 'dg-pre', doctorText(d)); pre.hidden = true;
     const row = el('div', 'dg-row'); row.append(copy, copied);
     doc.append(row, pre);
-    body.append(doc);
+    body.append(folded(doc, 'For Dr. Patel · ' + d.for_doctor.points.length));
 
-    if (d.reminders.length) body.append(section('Reminders', d.reminders.map((r) => { const x = li(''); x.append(el('b', '', r.what), document.createTextNode(' · ' + r.when)); return x; })));
+    if (d.reminders.length) body.append(folded(section('Reminders', d.reminders.map((r) => { const x = li(''); x.append(el('b', '', r.what), document.createTextNode(' · ' + r.when)); return x; })), 'Reminders · ' + d.reminders.length));
 
     if (d.flags.length) {
       body.append(section('Flags', d.flags.map((f) => {
         const x = li('', 'dg-flag'); x.dataset.kind = f.kind;
-        x.append(el('b', '', `${FLAG[f.kind] || f.kind} (${Math.round(f.probability * 100)}%): `), document.createTextNode(f.text));
+        x.append(el('b', '', `${FLAG[f.kind] || f.kind} ${Math.round(f.probability * 100)}%`)); x.title = f.text; x.tabIndex = 0;
         return x;
       })));
+      const fl = body.lastChild && body.lastChild.querySelector('.dg-list'); if (fl) fl.classList.add('dg-flags');
     }
 
     const shop = section('Suggested products');
@@ -100,11 +107,11 @@
       const note = el('span', 'fine dg-paynote');
       const pay = btn('dark', 'Pay with Stripe', () => payNow(note));
       const foot = el('div', 'dg-row'); foot.append(pay, note);
-      shop.append(ul, foot, el('p', 'fine', 'Eligibility depends on the plan; items marked LMN need a doctor’s letter.'));
+      shop.append(ul, foot, el('p', 'fine dg-elignote', 'Eligibility depends on the plan; items marked LMN need a doctor’s letter.'));
     }
     body.append(shop);
 
-    const meta = el('p', 'fine');
+    const meta = el('p', 'fine dg-meta');
     meta.textContent = `Made from ${c.phrases || 0} phrases; ${c.uncertain || 0} were probably Mom but not certain.` + (when ? ` Generated ${when}.` : '');
     body.append(meta);
     if (d.errors && d.errors.length) body.append(el('p', 'fine dg-err', 'Partly made: ' + d.errors.join(' ')));

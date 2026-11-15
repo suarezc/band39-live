@@ -36,7 +36,9 @@
   const go = el('button', 'ask-go', 'Ask');
   go.type = 'submit';
   form.append(input, go);
-  card.append(btn, area, form);
+  const typeBox = el('details', 'ask-more');
+  typeBox.append(el('summary', '', 'Type instead'), form);
+  card.append(btn, area, typeBox);
   const anchor = say ? (say.closest('.buddy') || say) : null;
   if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(card, anchor.nextSibling);
   else col.appendChild(card);
@@ -54,7 +56,7 @@
 
   btn.addEventListener('click', () => {
     listening();
-    post('api/ask/arm', { seconds: 12 }).catch(() => show('', 'I can’t hear the band right now. You can type your question below.'));
+    post('api/ask/arm', { seconds: 12 }).catch(() => { show('', 'I can’t hear the band right now. You can type your question below.'); typeBox.open = true; });
   });
   form.addEventListener('submit', (e) => {
     e.preventDefault();

@@ -134,6 +134,7 @@
       const n = status && typeof status.phrases === 'number' ? status.phrases : rows.size;
       counts.textContent = `This session: ${mmss(ms / 1000)} listened · ${size(session.bytes)} of sound sent · ${n} phrase${n === 1 ? '' : 's'} stored`;
     }
+    state.title = session ? counts.textContent : '';
     stateText.textContent = txt; state.dataset.level = level;
     topState.dataset.level = level;
     topStateText.textContent = unavailable ? 'Not available' : listening ? 'Listening' : (alwaysOn && !band) ? 'Waiting for the band…'
@@ -193,7 +194,8 @@
   }
   function row(p) {
     const li = el('li', 'lt-row'); li.dataset.id = p.id; li.dataset.person = p.person_id == null ? '' : String(p.person_id);
-    const body = el('div', 'lt-body'); body.append(el('span', 'lt-text', p.text || ''), el('span', 'lt-meta', meta(p)));
+    const body = el('div', 'lt-body'); body.append(el('span', 'lt-text', p.text || ''), el('span', 'lt-meta', clock(p.at)));
+    li.title = meta(p);
     const mom = button('lt-mom', 'This is Mom'); const rowErr = el('span', 'lt-rowerr'); rowErr.hidden = true;
     mom.onclick = async () => {
       mom.disabled = true; rowErr.hidden = true;

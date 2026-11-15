@@ -11,8 +11,9 @@
 <link rel="stylesheet" href="css/live.css" />
 <link rel="stylesheet" href="css/digest.css" />
 <link rel="stylesheet" href="css/ask.css" />
+<link rel="stylesheet" href="css/trim.css" />
 </head>
-<body>
+<body class="demo-trim">
 <main class="app live" id="live" data-conn="none" data-tab="margaret">
   <header class="top">
     <div class="brand"><span class="sprout-dot">🌱</span><div><h1>Wear it for real: band 39</h1><p>Margaret’s screen and Lisa’s app, live from her Vexo band.</p></div></div>
@@ -83,14 +84,14 @@
 
         <div class="block"><div class="h">Motion signals <span class="muted">from band 39</span></div>
           <div class="sig-grid" id="sigGrid"></div>
-          <p class="fine">Methods: Bourke 2007 & Kangas 2008 (falls), Salarian 2007 (tremor), Moe-Nilssen 2004 & Mancini 2012 (balance), Cole 1992 (sleep), Beniczky 2013 & Kramer 2011 (seizure-like). Signals to look at, not diagnoses.</p>
+          <p class="fine trim">Methods: Bourke 2007 & Kangas 2008 (falls), Salarian 2007 (tremor), Moe-Nilssen 2004 & Mancini 2012 (balance), Cole 1992 (sleep), Beniczky 2013 & Kramer 2011 (seizure-like). Signals to look at, not diagnoses.</p>
         </div>
 
         <div class="block"><div class="h">Alerts</div><ul class="cg-alerts" id="cgAlerts"></ul></div>
 
-        <div class="block money"><div class="h">Mom’s safe card <span class="muted">· limits, and a freeze when a scam is suspected</span></div>
+        <div class="block money"><div class="h">Mom’s safe card</div>
           <div class="block" id="moneyBody"></div>
-          <p class="fine">Simulated in this page: no real card and no real money. Stripe Issuing offers the same controls on real cards.</p>
+          <p class="fine sim-chip" title="Simulated in this page: no real card and no real money. Stripe Issuing offers the same controls on real cards.">Simulated · no real card or money</p>
         </div>
 
         <div class="block"><div class="h">From Mom’s voice notes <span class="muted" id="insSource"></span></div>
@@ -141,7 +142,7 @@
       </div>
     </section>
   </div>
-  <p class="fine foot">Not a medical device. Thresholds need tuning on real wearers. Margaret, Lisa, Dr. Patel and pill times are fictional. Keys stay on the server.</p>
+  <p class="fine foot" title="Not a medical device. Thresholds need tuning on real wearers. Margaret, Lisa, Dr. Patel and pill times are fictional. Keys stay on the server.">Not a medical device · names and pill times are fictional</p>
 </main>
 <audio id="voice" hidden></audio>
 <script src="js/care-engine.js"></script>
@@ -155,5 +156,6 @@
 <script src="js/digest.js"></script>
 <script src="js/watch.js"></script>
 <script src="js/ask.js"></script>
+<script src="js/layout.js"></script>
 </body>
 </html>

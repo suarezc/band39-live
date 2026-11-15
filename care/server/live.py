@@ -535,7 +535,7 @@ class Live:
             return
         alt = (m.get('channel', {}).get('alternatives') or [{}])[0]
         if not m.get('is_final'):
-            if alt.get('transcript'):
+            if alt.get('transcript') and time.time() >= getattr(self, 'mute_until', 0):   # not while the laptop speaks an answer
                 self.tell({'type': 'interim', 'text': alt['transcript']})
             return
         group = []
@@ -571,6 +571,8 @@ class Live:
         if not text:
             return
         t0, t1 = float(words[0]['start']), float(words[-1]['end'])
+        if s['started'] + t0 < getattr(self, 'mute_until', 0):   # it began while the laptop was still speaking: the tail of an answer
+            return
         a = max(0, int((t0 - 0.1) * RATE) - s['base'])
         b = max(a, int((t1 + 0.1) * RATE) - s['base'])
         samples = np.frombuffer(bytes(s['pcm'][a * 2:b * 2]), dtype=np.int16).astype(np.float32) / 32768.0
